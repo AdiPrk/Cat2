@@ -15,7 +15,7 @@ namespace Dog {
 		inline static const std::string EditorPath = AssetsDir + "/editor/";
 		inline static const std::string ShadersPath = AssetsDir + "/shaders/";
 		inline static const std::string TexturesPath = AssetsDir + "/textures/";
-		inline static const std::string ScenesPath = AssetsDir + "/Scenes/";
+		inline static const std::string ScenesPath = AssetsDir + "/scenes/";
     };
 
 }

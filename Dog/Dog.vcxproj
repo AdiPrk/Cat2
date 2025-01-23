@@ -203,6 +203,10 @@ xcopy "$(ProjectDir)externals\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y</Com
     <ClCompile Include="src\Dog\Graphics\Vulkan\Pipeline\Pipeline.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Renderer.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Systems\IndirectRenderer.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\InstanceData.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\UniformData.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\UniformSettings.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Window\FrameRate.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Window\Window.cpp" />
     <ClCompile Include="src\Dog\Input\input.cpp" />
@@ -273,6 +277,10 @@ xcopy "$(ProjectDir)externals\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y</Com
     <ClInclude Include="src\Dog\Graphics\Vulkan\Pipeline\Pipeline.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Renderer.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Systems\IndirectRenderer.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\InstanceData.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\UniformData.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\UniformSettings.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Window\FrameRate.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Window\Window.h" />
     <ClInclude Include="src\Dog\Input\input.h" />
@@ -294,6 +302,7 @@ xcopy "$(ProjectDir)externals\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y</Com
     <None Include="assets\shaders\simple_shader.frag" />
     <None Include="assets\shaders\simple_shader.vert" />
     <None Include="src\Dog\Graphics\Vulkan\Models\Serialization\ModelFileFormat.md" />
+    <None Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

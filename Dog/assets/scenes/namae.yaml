@@ -67,7 +67,7 @@ Entities:
       PerspectiveFOV: 45
       PerspectiveNear: 0.00999999978
       PerspectiveFar: 1000
-  - Entity: Square
+  - Entity: Meow
     TransformComponent:
       Translation: [0.218000382, -0.261511505, 0]
       Rotation: [2.9719789, -0.494312227, 0.0688811764]

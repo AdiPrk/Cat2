@@ -16,6 +16,11 @@ namespace Dog {
 		return selectedEntity;
 	}
 
+	void ResetSelectedEntity()
+	{
+        selectedEntity = {};
+	}
+
 	void DrawNewItemTree(Scene* scene, bool fromMenuBar) {
 		if (fromMenuBar) {
 			ImGui::BeginMenuBar();

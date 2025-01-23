@@ -6,11 +6,9 @@ int main() {
     specs.name = "Woof";
     specs.width = 1280;
     specs.height = 720;
-    specs.fps = 60; // <- fps is unused
+    specs.fps = 120;
 
     Dog::Engine& Engine = Dog::Engine::Create(specs);
 
-    Engine.Run("namae");
-
-    return EXIT_SUCCESS;
+    return Engine.Run("namae");
 }

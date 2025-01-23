@@ -49,7 +49,7 @@ namespace Dog {
 		 * 
 		 * brief: Run the engine with the specified scene.
 		 *********************************************************************/
-		void Run(const std::string& sceneName);
+		int Run(const std::string& sceneName);
 		void Exit();
 
 		// getters

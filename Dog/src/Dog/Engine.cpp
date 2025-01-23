@@ -38,7 +38,7 @@ namespace Dog {
         m_Editor->Exit();
     }
 
-    void Engine::Run(const std::string& sceneName) {
+    int Engine::Run(const std::string& sceneName) {
         // Init some stuff
         m_Editor->Init();
         m_Renderer->Init();
@@ -48,16 +48,17 @@ namespace Dog {
 
         WATCH_DIRECTORY(Texture);
 
-        //FrameRateController frameRateController(fps);
+        FrameRateController frameRateController(fps);
 
         auto currentTime = std::chrono::high_resolution_clock::now();
         while (!m_Window.shouldClose() && m_Running) {
             Input::Update();
+            float dt = frameRateController.WaitForNextFrame();
             
             // Need to move in frame rate controller
-            auto newTime = std::chrono::high_resolution_clock::now();
-            float dt = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
-            currentTime = newTime;
+            // auto newTime = std::chrono::high_resolution_clock::now();
+            // float dt = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
+            // currentTime = newTime;
 
             // Swap scenes if necessary (also does Init/Exit)
             SceneManager::SwapScenes();
@@ -70,6 +71,8 @@ namespace Dog {
         }
 
         m_Renderer->Exit();
+
+        return EXIT_SUCCESS;
     }
 
     void Engine::Exit()

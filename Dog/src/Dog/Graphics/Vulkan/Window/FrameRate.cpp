@@ -15,8 +15,8 @@ namespace Dog {
         auto timeSinceLastFrame = now - m_lastFrameTime;
 
         // Sleep until approximately just before the targetFrameDuration
-        if (timeSinceLastFrame < targetFrameDuration - 1ms) {
-            std::this_thread::sleep_for(targetFrameDuration - timeSinceLastFrame - 1ms);
+        if (timeSinceLastFrame < targetFrameDuration - 2ms) {
+            std::this_thread::sleep_for(targetFrameDuration - timeSinceLastFrame - 2ms);
         }
 
         // Fine-tune with busy-waiting for the last small part

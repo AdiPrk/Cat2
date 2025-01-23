@@ -187,8 +187,8 @@ namespace Dog {
 			}
 
 			// open scene, which shows all scenes
-			if (ImGui::BeginMenu("Open Scene")) {
-
+			if (ImGui::BeginMenu("Open Scene")) 
+			{
 				// get all files in the scene directory (std filesystem)
 				std::vector<std::string> files;
 				for (const auto& entry : std::filesystem::directory_iterator("assets/scenes")) {
@@ -201,20 +201,24 @@ namespace Dog {
 				}
 
 				// display all files in the scene directory
-				for (const auto& file : files) {
-
+				for (const auto& file : files)
+				{
 					// remove the directory path
 					std::string fileName = file.substr(file.find_last_of("/\\") + 1);
 
-					if (ImGui::MenuItem(fileName.c_str())) {
+					if (ImGui::MenuItem(fileName.c_str())) 
+					{
 						Scene* currentScene = SceneManager::GetCurrentScene();
 
-						if (currentScene != nullptr) {
+						if (currentScene != nullptr)
+						{
 							std::string sceneName = currentScene->GetName();
-
-							SceneSerializer::Deserialize(currentScene, "assets/scenes/" + fileName + ".yaml");
+							
+							SceneSerializer::Deserialize(currentScene, Assets::ScenesPath + fileName + ".yaml");
+							ResetSelectedEntity();
 						}
-						else {
+						else 
+						{
 							DOG_WARN("No scene to deserialize to????");
 						}
 
@@ -268,7 +272,7 @@ namespace Dog {
 			bool firstButton = true;
 			int numButton = 0;
 			
-			for (const auto& entry : std::filesystem::directory_iterator("assets/scenes")) {
+			for (const auto& entry : std::filesystem::directory_iterator(Assets::ScenesPath)) {
 				std::string path = entry.path().string();
 
 				std::string extension = path.substr(path.find_last_of(".") + 1);
@@ -307,7 +311,7 @@ namespace Dog {
 				if (currentScene != nullptr)
 				{
 					std::string sceneNameStr = sceneName;
-					SceneSerializer::Serialize(currentScene, "assets/scenes/" + sceneNameStr + ".yaml");
+					SceneSerializer::Serialize(currentScene, Assets::ScenesPath + sceneNameStr + ".yaml");
 				}
 				else
 				{
