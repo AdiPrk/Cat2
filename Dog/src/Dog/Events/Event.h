@@ -28,9 +28,9 @@ namespace Dog {
         struct StepButtonPressed {};
 
         // File events
-        struct ImageFileDeleted { const std::string& path; };
-        struct ImageFileCreated { const std::string& path; };
-        struct ImageFileModified { const std::string& path; };
+        struct TextureFileDeleted { const std::string& path; };
+        struct TextureFileCreated { const std::string& path; };
+        struct TextureFileModified { const std::string& path; };
         struct ShaderFileDeleted { const std::string& path; };
         struct ShaderFileCreated { const std::string& path; };
         struct ShaderFileModified { const std::string& path; };
@@ -56,7 +56,7 @@ namespace Dog {
             auto handle = std::unique_ptr<std::function<void(const EventType&)>, HandleDeleter<EventType>>(new std::function<void(const EventType&)>(listener));
             listeners.push_back(handle.get());
 
-            DOG_INFO("Subscribed to event of type {0}.", typeid(EventType).name());
+            //DOG_INFO("Subscribed to event of type {0}.", typeid(EventType).name());
 
             return handle;
         }
@@ -66,7 +66,7 @@ namespace Dog {
             auto& listeners = GetListeners<EventType>();
             listeners.erase(std::remove(listeners.begin(), listeners.end(), listener), listeners.end());
 
-            DOG_INFO("Unsubscribed from event of type {0}.", typeid(EventType).name());
+            //DOG_INFO("Unsubscribed from event of type {0}.", typeid(EventType).name());
         }
 
         template <typename EventType>

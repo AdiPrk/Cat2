@@ -11,15 +11,46 @@ namespace Dog {
 
 	TextureLibrary::TextureLibrary(Device& device)
 		: device(device)
-		, imGuiTextureManager(device)
 		, bakedInTextureCount(0)
 	{
 		CreateTextureSampler();
+
+		VkDescriptorPoolSize poolSize{};
+		poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		poolSize.descriptorCount = MAX_TEXTURE_COUNT; // Number of textures
+
+		VkDescriptorPoolCreateInfo poolInfo{};
+		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+		poolInfo.poolSizeCount = 1;
+		poolInfo.pPoolSizes = &poolSize;
+		poolInfo.maxSets = MAX_TEXTURE_COUNT;
+
+		vkCreateDescriptorPool(device, &poolInfo, nullptr, &mTexturePool);
+
+		VkDescriptorSetLayoutBinding layoutBinding{};
+		layoutBinding.binding = 0; // Binding index in the shader
+		layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		layoutBinding.descriptorCount = 1; // Each descriptor represents one texture
+		layoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT; // Used in fragment shaders
+		layoutBinding.pImmutableSamplers = nullptr;
+
+		VkDescriptorSetLayoutCreateInfo layoutInfo{};
+		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		layoutInfo.bindingCount = 1;
+		layoutInfo.pBindings = &layoutBinding;
+
+		vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &mTextureDescriptorLayout);
+
+		textureFileCreatedHandle = SUBSCRIBE_EVENT(Event::TextureFileCreated, OnTextureFileCreate);
+		textureFileDeletedHandle = SUBSCRIBE_EVENT(Event::TextureFileDeleted, OnTextureFileDelete);
+		textureFileModifiedHandle = SUBSCRIBE_EVENT(Event::TextureFileModified, OnTextureFileModify);
 	}
 
 	TextureLibrary::~TextureLibrary()
 	{
 		vkDestroySampler(device, textureSampler, nullptr);
+        vkDestroyDescriptorPool(device, mTexturePool, nullptr);
+        vkDestroyDescriptorSetLayout(device, mTextureDescriptorLayout, nullptr);
 	}
 
 	uint32_t TextureLibrary::AddTexture(const std::string& texturePath) {
@@ -36,7 +67,7 @@ namespace Dog {
 			textureMap[texturePath] = textureIndex;
 			textures.push_back(std::make_unique<Texture>(device, texturePath));
 
-			imGuiTextureManager.AddTexture(texturePath, textures.back()->getImageView(), textureSampler);
+            CreateDescriptorSet(*textures.back());
 
 			return textureIndex;
 		}
@@ -63,7 +94,7 @@ namespace Dog {
 		textureMap[newPath] = textureIndex;
 		textures.push_back(std::make_unique<Texture>(device, newPath, textureData, textureSize));
 
-		imGuiTextureManager.AddTexture(newPath, textures.back()->getImageView(), textureSampler);
+        CreateDescriptorSet(*textures.back());
 
 		return textureIndex;
 	}
@@ -77,16 +108,15 @@ namespace Dog {
 		}
 	}
 
-	VkDescriptorSet TextureLibrary::GetDescriptorSet(const std::string& texturePath)
+	const std::unique_ptr<Texture>& TextureLibrary::GetTexture(uint32_t index) const
 	{
-		return imGuiTextureManager.GetDescriptorSet(texturePath);
-	}
+        if (index > textures.size()) {
+            // throw std::runtime_error("Texture index out of bounds");
+            DOG_WARN("Texture {0} not found", index);
+            return textures[0];
+        }
 
-	VkDescriptorSet TextureLibrary::GetDescriptorSetByIndex(const size_t& index)
-	{
-		return imGuiTextureManager.GetDescriptorSet(
-			getTextureByIndex(index).path
-		);
+        return textures[index];
 	}
 
 	// Create a sampler for the texture
@@ -112,6 +142,71 @@ namespace Dog {
 		if (vkCreateSampler(device, &samplerInfo, nullptr, &textureSampler) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create texture sampler!");
 		}
+	}
+
+	void TextureLibrary::CreateDescriptorSet(Texture& texture)
+	{
+		auto& descSet = texture.descriptorSet;
+		VkDescriptorSetAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		allocInfo.descriptorPool = mTexturePool;
+		allocInfo.descriptorSetCount = 1;
+		allocInfo.pSetLayouts = &mTextureDescriptorLayout; // Use the layout created above
+
+		vkAllocateDescriptorSets(device, &allocInfo, &descSet);
+
+		VkDescriptorImageInfo imageInfo{};
+		imageInfo.imageView = texture.getImageView(); // Get the VkImageView from the texture
+		imageInfo.sampler = textureSampler; // The sampler you created in TextureLibrary
+		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+		VkWriteDescriptorSet descriptorWrite{};
+		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrite.dstSet = descSet;
+		descriptorWrite.dstBinding = 0; // Binding in the shader
+		descriptorWrite.dstArrayElement = 0;
+		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		descriptorWrite.descriptorCount = 1;
+		descriptorWrite.pImageInfo = &imageInfo;
+
+		vkUpdateDescriptorSets(device, 1, &descriptorWrite, 0, nullptr);
+	}
+
+	void TextureLibrary::OnTextureFileCreate(const Event::TextureFileCreated& event)
+	{
+        // DOG_INFO("Texture file created: {0}", event.path);
+        mTexturesToAdd.push_back(event.path);
+	}
+
+	void TextureLibrary::OnTextureFileDelete(const Event::TextureFileDeleted& event)
+	{
+        // DOG_INFO("Texture file deleted: {0}", event.path);
+        mTexturesToDelete.push_back(event.path);
+	}
+
+	void TextureLibrary::OnTextureFileModify(const Event::TextureFileModified& event)
+	{
+        DOG_INFO("Texture file modified: {0}", event.path);
+        mTexturesToModify.push_back(event.path);
+	}
+
+	void TextureLibrary::UpdateTextures()
+	{
+        for (const auto& path : mTexturesToAdd) {
+            AddTexture(path);
+        }
+
+        // for (const auto& path : mTexturesToDelete) 
+		// {
+        //     uint32_t index = GetTexture(path);
+        //     auto& texture = GetTexture(index);
+        //     textureMap.erase(path);
+        //     textures.erase(textures.begin() + index);
+        // }
+
+        mTexturesToAdd.clear();
+        mTexturesToDelete.clear();
+        mTexturesToModify.clear();
 	}
 
 } // namespace Dog

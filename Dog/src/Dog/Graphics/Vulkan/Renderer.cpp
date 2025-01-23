@@ -153,6 +153,7 @@ namespace Dog {
     {
         auto& textureLibrary = Engine::Get().GetTextureLibrary();
         auto& modelLibrary = Engine::Get().GetModelLibrary();
+        textureLibrary.UpdateTextures();
 
         //animator->UpdateAnimation(dt);
 

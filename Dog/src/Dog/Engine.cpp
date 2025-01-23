@@ -19,6 +19,7 @@
 #include "Scene/Entity/Components.h"
 
 #include "Graphics/Editor/Editor.h"
+#include "Assets/FileWatcher/FileWatcher.h"
 
 namespace Dog {
 
@@ -44,6 +45,8 @@ namespace Dog {
 
         SceneManager::SetNextScene(sceneName);
         SceneManager::SwapScenes(); // Init the first scene
+
+        WATCH_DIRECTORY(Texture);
 
         //FrameRateController frameRateController(fps);
 

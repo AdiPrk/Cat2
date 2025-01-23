@@ -10,14 +10,7 @@ int main() {
 
     Dog::Engine& Engine = Dog::Engine::Create(specs);
 
-    try {
-        Engine.Run("namae");
-    }
-    catch (const std::exception& e) {
-        std::cerr << e.what() << '\n';
-        std::cin.get(); // Wait here
-        return EXIT_FAILURE;
-    }
+    Engine.Run("namae");
 
     return EXIT_SUCCESS;
 }

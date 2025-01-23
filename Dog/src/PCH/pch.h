@@ -39,6 +39,7 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 // msdf
 #include <msdf-atlas-gen/msdf-atlas-gen.h>
 
+#include <string>
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
@@ -77,10 +78,10 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 
 // My files
 #include "Logger/Logger.h"
+#include "Assets/Assets.h"
 #include "Events/Event.h"
 #include "Graphics/Vulkan/Models/assimpGlmHelper.h"
 #include "Assets/UUID/UUID.h"
-
 
 // undef near and far
 #ifdef near

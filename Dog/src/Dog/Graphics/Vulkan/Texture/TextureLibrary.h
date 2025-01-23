@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Texture.h"
-#include "ImGuiTexture.h"
 
 namespace Dog {
 
@@ -19,9 +18,8 @@ namespace Dog {
 		uint32_t AddTextureFromMemory(const unsigned char* textureData, int textureSize);
 
 		uint32_t GetTexture(const std::string& texturePath);
+		const std::unique_ptr<Texture>& GetTexture(uint32_t index) const;
 		VkSampler GetTextureSampler() { return textureSampler; }
-
-		VkDescriptorSet GetDescriptorSet(const std::string& texturePath);
 
 		Texture& getTextureByIndex(const size_t& index) { 
 			if (index == INVALID_TEXTURE_INDEX) {
@@ -29,11 +27,18 @@ namespace Dog {
 			}
 			return *textures[index];
 		}
-		VkDescriptorSet GetDescriptorSetByIndex(const size_t& index);
 
 		void CreateTextureSampler();
 
+		void CreateDescriptorSet(Texture& texture);
+		VkDescriptorSet GetDescriptorSet(const std::string& texturePath) { return GetTexture(GetTexture(texturePath))->descriptorSet; }
+
 		const size_t getTextureCount() const { return textures.size(); }
+
+		void OnTextureFileCreate(const Event::TextureFileCreated& event);
+        void OnTextureFileDelete(const Event::TextureFileDeleted& event);
+        void OnTextureFileModify(const Event::TextureFileModified& event);
+		void UpdateTextures();
 
 	public:
 		// This index renders the error texture
@@ -53,11 +58,21 @@ namespace Dog {
 		std::unordered_map<std::string, uint32_t> textureMap;
 		Device& device;
 
-		ImGuiTextureManager imGuiTextureManager;
-
 		uint32_t bakedInTextureCount = 0;
 
 		VkSampler textureSampler;
+
+		VkDescriptorPool mTexturePool;
+		VkDescriptorSetLayout mTextureDescriptorLayout;
+		VkDescriptorSet mOffscreenDS;
+
+		Events::Handle<Event::TextureFileCreated> textureFileCreatedHandle;
+		Events::Handle<Event::TextureFileDeleted> textureFileDeletedHandle;
+		Events::Handle<Event::TextureFileModified> textureFileModifiedHandle;
+
+        std::vector<std::string> mTexturesToAdd;
+        std::vector<std::string> mTexturesToDelete;
+        std::vector<std::string> mTexturesToModify;
 	};
 
 } // namespace Dog

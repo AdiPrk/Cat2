@@ -5,6 +5,7 @@
 #include "assetsWindow.h"
 #include "Graphics/Vulkan/Texture/TextureLibrary.h"
 #include "Graphics/Vulkan/Texture/Texture.h"
+#include "Engine.h"
 
 namespace Dog {
 
@@ -26,7 +27,10 @@ namespace Dog {
 		return d1_ == d2_;
 	}
 
-	void UpdateAssetsWindow(FileBrowser& browser) {
+	void UpdateAssetsWindow(FileBrowser& browser) 
+	{
+        TextureLibrary& textureLibrary = Engine::Get().GetTextureLibrary();
+	
 		ImGui::Begin("Assets");
 
 		if (browser.currentDir != browser.baseDir) {
@@ -52,13 +56,19 @@ namespace Dog {
 		ImGui::Columns(columnCount, 0, false);
 
 		// padding between images:
-		int i = 0;
-		for (const auto& entry : std::filesystem::directory_iterator(browser.currentDir)) {
+		int id = 0;
+		for (const auto& entry : std::filesystem::directory_iterator(browser.currentDir)) 
+		{
+            ImGui::PushID(id++);
 			const auto& path = entry.path();
 
 			// Directories
 			if (entry.is_directory()) {
-				if (SameDir(path.filename().string(), "editor/")) continue;
+				if (SameDir(path.filename().string(), "editor/"))
+				{
+					ImGui::PopID();
+					continue;
+				}
 
 				if (ImGui::Button(path.filename().string().c_str())) {
 					browser.currentDir = path;
@@ -67,6 +77,7 @@ namespace Dog {
 			// Files
 			else {
 				if (currentDirName == "") {
+                    ImGui::PopID();
 					continue;
 				}
 
@@ -85,32 +96,25 @@ namespace Dog {
 					std::string filePath = path.string();
 
 					// image name to use:
-					// std::string imagePath = Assets::AssetsDir + currentDirName + "/" + fileName;
+					std::string imagePath = "assets/" + currentDirName + "/" + fileName;
 
-					// tex id
-					unsigned texId = 0;
-					/*std::shared_ptr<Texture2D> tex = Assets::Get<Texture2D>(fileName);
-					if (tex) {
-						texId = tex->ID;
+					if (VkDescriptorSet ds = textureLibrary.GetDescriptorSet(imagePath))
+					{
+						bool clicked = ImGui::ImageButton("imageButton", reinterpret_cast<void*>(ds), ImVec2(imageSize, imageSize), { 0, 1 }, { 1, 0 });
+
+						if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+							ImGui::SetDragDropPayload("Texture2D", fileName.c_str(), fileName.size() + 1);
+							ImGui::Image(reinterpret_cast<void*>(ds), ImVec2(imageSize, imageSize), { 0, 1 }, { 1, 0 });
+							ImGui::Text(fileName.c_str());
+							ImGui::EndDragDropSource();
+						}
+
+						if (ImGui::IsItemHovered()) {
+							ImGui::BeginTooltip();
+							ImGui::Text(fileName.c_str());
+							ImGui::EndTooltip();
+						}
 					}
-					else {
-						texId = Assets::Get<Texture2D>("error.png")->ID;
-					}*/
-
-					/*bool clicked = ImGui::ImageButton((void*)(intptr_t)texId, ImVec2(imageSize, imageSize));
-
-					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-						ImGui::SetDragDropPayload("Texture2D", fileName.c_str(), fileName.size() + 1);
-						ImGui::Image((void*)(intptr_t)texId, ImVec2(imageSize, imageSize));
-						ImGui::Text(fileName.c_str());
-						ImGui::EndDragDropSource();
-					}
-
-					if (ImGui::IsItemHovered()) {
-						ImGui::BeginTooltip();
-						ImGui::Text(fileName.c_str());
-						ImGui::EndTooltip();
-					}*/
 
 					// for multi-line centered text
 					ImVec2 textSize = ImGui::CalcTextSize(fileName.c_str(), NULL, true, imageSize);
@@ -259,8 +263,10 @@ namespace Dog {
 				}
 
 				ImGui::NextColumn();
+
 			}
 
+			ImGui::PopID();
 		}
 
 		ImGui::Columns(1);

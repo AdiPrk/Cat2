@@ -18,6 +18,8 @@ namespace Dog {
         std::string path;
 
     private:
+        friend class TextureLibrary;
+
         void createTextureImage(const std::string& filepath);
         void createTextureImageFromMemory(const unsigned char* textureData, int textureSize);
         void createTextureImageView();
@@ -38,6 +40,7 @@ namespace Dog {
 
         uint32_t mipLevels;
 
+        VkDescriptorSet descriptorSet;
     };
 
 } // namespace Dog
