@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dog", "Dog\Dog.vcxproj", "{4D2ED8E4-EA0A-44A3-BDC2-D52582F4DFE7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D2ED8E4-EA0A-44A3-BDC2-D52582F4DFE7}.Debug|x64.ActiveCfg = Debug|x64
+		{4D2ED8E4-EA0A-44A3-BDC2-D52582F4DFE7}.Debug|x64.Build.0 = Debug|x64
+		{4D2ED8E4-EA0A-44A3-BDC2-D52582F4DFE7}.Release|x64.ActiveCfg = Release|x64
+		{4D2ED8E4-EA0A-44A3-BDC2-D52582F4DFE7}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D27F0D05-DA2B-4B98-B8F5-56EF0FF9B63F}
+	EndGlobalSection
+EndGlobal
