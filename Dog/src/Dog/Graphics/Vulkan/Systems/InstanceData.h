@@ -58,5 +58,9 @@ namespace Dog
         }
     };
 
-    // std::vector<InstancedUniformData> instanceData;
+    struct InstanceData {
+        std::vector<InstancedUniformData> instanceData;
+    };
+
+    void UpdateInstanceData(InstanceData& instanceData);
 }

@@ -13,7 +13,7 @@
 #include "../Texture/TextureLibrary.h"
 #include "../Models/ModelLibrary.h"
 #include "../Animation/Animator.h"
-#include "InstanceData.h"
+#include "../Systems/InstanceData.h"
 
 namespace Dog
 {
