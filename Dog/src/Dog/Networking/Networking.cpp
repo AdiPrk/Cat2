@@ -33,7 +33,8 @@ namespace Dog {
         ENetAddress address;
         ENetEvent event;
 
-        enet_address_set_host(&address, "localhost");
+        // enet_address_set_host(&address, "localhost");
+        enet_address_set_host(&address, "45.61.62.97");
         address.port = 7777;
 
         m_Peer = enet_host_connect(client, &address, 1, 0);

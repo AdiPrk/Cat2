@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 /*****************************************************************//**
  * \file   main.cpp
  * \author Adi (aditya.prakash@digipen.edu)
@@ -12,6 +14,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <cstring>
 
 float playerIDCounter = 0;
 
@@ -134,7 +137,8 @@ void handlePacket(ENetPeer* peer, ENetPacket* packet) {
 	char data[256] = {};
 
 	// Reading the packetID as an integer and the rest of the packet as string data
-	int numArgs = sscanf_s((char*)packet->data, "%d %[^\t\n]", &packetID, data, (unsigned)_countof(data));
+	// int numArgs = sscanf_s((char*)packet->data, "%d %[^\t\n]", &packetID, data, (unsigned)_countof(data));
+	int numArgs = sscanf((char*)packet->data, "%d %[^\t\n]", &packetID, data);
 
 	switch (packetID) {
 	case INIT_PLAYER_PACKET: 
@@ -245,7 +249,7 @@ int main(int argc, char** argv)
 				break;
 			}
 			case ENET_EVENT_TYPE_DISCONNECT: {
-				printf("Client %i disconnected.\n", Players[event.peer]);
+				printf("Client %s disconnected.\n", Players[event.peer].c_str());
 				broadcastPacket(event.peer->host, event.peer, REMOVE_PLAYER_PACKET, Players[event.peer].c_str());
 				PopPlayer(event.peer);
 				break;

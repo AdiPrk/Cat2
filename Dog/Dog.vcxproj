@@ -77,7 +77,10 @@ xcopy "$(ProjectDir)externals\assimp\poly2tri.dll" "$(OutDir)" /Y
 xcopy "$(ProjectDir)externals\assimp\minizip.dll" "$(OutDir)" /Y
 xcopy "$(ProjectDir)externals\assimp\pugixml.dll" "$(OutDir)" /Y
 
-xcopy "$(ProjectDir)externals\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y</Command>
+xcopy "$(ProjectDir)externals\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
+
+xcopy "$(ProjectDir)Assets" "$(OutDir)Assets" /I /E /Y
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -106,13 +109,25 @@ xcopy "$(ProjectDir)externals\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y</Comma
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)externals\assimp\assimp-vc143-mt.dll" "$(OutDir)" /Y
-xcopy "$(ProjectDir)externals\assimp\zlib1.dll" "$(OutDir)" /Y
+      <Command>:: Copy Assimp DLLs (same for both Debug and Release)
 xcopy "$(ProjectDir)externals\assimp\poly2tri.dll" "$(OutDir)" /Y
 xcopy "$(ProjectDir)externals\assimp\minizip.dll" "$(OutDir)" /Y
 xcopy "$(ProjectDir)externals\assimp\pugixml.dll" "$(OutDir)" /Y
 
-xcopy "$(ProjectDir)externals\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y</Command>
+:: Conditional copying for Debug vs Release
+IF "$(ConfigurationName)"=="Debug" (
+    xcopy "$(ProjectDir)externals\assimp\assimp-vc143-mtd.dll" "$(OutDir)" /Y
+    xcopy "$(ProjectDir)externals\assimp\zlibd1.dll" "$(OutDir)" /Y
+    xcopy "$(ProjectDir)externals\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
+) ELSE (
+    xcopy "$(ProjectDir)externals\assimp\assimp-vc143-mt.dll" "$(OutDir)" /Y
+    xcopy "$(ProjectDir)externals\assimp\zlib1.dll" "$(OutDir)" /Y
+    xcopy "$(ProjectDir)externals\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
+)
+
+:: Copy Assets folder (same for both configurations)
+xcopy "$(ProjectDir)Assets" "$(OutDir)Assets" /I /E /Y
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
