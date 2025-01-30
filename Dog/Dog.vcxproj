@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -57,14 +57,14 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)externals\VulkanSDK\1.3.290.0\Include;$(ProjectDir)externals\glfw\include;$(ProjectDir)externals\glm;$(ProjectDir)externals\stb_image\stb;$(ProjectDir)externals\tiny_obj_loader;$(ProjectDir)externals\vk_extensions;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\glslang\include;$(ProjectDir)externals\spdlog\include;$(ProjectDir)externals\entt\include;$(ProjectDir)externals\yaml-cpp\include;$(ProjectDir)externals\msdfgen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)externals\VulkanSDK\1.3.290.0\Include;$(ProjectDir)externals\glfw\include;$(ProjectDir)externals\glm;$(ProjectDir)externals\stb_image\stb;$(ProjectDir)externals\tiny_obj_loader;$(ProjectDir)externals\vk_extensions;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\glslang\include;$(ProjectDir)externals\spdlog\include;$(ProjectDir)externals\entt\include;$(ProjectDir)externals\yaml-cpp\include;$(ProjectDir)externals\msdfgen\include;$(SolutionDir)Shared\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)externals\VulkanSDK\1.3.290.0\Lib;$(ProjectDir)externals\glfw\lib-vc2022;$(ProjectDir)externals\assimp\lib;$(ProjectDir)externals\glslang\lib;$(ProjectDir)externals\spdlog\lib;$(ProjectDir)externals\yaml-cpp\lib;$(ProjectDir)externals\msdfgen\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;yaml-cppd.lib;glslangd.lib;SPIRVd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-optd.lib;GenericCodeGend.lib;MachineIndependentd.lib;glslang-default-resource-limitsd.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2d.lib;freetyped.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpatd.lib;libpng16d.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)externals\VulkanSDK\1.3.290.0\Lib;$(ProjectDir)externals\glfw\lib-vc2022;$(ProjectDir)externals\assimp\lib;$(ProjectDir)externals\glslang\lib;$(ProjectDir)externals\spdlog\lib;$(ProjectDir)externals\yaml-cpp\lib;$(SolutionDir)Shared\Dependencies\enet\lib;$(ProjectDir)externals\msdfgen\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;yaml-cppd.lib;glslangd.lib;SPIRVd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-optd.lib;GenericCodeGend.lib;MachineIndependentd.lib;glslang-default-resource-limitsd.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2d.lib;freetyped.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpatd.lib;libpng16d.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -90,7 +90,7 @@ xcopy "$(ProjectDir)externals\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y</Comma
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)externals\VulkanSDK\1.3.290.0\Include;$(ProjectDir)externals\glfw\include;$(ProjectDir)externals\glm;$(ProjectDir)externals\stb_image\stb;$(ProjectDir)externals\tiny_obj_loader;$(ProjectDir)externals\vk_extensions;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\glslang\include;$(ProjectDir)externals\spdlog\include;$(ProjectDir)externals\entt\include;$(ProjectDir)externals\yaml-cpp\include;$(ProjectDir)externals\msdfgen\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)externals\VulkanSDK\1.3.290.0\Include;$(ProjectDir)externals\glfw\include;$(ProjectDir)externals\glm;$(ProjectDir)externals\stb_image\stb;$(ProjectDir)externals\tiny_obj_loader;$(ProjectDir)externals\vk_extensions;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\glslang\include;$(ProjectDir)externals\spdlog\include;$(ProjectDir)externals\entt\include;$(ProjectDir)externals\yaml-cpp\include;$(ProjectDir)externals\msdfgen\include;$(SolutionDir)Shared\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -98,8 +98,8 @@ xcopy "$(ProjectDir)externals\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y</Comma
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)externals\VulkanSDK\1.3.290.0\Lib;$(ProjectDir)externals\glfw\lib-vc2022;$(ProjectDir)externals\assimp\lib;$(ProjectDir)externals\glslang\lib;$(ProjectDir)externals\spdlog\lib;$(ProjectDir)externals\yaml-cpp\lib;$(ProjectDir)externals\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2.lib;freetype.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpat.lib;libpng16.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)externals\VulkanSDK\1.3.290.0\Lib;$(ProjectDir)externals\glfw\lib-vc2022;$(ProjectDir)externals\assimp\lib;$(ProjectDir)externals\glslang\lib;$(ProjectDir)externals\spdlog\lib;$(ProjectDir)externals\yaml-cpp\lib;$(SolutionDir)Shared\Dependencies\enet\lib;$(ProjectDir)externals\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2.lib;freetype.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpat.lib;libpng16.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -178,6 +178,7 @@ xcopy "$(ProjectDir)externals\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y</Com
     <ClCompile Include="src\Dog\Events\Event.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Editor.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Windows\AssetsWindow.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Editor\Windows\ChatWindow.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Windows\EntitiesWindow.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Windows\InspectorWindow.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Buffers\Buffer.cpp" />
@@ -203,7 +204,7 @@ xcopy "$(ProjectDir)externals\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y</Com
     <ClCompile Include="src\Dog\Graphics\Vulkan\Pipeline\Pipeline.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Renderer.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Systems\IndirectRenderer.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\InstanceData.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Systems\InstanceData.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\UniformData.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\UniformSettings.cpp" />
@@ -213,6 +214,7 @@ xcopy "$(ProjectDir)externals\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y</Com
     <ClCompile Include="src\Dog\Input\KeyboardController.cpp" />
     <ClCompile Include="src\Dog\Engine.cpp" />
     <ClCompile Include="src\Dog\Logger\Logger.cpp" />
+    <ClCompile Include="src\Dog\Networking\Networking.cpp" />
     <ClCompile Include="src\Dog\Scene\Entity\Components.cpp" />
     <ClCompile Include="src\Dog\Scene\Entity\Entity.cpp" />
     <ClCompile Include="src\Dog\Scene\Scene.cpp" />
@@ -251,6 +253,7 @@ xcopy "$(ProjectDir)externals\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y</Com
     <ClInclude Include="src\Dog\Events\Event.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Editor.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Windows\AssetsWindow.h" />
+    <ClInclude Include="src\Dog\Graphics\Editor\Windows\ChatWindow.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Windows\EntitiesWindow.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Windows\InspectorWindow.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Buffers\Buffer.h" />
@@ -277,7 +280,7 @@ xcopy "$(ProjectDir)externals\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y</Com
     <ClInclude Include="src\Dog\Graphics\Vulkan\Pipeline\Pipeline.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Renderer.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Systems\IndirectRenderer.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\InstanceData.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Systems\InstanceData.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\UniformData.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\UniformSettings.h" />
@@ -288,6 +291,7 @@ xcopy "$(ProjectDir)externals\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y</Com
     <ClInclude Include="src\Dog\Input\KeyboardController.h" />
     <ClInclude Include="src\Dog\Engine.h" />
     <ClInclude Include="src\Dog\Logger\Logger.h" />
+    <ClInclude Include="src\Dog\Networking\Networking.h" />
     <ClInclude Include="src\Dog\Scene\Entity\Components.h" />
     <ClInclude Include="src\Dog\Scene\Entity\Entity.h" />
     <ClInclude Include="src\Dog\Scene\Scene.h" />

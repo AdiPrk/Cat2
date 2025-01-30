@@ -120,7 +120,7 @@ namespace Dog {
         if (deviceCount == 0) {
             throw std::runtime_error("failed to find GPUs with Vulkan support!");
         }
-        std::cout << "Device count: " << deviceCount << std::endl;
+        // std::cout << "Device count: " << deviceCount << std::endl;
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
@@ -308,17 +308,17 @@ namespace Dog {
         std::vector<VkExtensionProperties> extensions(extensionCount);
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
 
-        std::cout << "available extensions:" << std::endl;
+        //std::cout << "available extensions:" << std::endl;
         std::unordered_set<std::string> available;
         for (const auto& extension : extensions) {
-            std::cout << "\t" << extension.extensionName << std::endl;
+            //std::cout << "\t" << extension.extensionName << std::endl;
             available.insert(extension.extensionName);
         }
 
-        std::cout << "required extensions:" << std::endl;
+        //std::cout << "required extensions:" << std::endl;
         auto requiredExtensions = getRequiredExtensions();
         for (const auto& required : requiredExtensions) {
-            std::cout << "\t" << required << std::endl;
+            //std::cout << "\t" << required << std::endl;
             if (available.find(required) == available.end()) {
                 throw std::runtime_error("Missing required glfw extension");
             }

@@ -76,6 +76,9 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 #define YAML_CPP_STATIC_DEFINE
 #include "yaml-cpp/yaml.h"
 
+// Enet
+#include "enet/enet.h"
+
 // My files
 #include "Logger/Logger.h"
 #include "Assets/Assets.h"
@@ -83,10 +86,13 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 #include "Graphics/Vulkan/Models/assimpGlmHelper.h"
 #include "Assets/UUID/UUID.h"
 
-// undef near and far
+// undef some dumb macros
 #ifdef near
 #undef near
 #endif
 #ifdef far
 #undef far
+#endif
+#ifdef SendMessage
+#undef SendMessage
 #endif

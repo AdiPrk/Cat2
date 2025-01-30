@@ -10,6 +10,8 @@
 #include "Graphics/Vulkan/Animation/Animator.h"
 
 namespace Dog {
+	// Forward Declarations
+	class Networking;
 
 	struct EngineSpec {
 		std::string name = "Dog Engine"; // The name of the window.
@@ -59,6 +61,7 @@ namespace Dog {
 		TextureLibrary& GetTextureLibrary() { return textureLibrary; }
 		ModelLibrary& GetModelLibrary() { return modelLibrary; }
 		Editor& GetEditor() { return *m_Editor; }
+        Networking& GetNetworking() { return *m_Networking; }
 
 	private:
 		Window m_Window; // { WIDTH, HEIGHT, "Woof" };
@@ -68,8 +71,8 @@ namespace Dog {
 		TextureLibrary textureLibrary;
 		ModelLibrary modelLibrary;
 
-		// Animation
-		
+		// Networking
+        std::unique_ptr<Networking> m_Networking;
 
 		// Editor
 		std::unique_ptr<Editor> m_Editor;

@@ -60,10 +60,12 @@
     <ClCompile Include="src\Dog\Graphics\Vulkan\Window\Window.cpp" />
     <ClCompile Include="src\Dog\Assets\FileWatcher\FileWatcher.cpp" />
     <ClCompile Include="src\Dog\Assets\Assets.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\InstanceData.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\UniformData.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\UniformSettings.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Systems\InstanceData.cpp" />
+    <ClCompile Include="src\Dog\Networking\Networking.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Editor\Windows\ChatWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dog\Graphics\Vulkan\Animation\Animation.h" />
@@ -129,10 +131,12 @@
     <ClInclude Include="src\Dog\Graphics\Vulkan\Window\Window.h" />
     <ClInclude Include="src\Dog\Assets\FileWatcher\FileWatcher.h" />
     <ClInclude Include="src\Dog\Assets\Assets.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\InstanceData.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\UniformData.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\UniformSettings.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Systems\InstanceData.h" />
+    <ClInclude Include="src\Dog\Networking\Networking.h" />
+    <ClInclude Include="src\Dog\Graphics\Editor\Windows\ChatWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Dog\Graphics\Vulkan\Models\Serialization\ModelFileFormat.md" />

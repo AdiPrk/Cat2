@@ -6,6 +6,7 @@ namespace Dog {
 
 	class FileBrowser;
 	class TextEditorWrapper;
+	class ChatWindow;
 
 	class Editor {
 	public:
@@ -43,12 +44,17 @@ namespace Dog {
 
 		VkDescriptorPool imGuiDescriptorPool;
 		VkDescriptorSetLayout samplerSetLayout;
+
+        ChatWindow* GetChatWindow() { return chatWindow.get(); }
+		
 	private:
 		bool isActive = true;
 		bool doResize = false;
 
 		std::unique_ptr<FileBrowser> fileBrowser;
+        std::unique_ptr<ChatWindow> chatWindow;
 		//std::unique_ptr<TextEditorWrapper> textEditorWrapper;
+
 		bool renderEditor = true;
 		bool startedRenderingFrame = false;
 

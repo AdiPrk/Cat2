@@ -14,6 +14,7 @@
 #include "Windows/assetsWindow.h"
 // #include "Windows/textEditorWindow.h"
 // #include "Windows/noEditorWindow.h"
+#include "Windows/ChatWindow.h"
 
 #include "Dog/Scene/sceneManager.h"
 #include "Dog/Scene/scene.h"
@@ -61,6 +62,7 @@ namespace Dog {
 	Editor::Editor()
 	{
 		fileBrowser = std::make_unique<FileBrowser>();
+        chatWindow = std::make_unique<ChatWindow>();
 		// textEditorWrapper = std::make_unique<TextEditorWrapper>();
 	}
 
@@ -151,8 +153,6 @@ namespace Dog {
 
 	void Editor::BeginFrame()
 	{
-
-
 		m_CapturingInput = false;
 		Input::SetKeyInputLocked(m_CapturingInput);
 		Input::SetMouseInputLocked(m_CapturingInput);
@@ -338,6 +338,7 @@ namespace Dog {
 		UpdateInspectorWindow();
 		// UpdateToolbarWindow();
 		UpdateAssetsWindow(*fileBrowser);
+		chatWindow->Render();
 		// UpdateTextEditorWindow(*textEditorWrapper);
 
 		ImGui::Begin("Textures");

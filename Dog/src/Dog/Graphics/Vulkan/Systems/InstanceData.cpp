@@ -10,6 +10,7 @@ namespace Dog
 {
     void UpdateInstanceData(InstanceData& instanceData)
     {
+        /*
         Scene* currentScene = SceneManager::GetCurrentScene();
         entt::registry& registry = currentScene->GetRegistry();
 
@@ -41,5 +42,6 @@ namespace Dog
                 instanceData.instanceData.push_back(instance);
             }
         });
+        */
     }
 }

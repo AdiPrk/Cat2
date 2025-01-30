@@ -21,6 +21,8 @@
 #include "Graphics/Editor/Editor.h"
 #include "Assets/FileWatcher/FileWatcher.h"
 
+#include "Networking/Networking.h"
+
 namespace Dog {
 
     Engine::Engine(const EngineSpec& specs)
@@ -32,13 +34,18 @@ namespace Dog {
     {
         Logger::Init();
         m_Editor = std::make_unique<Editor>();
+        m_Networking = std::make_unique<Networking>();
     }
 
-    Engine::~Engine() {
+    Engine::~Engine() 
+    {
         m_Editor->Exit();
     }
 
-    int Engine::Run(const std::string& sceneName) {
+    int Engine::Run(const std::string& sceneName) 
+    {
+        m_Networking->Init();
+
         // Init some stuff
         m_Editor->Init();
         m_Renderer->Init();
@@ -72,6 +79,8 @@ namespace Dog {
 
         m_Renderer->Exit();
 
+        m_Networking->Shutdown();
+        
         return EXIT_SUCCESS;
     }
 

@@ -6,6 +6,7 @@
 #include "Graphics/Vulkan/Texture/TextureLibrary.h"
 #include "Graphics/Vulkan/Texture/Texture.h"
 #include "Engine.h"
+#include "../Editor.h"
 
 namespace Dog {
 
@@ -32,6 +33,8 @@ namespace Dog {
         TextureLibrary& textureLibrary = Engine::Get().GetTextureLibrary();
 	
 		ImGui::Begin("Assets");
+
+		Engine::Get().GetEditor().CaptureInput(ImGui::IsWindowFocused());
 
 		if (browser.currentDir != browser.baseDir) {
 			if (ImGui::Button("Back")) {

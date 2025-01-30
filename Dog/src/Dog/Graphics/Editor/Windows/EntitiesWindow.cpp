@@ -7,6 +7,8 @@
 #include "Dog/Scene/scene.h"
 #include "Dog/Scene/Entity/entity.h"
 #include "Dog/Scene/Entity/components.h"
+#include "Engine.h"
+#include "../Editor.h"
 
 namespace Dog {
 
@@ -64,6 +66,8 @@ namespace Dog {
 
 	void UpdateEntitiesWindow() {
 		ImGui::Begin("Entities##window", nullptr, ImGuiWindowFlags_MenuBar);
+
+		Engine::Get().GetEditor().CaptureInput(ImGui::IsWindowFocused());
 
 		Scene* currentScene = SceneManager::GetCurrentScene();
 		if (!currentScene) {
