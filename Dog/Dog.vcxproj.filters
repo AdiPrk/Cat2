@@ -66,6 +66,8 @@
     <ClCompile Include="src\Dog\Graphics\Vulkan\Systems\InstanceData.cpp" />
     <ClCompile Include="src\Dog\Networking\Networking.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Windows\ChatWindow.cpp" />
+    <ClCompile Include="src\Dog\Networking\PacketHandler.cpp" />
+    <ClCompile Include="src\Dog\Networking\PlayerManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dog\Graphics\Vulkan\Animation\Animation.h" />
@@ -137,6 +139,8 @@
     <ClInclude Include="src\Dog\Graphics\Vulkan\Systems\InstanceData.h" />
     <ClInclude Include="src\Dog\Networking\Networking.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Windows\ChatWindow.h" />
+    <ClInclude Include="src\Dog\Networking\PacketHandler.h" />
+    <ClInclude Include="src\Dog\Networking\PlayerManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Dog\Graphics\Vulkan\Models\Serialization\ModelFileFormat.md" />

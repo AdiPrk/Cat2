@@ -7,7 +7,7 @@
 namespace Dog {
 
     // Function definitions
-    void Networking::initializeENet()
+    void Networking::InitializeENet()
     {
         if (enet_initialize() != 0)
         {
@@ -17,9 +17,9 @@ namespace Dog {
         atexit(enet_deinitialize);
     }
 
-    ENetPeer* Networking::createAndConnectClient()
+    ENetPeer* Networking::CreateAndConnectClient()
     {
-        initializeENet();
+        InitializeENet();
 
         ENetHost* client;
         client = enet_host_create(NULL, 1, 1, 0, 0);
@@ -33,9 +33,8 @@ namespace Dog {
         ENetAddress address;
         ENetEvent event;
 
-        // enet_address_set_host(&address, "localhost");
-        enet_address_set_host(&address, "45.61.62.97");
-        address.port = 7777;
+        enet_address_set_host(&address, m_Address.c_str());
+        address.port = m_Port;
 
         m_Peer = enet_host_connect(client, &address, 1, 0);
         if (m_Peer == NULL)
@@ -44,36 +43,47 @@ namespace Dog {
             return nullptr;
         }
 
-        // Wait up to 5 seconds for the connection attempt to succeed
+        // Wait up to 10 seconds for the connection attempt to succeed
         printf("Trying to connect to server...");
-        if (enet_host_service(client, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT) {
+        m_ConnectionStatus = ConnectionStatus::CONNECTING;
+        if (enet_host_service(client, &event, 10000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT) {
             printf("Connection to server succeeded.\n");
+            m_ConnectionStatus = ConnectionStatus::CONNECTED;
         }
         else {
             enet_peer_reset(m_Peer);
             fprintf(stderr, "Connection to server failed.\n");
             m_Peer = nullptr;
+            m_ConnectionStatus = ConnectionStatus::DISCONNECTED;
             return nullptr;
         }
 
         return m_Peer;
     }
 
+    Networking::Networking(const std::string& address, uint16_t port)
+        : m_PacketUtils()
+        , packetHandler(m_PacketUtils)
+        , m_Peer(nullptr)
+        , m_Address(address)
+        , m_Port(port)
+    {
+    }
+
+    Networking::~Networking()
+    {
+    }
+
     void Networking::Init()
     {
-        if (!createAndConnectClient()) {
-            m_Connected = false;
-            return;
-        }
-
-        sendPacket(m_Peer, INIT_PLAYER_PACKET);
-
-        m_NetworkThread = std::thread(&Networking::networkThread, this, m_Peer);
-        m_Connected = true;
+        m_NetworkThread = std::thread(&Networking::networkThread, this);
     }
 
     void Networking::Shutdown()
     {
+        m_PacketUtils.sendPacket(m_Peer, CLIENT_LEAVE_PACKET);
+        
+        enet_host_flush(m_Peer->host);
         enet_peer_disconnect(m_Peer, 0);
         running = false;
 
@@ -83,160 +93,60 @@ namespace Dog {
         }
     }
 
-    void Networking::sendPacket(ENetPeer* peer, PacketID packetID)
-    {
-        char packetData[256];
-        snprintf(packetData, sizeof(packetData), "%d", packetID);
-        ENetPacket* packet = enet_packet_create(packetData, strlen(packetData) + 1, ENET_PACKET_FLAG_RELIABLE);
-        enet_peer_send(peer, 0, packet);
-    }
-
-    void Networking::sendPacket(ENetPeer* peer, PacketID packetID, const char* data) {
-        char packetData[256];
-        snprintf(packetData, sizeof(packetData), "%d %s", packetID, data);
-        ENetPacket* packet = enet_packet_create(packetData, strlen(packetData) + 1, ENET_PACKET_FLAG_RELIABLE);
-        enet_peer_send(peer, 0, packet);
-    }
-
     void Networking::StartTyping()
     {
-        sendPacket(m_Peer, STARTED_TYPING_PACKET);
+        m_PacketUtils.sendPacket(m_Peer, STARTED_TYPING_PACKET);
     }
 
     void Networking::StopTyping()
     {
-        sendPacket(m_Peer, STOPPED_TYPING_PACKET);
+        m_PacketUtils.sendPacket(m_Peer, STOPPED_TYPING_PACKET);
     }
 
     void Networking::SendMessage(const std::string& message)
     {
-        sendPacket(m_Peer, CHAT_MESSAGE_PACKET, message.c_str());
+        m_PacketUtils.sendPacket(m_Peer, CHAT_MESSAGE_PACKET, message.c_str());
     }
 
     void Networking::SetUsername(const std::string& name)
     {
-        sendPacket(m_Peer, CHAT_DISPLAY_NAME_PACKET, name.c_str());
-        m_Username = name;
+        m_PacketUtils.sendPacket(m_Peer, CHAT_DISPLAY_NAME_PACKET, name.c_str());
+        playerManager.SetUsername(name);
     }
 
-    void Networking::ChangeClientName(const std::string& oldName, const std::string& newName)
+    const std::string& Networking::GetUsername() const
     {
-        // remove if it's in there and replace with new
-        auto it = m_OtherClients.find(oldName);
-        if (it != m_OtherClients.end())
-        {
-            m_OtherClients.erase(it);
-            m_OtherClients[newName] = newName;
-        }
+        return playerManager.GetUsername();
     }
 
-    std::string Networking::GetUsername()
+    const std::unordered_map<std::string, std::string>& Networking::GetOtherClients() const
     {
-        return m_Username;
+        return playerManager.GetOtherClients();
     }
 
-    void Networking::handlePacket(ENetPeer* peer, ENetPacket* packet)
-    {
-        int packetID;
-        char data[256] = {};
-
-        // Reading the packetID as an integer and the rest of the packet as string data
-        int numArgs = sscanf_s((char*)packet->data, "%d %[^\t\n]", &packetID, data, (unsigned)_countof(data));
-
-        if (numArgs < 2) { // Check if both arguments were successfully read
-            fprintf(stderr, "Error: Could not parse the packet correctly.\n");
+    void Networking::networkThread() {
+        if (!CreateAndConnectClient()) {
             return;
         }
 
-        printf("Packet id: %d\n", packetID);
+        m_PacketUtils.sendPacket(m_Peer, INIT_PLAYER_PACKET);
 
-        switch (packetID) {
-        case INIT_PLAYER_PACKET: 
-        {
-            AddClient(data);
-
-            break;
-        }
-        case SELF_NAME_PACKET:
-        {
-            m_Username = data;
-            break;
-        }
-        case REMOVE_PLAYER_PACKET: {
-            
-            RemoveClient(data);
-
-            break;
-        }
-        case CHAT_MESSAGE_PACKET:
-        {
-            printf("Received message: %s\n", data);
-            ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
-            if (chatWindow)
-            {
-                std::string message(data);
-                std::string sender = message.substr(0, message.find(":"));
-                std::string messageText = message.substr(message.find(":") + 2);
-
-                chatWindow->AddMessage(sender, messageText);
-            }
-
-            break;
-        }
-        case STARTED_TYPING_PACKET:
-        {
-            ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
-            if (chatWindow)
-            {
-                chatWindow->UserStartedTyping(data);
-            }
-
-            break;
-        }
-        case STOPPED_TYPING_PACKET:
-        {
-            ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
-            if (chatWindow)
-            {
-                chatWindow->UserStoppedTyping(data);
-            }
-
-            break;
-        }
-        case CHAT_DISPLAY_NAME_PACKET: 
-        {
-            ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
-            if (chatWindow)
-            {
-                std::string nameChange(data);
-                std::string oldName = nameChange.substr(0, nameChange.find(","));
-                std::string newName = nameChange.substr(nameChange.find(",") + 1);
-                chatWindow->AddMessage("Server", oldName + " changed their name to " + newName);
-                chatWindow->UserChangedName(oldName);
-                ChangeClientName(oldName, newName);
-            }
-            break;
-        }
-        }
-    }
-
-    void Networking::networkThread(ENetPeer* peer) {
         ENetEvent event;
         while (running) {
-            int eventStatus = enet_host_service(peer->host, &event, 10); // Wait up to 16 milliseconds for an event
+            int eventStatus = enet_host_service(m_Peer->host, &event, 10); // Wait up to 16 milliseconds for an event
 
             if (eventStatus > 0) {
                 switch (event.type) {
                 case ENET_EVENT_TYPE_RECEIVE:
                     // Handle received packet
-                    handlePacket(peer, event.packet);
+                    packetHandler.HandlePacket(m_Peer, event.packet, playerManager);
                     enet_packet_destroy(event.packet);
                     break;
 
                 case ENET_EVENT_TYPE_DISCONNECT:
                     // Handle disconnection
                     printf("Disconnected from server.\n");
-                    enet_host_destroy(peer->host);
+                    enet_host_destroy(m_Peer->host);
                     enet_deinitialize();
                     return;
                 }
@@ -245,23 +155,6 @@ namespace Dog {
                 // No event, sleep for a short duration to reduce CPU usage
                 std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
-        }
-    }
-
-    void Networking::AddClient(std::string name)
-    {
-        m_OtherClients[name] = name;
-        printf("Init player %s\n", name.c_str());
-    }
-
-    void Networking::RemoveClient(std::string id)
-    {
-        auto it = m_OtherClients.find(id);
-        if (it != m_OtherClients.end())
-        {
-            m_OtherClients.erase(it);
-
-            printf("Remove player %s\n", id.c_str());
         }
     }
 

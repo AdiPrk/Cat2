@@ -34,7 +34,7 @@ namespace Dog {
     {
         Logger::Init();
         m_Editor = std::make_unique<Editor>();
-        m_Networking = std::make_unique<Networking>();
+        m_Networking = std::make_unique<Networking>(specs.serverAddress, specs.serverPort);
     }
 
     Engine::~Engine() 
@@ -44,9 +44,8 @@ namespace Dog {
 
     int Engine::Run(const std::string& sceneName) 
     {
-        m_Networking->Init();
-
         // Init some stuff
+        m_Networking->Init();
         m_Editor->Init();
         m_Renderer->Init();
 

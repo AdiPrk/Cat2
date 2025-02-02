@@ -34,9 +34,9 @@ namespace Dog {
         auto fragCode = ReadShader("assets/shaders/" + fragFile);
 
         // output all vertCode in a txt file as a string
-        std::ofstream out("vertCode.txt");
-        out << vertCode;
-        out.close();
+        //std::ofstream out("vertCode.txt");
+        //out << vertCode;
+        //out.close();
 
         std::vector<uint32_t> vertShaderSPV = CompileGLSLtoSPV(std::string(vertCode.begin(), vertCode.end()), EShLangVertex);
         std::vector<uint32_t> fragShaderSPV = CompileGLSLtoSPV(std::string(fragCode.begin(), fragCode.end()), EShLangFragment);

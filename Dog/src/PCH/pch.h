@@ -1,5 +1,7 @@
 #pragma once
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #define _SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING
 #define _SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS
 #define NOMINMAX
@@ -85,6 +87,9 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 #include "Events/Event.h"
 #include "Graphics/Vulkan/Models/assimpGlmHelper.h"
 #include "Assets/UUID/UUID.h"
+
+// Shared files
+#include "../../Common/src/Core.h"
 
 // undef some dumb macros
 #ifdef near

@@ -92,7 +92,15 @@ namespace Dog
 
         // Begin the chat window
         ImGui::Begin("Chat");
-        if (!networking.IsConnected())
+
+        ConnectionStatus status = networking.GetStatus();
+        if (status == ConnectionStatus::CONNECTING)
+        {
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Connecting to server...");
+            ImGui::End();
+            return;
+        }
+        else if (status == ConnectionStatus::DISCONNECTED)
         {
             ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Not connected to server.");
             ImGui::End();
@@ -104,13 +112,14 @@ namespace Dog
         if (onlineUsers.empty())
             ImGui::Text("Nobody currently online.");
         else {
-            ImGui::Text("%d people online.", (int)onlineUsers.size());
+            ImGui::Text("%d people online.", (int)onlineUsers.size() + 1);
 
             ImGui::SameLine();
             ImGui::TextDisabled("(?)");
             if (ImGui::IsItemHovered())
             {
                 ImGui::BeginTooltip();
+                ImGui::TextUnformatted("You");
                 for (const auto& user : onlineUsers)
                 {
                     ImGui::TextUnformatted(user.first.c_str());
