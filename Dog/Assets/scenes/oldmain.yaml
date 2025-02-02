@@ -1,0 +1,85 @@
+Scene: namae
+Entities:
+  - Entity: Square1
+    TransformComponent:
+      Translation: [0, 0.300000012, 1]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    ModelComponent:
+      ModelPath: assets/models/quad.obj
+      Materials:
+        - AlbedoTexture: assets/models/ModelTextures/Alya_Iris.png
+          NormalTexture: None
+  - Entity: Square2
+    TransformComponent:
+      Translation: [0, -0.699999988, 2]
+      Rotation: [1.57000005, 0, 0]
+      Scale: [1, 1, 1]
+    ModelComponent:
+      ModelPath: assets/models/quad.obj
+      Materials:
+        - AlbedoTexture: assets/textures/dog.png
+          NormalTexture: None
+  - Entity: Square3
+    TransformComponent:
+      Translation: [-1, -0.699999988, 1]
+      Rotation: [0, 0, 1.57000005]
+      Scale: [1, 1, 1]
+    ModelComponent:
+      ModelPath: assets/models/quad.obj
+      Materials:
+        - AlbedoTexture: assets/textures/texture.jpg
+          NormalTexture: None
+  - Entity: Square4
+    TransformComponent:
+      Translation: [1, -0.699999988, 1]
+      Rotation: [0, 0, 1.57000005]
+      Scale: [1, 1, 1]
+    ModelComponent:
+      ModelPath: assets/models/quad.obj
+      Materials:
+        - AlbedoTexture: assets/textures/viking_room.png
+          NormalTexture: None
+  - Entity: Square5
+    TransformComponent:
+      Translation: [0, -1.70000005, 1]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    ModelComponent:
+      ModelPath: assets/models/quad.obj
+      Materials:
+        - AlbedoTexture: assets/models/ModelTextures/Book.png
+          NormalTexture: None
+  - Entity: Camera
+    TransformComponent:
+      Translation: [0.679429352, -0.53522402, -4.20846319]
+      Rotation: [-0.074671708, 6.15241337, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      MainCamera: true
+      Projection: 1
+      OrthographicLeft: -1
+      OrthographicRight: 1
+      OrthographicBottom: 1
+      OrthographicTop: -1
+      OrthographicNear: -1
+      OrthographicFar: 1
+      PerspectiveFOV: 45
+      PerspectiveNear: 0.00999999978
+      PerspectiveFar: 1000
+  - Entity: Meow
+    TransformComponent:
+      Translation: [0.218000382, -0.261511505, 0]
+      Rotation: [2.9719789, -0.494312227, 0.0688811764]
+      Scale: [0.0500002429, 0.0500002354, 0.0500006713]
+    ModelComponent:
+      ModelPath: assets/models/AlisaMikhailovna.fbx
+      Materials:
+        - AlbedoTexture: assets/models/ModelTextures/Alya_Clothes.png
+          NormalTexture: None
+        - AlbedoTexture: assets/models/ModelTextures/Alya_Face.png
+          NormalTexture: None
+        - AlbedoTexture: assets/models/ModelTextures/Alya_Hair.png
+          NormalTexture: None
+        - AlbedoTexture: assets/models/ModelTextures/Alya_Iris.png
+          NormalTexture: None

@@ -66,18 +66,12 @@ namespace Dog {
         textureLibrary.AddTexture("assets/textures/viking_room.png");
         textureLibrary.AddTexture("assets/models/ModelTextures/Book.png");
 
-        // modelLibrary.AddModel("assets/models/quad.obj");
+        modelLibrary.AddModel("assets/models/quad.obj");
         // modelLibrary.AddModel("assets/models/Adi_Dancing.fbx");
-
-        Model* model = modelLibrary.GetModelByIndex(0);
-
-        // animation
-        // animation = std::make_unique<Animation>("assets/models/Adi_Dancing.fbx", model);
-        // animator = std::make_unique<Animator>(animation.get());
         
         //modelLibrary.AddModel("assets/models/charles.glb");
         //modelLibrary.AddModel("assets/models/dragon.obj");
-        modelLibrary.AddModel("assets/models/AlisaMikhailovna.fbx");
+        //modelLibrary.AddModel("assets/models/AlisaMikhailovna.fbx");
         //modelLibrary.AddModel("assets/models/Mon_BlackDragon31_Skeleton.FBX");
         //modelLibrary.AddModel("assets/models/Book.fbx");
         //modelLibrary.AddModel("assets/models/smooth_vase.obj");
