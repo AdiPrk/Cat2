@@ -8,7 +8,19 @@ namespace Dog {
         VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
         VkDebugUtilsMessageTypeFlagsEXT messageType,
         const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-        void* pUserData) {
+        void* pUserData) 
+    {
+        std::vector<std::string> blacklistedMessages = {
+            "Layer VK_LAYER_OW_OVERLAY uses API version 1.2 which is older than the application specified API version of 1.3. May cause issues.",
+            "Layer VK_LAYER_OW_OBS_HOOK uses API version 1.2 which is older than the application specified API version of 1.3. May cause issues."
+        };
+
+        for (const auto& message : blacklistedMessages) {
+            if (strcmp(pCallbackData->pMessage, message.c_str()) == 0) {
+                return VK_FALSE;
+            }
+        }        
+
         std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
 
         return VK_FALSE;

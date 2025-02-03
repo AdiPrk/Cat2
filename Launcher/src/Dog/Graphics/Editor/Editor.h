@@ -26,8 +26,6 @@ namespace Dog {
 
 		void RefreshProjectList();
 
-		void ShowProjectPanel(float rightPanelWidth);
-
 		void BeginFrame();
 		void EndFrame(VkCommandBuffer commandBuffer);
 

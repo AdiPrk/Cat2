@@ -137,7 +137,7 @@ namespace Dog {
 			if (entry.is_directory())  // Only add directories (projects)
 			{
                 std::string projectName = entry.path().filename().string();
-                if (projectName == "Base") continue;
+                if (projectName == "Base" || projectName == "Dev") continue;
                 
 				projectNames.push_back(projectName);
 			}
@@ -255,7 +255,7 @@ namespace Dog {
             }
             if (reservedProjectName)
             {
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "The project name 'Base' is reserved!");
+                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Project name is reserved!");
             }
             if (projectAlreadyExists)
             {
@@ -268,14 +268,16 @@ namespace Dog {
 				projectAlreadyExists = false;
 				reservedProjectName = false;
 
+                std::string pName = newProjectName;
 				std::string clientDir = "../Client/";
 				std::string projectPath = clientDir + newProjectName;
+				std::transform(pName.begin(), pName.end(), pName.begin(), ::tolower);
 
 				if (strlen(newProjectName) == 0)
 				{
 					invalidProjectName = true;
 				}
-				else if (newProjectName == "Base")
+				else if (pName == "base" || pName == "dev")
 				{
 					reservedProjectName = true;
 				}

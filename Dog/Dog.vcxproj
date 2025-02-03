@@ -59,7 +59,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.3.290.0\Include;$(ProjectDir)Dependencies\glfw\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\stb_image\stb;$(ProjectDir)Dependencies\tiny_obj_loader;$(ProjectDir)Dependencies\vk_extensions;$(ProjectDir)Dependencies\include;$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies\glslang\include;$(ProjectDir)Dependencies\spdlog\include;$(ProjectDir)Dependencies\entt\include;$(ProjectDir)Dependencies\yaml-cpp\include;$(ProjectDir)Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.3.290.0\Include;$(ProjectDir)Dependencies\glfw\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\stb_image\stb;$(ProjectDir)Dependencies\tiny_obj_loader;$(ProjectDir)Dependencies\vk_extensions;$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies\glslang\include;$(ProjectDir)Dependencies\spdlog\include;$(ProjectDir)Dependencies\entt\include;$(ProjectDir)Dependencies\yaml-cpp\include;$(ProjectDir)Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -102,7 +102,7 @@ IF "$(ConfigurationName)"=="Debug" (
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.3.290.0\Include;$(ProjectDir)Dependencies\glfw\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\stb_image\stb;$(ProjectDir)Dependencies\tiny_obj_loader;$(ProjectDir)Dependencies\vk_extensions;$(ProjectDir)Dependencies\include;$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies\glslang\include;$(ProjectDir)Dependencies\spdlog\include;$(ProjectDir)Dependencies\entt\include;$(ProjectDir)Dependencies\yaml-cpp\include;$(ProjectDir)Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.3.290.0\Include;$(ProjectDir)Dependencies\glfw\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\stb_image\stb;$(ProjectDir)Dependencies\tiny_obj_loader;$(ProjectDir)Dependencies\vk_extensions;$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies\glslang\include;$(ProjectDir)Dependencies\spdlog\include;$(ProjectDir)Dependencies\entt\include;$(ProjectDir)Dependencies\yaml-cpp\include;$(ProjectDir)Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>

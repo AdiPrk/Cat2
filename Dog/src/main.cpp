@@ -28,15 +28,15 @@ int main(int argc, char* argv[])
         SetCurrentDirectoryA(projectDir.c_str());
     }
     else {
-        std::cout << "Not dev - Project Directory: " << projectDir << std::endl;
+        std::cout << "Project Directory: " << projectDir << std::endl;
     }
 
-    // pritn full path of current dir
-    // char full[_MAX_PATH];
-    // if (_fullpath(full, projectDir.c_str(), _MAX_PATH) != NULL)
-    //     printf("Full path is: %s\n", full);
-    // else
-    //     printf("Invalid path\n");
+    // print full path of current dir
+    char full[_MAX_PATH];
+    if (_fullpath(full, projectDir.c_str(), _MAX_PATH) != NULL)
+        printf("Full path is: %s\n", full);
+    else
+        printf("Invalid path\n");
 
     Dog::EngineSpec specs;
     specs.name = "Woof";
