@@ -42,6 +42,11 @@ namespace Dog {
         struct EntityTransform { uint32_t entityID; float oPX, oPY, oPZ, oRX, oRY, oRZ, oSX, oSY, oSZ, nPX, nPY, nPZ, nRX, nRY, nRZ, nSX, nSY, nSZ; };
     }
 
+    // Base class for event handles.
+    struct IEventHandle {
+        virtual ~IEventHandle() = default;
+    };
+
     // Event manager class
     class Events {
     public:
@@ -89,6 +94,14 @@ namespace Dog {
             static std::unordered_map<std::type_index, std::vector<std::function<void(const EventType&)>*>> listeners;
             return listeners[std::type_index(typeid(EventType))];
         }
+    };
+
+    template<typename EventT>
+    class EventHandleWrapper : public IEventHandle {
+    public:
+        // Store the handle using the same type defined in your Events class.
+        Events::Handle<EventT> handle;
+        explicit EventHandleWrapper(Events::Handle<EventT> h) : handle(std::move(h)) {}
     };
 
     // Macro for subscribing to events

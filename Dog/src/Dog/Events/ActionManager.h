@@ -25,20 +25,24 @@ namespace Dog
         const Action* GetCurrentAction();
         const Action* GetLastAction();
 
+        // Template helper to subscribe to an event and associate it with an Action
+        template<typename EventT, typename ActionT>
+        void SubscribeAction() {
+            auto handle = Events::Subscribe<EventT>([this](const EventT& event) {
+                this->AddAction(std::make_unique<ActionT>(event));
+            });
+
+            m_SubscriptionHandles.push_back(
+                std::make_unique<EventHandleWrapper<EventT>>(std::move(handle))
+            );
+        }
+
     private:
         uint32_t m_CurrentIndex = 0;
         std::vector<std::unique_ptr<Action>> m_Actions;
         size_t m_MaxSize;
 
-        Events::Handle<Event::EntityMoved> m_EntityMovedHandle;
-        Events::Handle<Event::EntityRotated> m_EntityRotatedHandle;
-        Events::Handle<Event::EntityScaled> m_EntityScaledHandle;
-        Events::Handle<Event::EntityTransform> m_EntityTransformHandle;
-
-        void OnEntityMoved(const Event::EntityMoved& event);
-        void OnEntityRotated(const Event::EntityRotated& event);
-        void OnEntityScaled(const Event::EntityScaled& event);
-        void OnEntityTransform(const Event::EntityTransform& event);
+        std::vector<std::unique_ptr<IEventHandle>> m_SubscriptionHandles;
     };
 
 }

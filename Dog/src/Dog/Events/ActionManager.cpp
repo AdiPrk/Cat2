@@ -13,10 +13,15 @@ namespace Dog
         : m_MaxSize(maxSize)
         , m_CurrentIndex(0)
     {
-        m_EntityMovedHandle = SUBSCRIBE_EVENT(Event::EntityMoved, OnEntityMoved);
-        m_EntityRotatedHandle = SUBSCRIBE_EVENT(Event::EntityRotated, OnEntityRotated);
-        m_EntityScaledHandle = SUBSCRIBE_EVENT(Event::EntityScaled, OnEntityScaled);
-        m_EntityTransformHandle = SUBSCRIBE_EVENT(Event::EntityTransform, OnEntityTransform);
+        SubscribeAction<Event::EntityMoved, MoveEntityAction>();
+        SubscribeAction<Event::EntityRotated, RotateEntityAction>();
+        SubscribeAction<Event::EntityScaled, ScaleEntityAction>();
+        SubscribeAction<Event::EntityTransform, TransformEntityAction>();
+
+        //m_EntityMovedHandle = SUBSCRIBE_EVENT(Event::EntityMoved, OnEntityMoved);
+        //m_EntityRotatedHandle = SUBSCRIBE_EVENT(Event::EntityRotated, OnEntityRotated);
+        //m_EntityScaledHandle = SUBSCRIBE_EVENT(Event::EntityScaled, OnEntityScaled);
+        //m_EntityTransformHandle = SUBSCRIBE_EVENT(Event::EntityTransform, OnEntityTransform);
     }
 
     void ActionManager::AddAction(std::unique_ptr<Action> action)
@@ -80,24 +85,5 @@ namespace Dog
         }
 
         return m_Actions[m_CurrentIndex - 1].get();
-    }
-
-    void ActionManager::OnEntityMoved(const Event::EntityMoved& event)
-    {
-        AddAction(std::make_unique<MoveEntityAction>(event.entityID, event.oldX, event.oldY, event.oldZ, event.newX, event.newY, event.newZ));
-    }
-
-    void ActionManager::OnEntityRotated(const Event::EntityRotated& event)
-    {
-        AddAction(std::make_unique<RotateEntityAction>(event.entityID, event.oldX, event.oldY, event.oldZ, event.newX, event.newY, event.newZ));
-    }
-
-    void ActionManager::OnEntityScaled(const Event::EntityScaled& event)
-    {
-        AddAction(std::make_unique<ScaleEntityAction>(event.entityID, event.oldX, event.oldY, event.oldZ, event.newX, event.newY, event.newZ));
-    }
-    void ActionManager::OnEntityTransform(const Event::EntityTransform& event)
-    {
-        AddAction(std::make_unique<TransformEntityAction>(event.entityID, event.oPX, event.oPY, event.oPZ, event.oRX, event.oRY, event.oRZ, event.oSX, event.oSY, event.oSZ, event.nPX, event.nPY, event.nPZ, event.nRX, event.nRY, event.nRZ, event.nSX, event.nSY, event.nSZ));
     }
 }

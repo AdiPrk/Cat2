@@ -63,4 +63,10 @@ namespace Dog {
         std::vector<Entity> children;
     };
 
+    // get component
+    template<typename T>
+    T& GetComponent() {
+        return SceneManager::GetCurrentScene()->GetRegistry().get<T>(handle);
+    }
+
 }

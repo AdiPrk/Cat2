@@ -9,8 +9,8 @@
 namespace Dog
 {
 
-    MoveEntityAction::MoveEntityAction(uint32_t entityID, float oldX, float oldY, float oldZ, float newX, float newY, float newZ)
-        : entityID(entityID), oldX(oldX), oldY(oldY), oldZ(oldZ), newX(newX), newY(newY), newZ(newZ)
+    MoveEntityAction::MoveEntityAction(Event::EntityMoved e)
+        : entityID(e.entityID), oldX(e.oldX), oldY(e.oldY), oldZ(e.oldZ), newX(e.newX), newY(e.newY), newZ(e.newZ)
     {
     }
 
@@ -33,8 +33,8 @@ namespace Dog
         return ss.str();
     }
 
-    RotateEntityAction::RotateEntityAction(uint32_t entityID, float oldX, float oldY, float oldZ, float newX, float newY, float newZ)
-        : entityID(entityID), oldX(oldX), oldY(oldY), oldZ(oldZ), newX(newX), newY(newY), newZ(newZ)
+    RotateEntityAction::RotateEntityAction(Event::EntityRotated e)
+        : entityID(e.entityID), oldX(e.oldX), oldY(e.oldY), oldZ(e.oldZ), newX(e.newX), newY(e.newY), newZ(e.newZ)
     {
     }
 
@@ -57,8 +57,8 @@ namespace Dog
         return ss.str();
     }
 
-    ScaleEntityAction::ScaleEntityAction(uint32_t entityID, float oldX, float oldY, float oldZ, float newX, float newY, float newZ)
-        : entityID(entityID), oldX(oldX), oldY(oldY), oldZ(oldZ), newX(newX), newY(newY), newZ(newZ)
+    ScaleEntityAction::ScaleEntityAction(Event::EntityScaled e)
+        : entityID(e.entityID), oldX(e.oldX), oldY(e.oldY), oldZ(e.oldZ), newX(e.newX), newY(e.newY), newZ(e.newZ)
     {
     }
 
@@ -81,8 +81,8 @@ namespace Dog
         return ss.str();
     }
 
-    TransformEntityAction::TransformEntityAction(uint32_t entityID, float oPX, float oPY, float oPZ, float oRX, float oRY, float oRZ, float oSX, float oSY, float oSZ, float nPX, float nPY, float nPZ, float nRX, float nRY, float nRZ, float nSX, float nSY, float nSZ)
-        : entityID(entityID), oPX(oPX), oPY(oPY), oPZ(oPZ), oRX(oRX), oRY(oRY), oRZ(oRZ), oSX(oSX), oSY(oSY), oSZ(oSZ), nPX(nPX), nPY(nPY), nPZ(nPZ), nRX(nRX), nRY(nRY), nRZ(nRZ), nSX(nSX), nSY(nSY), nSZ(nSZ)
+    TransformEntityAction::TransformEntityAction(Event::EntityTransform e)
+        : entityID(e.entityID), oPX(e.oPX), oPY(e.oPY), oPZ(e.oPZ), oRX(e.oRX), oRY(e.oRY), oRZ(e.oRZ), oSX(e.oSX), oSY(e.oSY), oSZ(e.oSZ), nPX(e.nPX), nPY(e.nPY), nPZ(e.nPZ), nRX(e.nRX), nRY(e.nRY), nRZ(e.nRZ), nSX(e.nSX), nSY(e.nSY), nSZ(e.nSZ)
     {
     }
 
