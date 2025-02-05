@@ -148,10 +148,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Dog\Graphics\Vulkan\Models\Serialization\ModelFileFormat.md" />
-    <None Include="assets\shaders\instance_set.glsl" />
-    <None Include="assets\shaders\simple_shader.frag" />
-    <None Include="assets\shaders\simple_shader.vert" />
-    <None Include="assets\shaders\camera_set.glsl" />
     <None Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.inl" />
   </ItemGroup>
 </Project>
