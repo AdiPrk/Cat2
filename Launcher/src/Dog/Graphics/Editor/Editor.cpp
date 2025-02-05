@@ -290,10 +290,10 @@ namespace Dog {
 					// Create the new project inside "../Client/"
 					std::filesystem::create_directory(projectPath);
 
-					// Copy the contents of "../Client/Base" into "../Client/{newProjectName}"
-					std::filesystem::copy(clientDir + "Base", projectPath, std::filesystem::copy_options::recursive);
+					// Copy the contents of "Base" directory into "../Client/{newProjectName}"
+					std::filesystem::copy("Base", projectPath, std::filesystem::copy_options::recursive);
 
-					LaunchApplication(projectPath);
+					LaunchApplication(pName);
 
 					// Close the popup
 					ImGui::CloseCurrentPopup();

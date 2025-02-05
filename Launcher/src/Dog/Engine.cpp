@@ -80,49 +80,49 @@ namespace Dog {
             std::string exeName = "Dog.exe";
             std::string projName = m_Editor->GetProjectToOpen();
 
-            // Convert to an absolute path
+            // Convert clientDir to an absolute path.
             std::filesystem::path absoluteClientDir = std::filesystem::absolute(clientDir);
+            // Form the full path to the executable.
             std::filesystem::path exePath = absoluteClientDir / exeName;
 
-            // Change working directory
-            if (!SetCurrentDirectory(absoluteClientDir.c_str())) {
-                std::cerr << "Failed to change directory! Error: " << GetLastError() << std::endl;
-                return 1;
-            }
-
-            // Create the command line for Dog.exe
+            // Create the command line for Dog.exe.
             std::string command = "\"" + exePath.string() + "\" -projectdir " + projName;
             std::cout << "Executing: " << command << std::endl;
 
-            // Convert to wide string for CreateProcessW
+            // Convert the command line to a wide string for CreateProcessW.
             std::wstring wideCommand(command.begin(), command.end());
+
+            // Also convert the client directory (which is where the exe resides) to a wide string.
+            std::wstring wideWorkingDir = absoluteClientDir.wstring();
 
             STARTUPINFOW si = { sizeof(si) };
             PROCESS_INFORMATION pi;
 
-            // Launch Dog.exe in a separate process
+            // Launch Dog.exe in a separate process, using the client directory as the working directory.
             if (CreateProcessW(
-                NULL,                      // No application name (using command line)
-                &wideCommand[0],           // Command line
-                NULL,                      // Process handle not inheritable
-                NULL,                      // Thread handle not inheritable
-                FALSE,                     // Set handle inheritance to FALSE
-                CREATE_NEW_CONSOLE,        // Run in a new console window without inheriting input/output
-                NULL,                      // Use parent's environment block
-                absoluteClientDir.c_str(), // Set working directory
-                &si,                       // Pointer to STARTUPINFO structure
-                &pi                        // Pointer to PROCESS_INFORMATION structure
-            )) {
+                NULL,                                   // No application name (using command line)
+                &wideCommand[0],                        // Command line
+                NULL,                                   // Process handle not inheritable
+                NULL,                                   // Thread handle not inheritable
+                FALSE,                                  // Set handle inheritance to FALSE
+                CREATE_NEW_CONSOLE,                     // Run in a new console window
+                NULL,                                   // Use parent's environment block
+                wideWorkingDir.empty() ? NULL : wideWorkingDir.c_str(), // Use client dir as working directory
+                &si,                                    // Pointer to STARTUPINFOW structure
+                &pi                                     // Pointer to PROCESS_INFORMATION structure
+            ))
+            {
                 // Close process and thread handles (we don't need them)
                 CloseHandle(pi.hProcess);
                 CloseHandle(pi.hThread);
             }
-            else {
+            else
+            {
                 std::cerr << "Failed to start Dog.exe! Error: " << GetLastError() << std::endl;
             }
 
-            // Exit the current engine cleanly
-            _exit(0);
+
+            //MessageBoxA(nullptr, "The project has been loaded. Please close the launcher.", "Project Loaded", MB_OK | MB_ICONINFORMATION);
         }
 
         return EXIT_SUCCESS;

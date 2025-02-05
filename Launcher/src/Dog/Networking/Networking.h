@@ -18,7 +18,7 @@ namespace Dog
         const std::string& GetUsername() const;
         bool IsConnected() const { return m_ConnectionStatus == ConnectionStatus::CONNECTED; }
         ConnectionStatus GetStatus() { return m_ConnectionStatus; }
-        const std::unordered_map<std::string, std::string>& GetOtherClients() const;
+        const std::vector<Player>& GetOtherClients() const { return playerManager.GetOtherClients(); }
 
     private:
         void InitializeENet();

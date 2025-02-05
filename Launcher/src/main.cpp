@@ -21,7 +21,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     specs.width = 1280;
     specs.height = 720;
     specs.fps = 120;
-    specs.serverAddress = "localhost";
+    //specs.serverAddress = "localhost";
     specs.serverPort = 7777;
 
     Dog::Engine& Engine = Dog::Engine::Create(specs);

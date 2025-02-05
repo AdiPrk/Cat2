@@ -99,11 +99,6 @@ namespace Dog {
         return playerManager.GetUsername();
     }
 
-    const std::unordered_map<std::string, std::string>& Networking::GetOtherClients() const
-    {
-        return playerManager.GetOtherClients();
-    }
-
     void Networking::networkThread() {
         if (!CreateAndConnectClient()) {
             return;

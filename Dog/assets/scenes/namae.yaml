@@ -38,17 +38,7 @@ Entities:
     ModelComponent:
       ModelPath: assets/models/quad.obj
       Materials:
-        - AlbedoTexture: assets/textures/viking_room.png
-          NormalTexture: None
-  - Entity: Square5
-    TransformComponent:
-      Translation: [0, -1.70000005, 1]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    ModelComponent:
-      ModelPath: assets/models/quad.obj
-      Materials:
-        - AlbedoTexture: assets/models/ModelTextures/Book.png
+        - AlbedoTexture: None
           NormalTexture: None
   - Entity: Camera
     TransformComponent:

@@ -2,6 +2,12 @@
 
 namespace Dog
 {
+    struct Player
+    {
+        std::string id;
+        std::string name;
+    };
+
     class PlayerManager
     {
     public:
@@ -10,14 +16,14 @@ namespace Dog
 
         void AddClient(std::string id);
         void RemoveClient(std::string id);
-        void SetUsername(std::string name) { m_Username = name; }
+        void SetUsername(std::string name) { m_Client.name = name; }
         void ChangeClientName(const std::string& oldName, const std::string& newName);
 
-        const std::string& GetUsername() const { return m_Username; }
-        const std::unordered_map<std::string, std::string>& GetOtherClients() const { return m_OtherClients; }
+        const std::string& GetUsername() const { return m_Client.name; }
+        const std::vector<Player>& GetOtherClients() const { return m_OtherClients; }
 
     private:
-        std::unordered_map<std::string, std::string> m_OtherClients;
-        std::string m_Username;
+        std::vector<Player> m_OtherClients;
+        Player m_Client;
     };
 }

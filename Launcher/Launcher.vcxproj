@@ -327,7 +327,7 @@ IF "$(ConfigurationName)"=="Debug" (
 
 :: Copy Assets folder (same for both configurations)
 xcopy "$(ProjectDir)Assets" "$(OutDir)Assets" /I /E /Y
-xcopy "$(SolutionDir)Dog\Assets" "$(OutDir)Base" /I /E /Y
+xcopy "$(SolutionDir)Dog\Assets" "$(OutDir)Base/Assets" /I /E /Y
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -371,7 +371,7 @@ IF "$(ConfigurationName)"=="Debug" (
 
 :: Copy Assets folder (same for both configurations)
 xcopy "$(ProjectDir)Assets" "$(OutDir)Assets" /I /E /Y
-xcopy "$(SolutionDir)Dog\Assets" "$(OutDir)Base" /I /E /Y
+xcopy "$(SolutionDir)Dog\Assets" "$(OutDir)Base/Assets" /I /E /Y
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

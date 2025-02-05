@@ -36,12 +36,12 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    char fullPath[_MAX_PATH];
-    if (_fullpath(fullPath, projectDir.c_str(), _MAX_PATH)) {
-        std::cout << "Full path is: " << fullPath << '\n';
+    char cwd[_MAX_PATH];
+    if (_getcwd(cwd, _MAX_PATH)) {
+        std::cout << "Current working directory is: " << cwd << '\n';
     }
     else {
-        PrintAndExit("Invalid path.");
+        PrintAndExit("Failed to get current working directory.");
     }
 
     Dog::EngineSpec specs;

@@ -60,15 +60,22 @@ namespace Dog {
         auto& textureLibrary = Engine::Get().GetTextureLibrary();
         auto& modelLibrary = Engine::Get().GetModelLibrary();
 
+        printf("BEFORE");
+
         textureLibrary.AddTexture("assets/textures/square.png");
+        printf("BEFORE2");
+
         textureLibrary.AddTexture("assets/textures/texture.jpg");
+        printf("BEFORE3");
+
         textureLibrary.AddTexture("assets/textures/dog.png");
-        textureLibrary.AddTexture("assets/textures/viking_room.png");
-        textureLibrary.AddTexture("assets/models/ModelTextures/Book.png");
+        printf("BEFORE4");
+
 
         modelLibrary.AddModel("assets/models/quad.obj");
         // modelLibrary.AddModel("assets/models/Adi_Dancing.fbx");
-        
+        printf("AFTER");
+
         //modelLibrary.AddModel("assets/models/charles.glb");
         //modelLibrary.AddModel("assets/models/dragon.obj");
         //modelLibrary.AddModel("assets/models/AlisaMikhailovna.fbx");

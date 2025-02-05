@@ -8,28 +8,33 @@ namespace Dog
 
     void PlayerManager::AddClient(std::string name)
     {
-        m_OtherClients[name] = name;
+        Player client;
+        client.id = name;
+        client.name = name;
+        m_OtherClients.push_back(client);
+
         printf("Init player %s\n", name.c_str());
     }
 
     void PlayerManager::RemoveClient(std::string id)
     {
-        auto it = m_OtherClients.find(id);
-        if (it != m_OtherClients.end())
-        {
-            m_OtherClients.erase(it);
-            printf("Remove player %s\n", id.c_str());
-        }
+        // Erase-remove idiom: remove all players whose id matches the provided id.
+        m_OtherClients.erase(
+            std::remove_if(m_OtherClients.begin(), m_OtherClients.end(),
+                [&id](const Player& p) { return p.id == id; }),
+            m_OtherClients.end()
+        );
     }
 
     void PlayerManager::ChangeClientName(const std::string& oldName, const std::string& newName)
     {
-        // remove if it's in there and replace with new
-        auto it = m_OtherClients.find(oldName);
-        if (it != m_OtherClients.end())
+        for (auto& client : m_OtherClients)
         {
-            m_OtherClients.erase(it);
-            m_OtherClients[newName] = newName;
+            if (client.name == oldName)
+            {
+                client.name = newName;
+                break;
+            }
         }
     }
 }
