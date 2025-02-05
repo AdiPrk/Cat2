@@ -9,14 +9,23 @@ namespace Dog
     const char SERVER_IP[12] = "45.61.62.97";
 
     enum PacketID {
+        // Player join/leave packets
         INIT_PLAYER_PACKET       = 1,
         SELF_NAME_PACKET         = 2,
         REMOVE_PLAYER_PACKET     = 3,
+
+        // Chat packets
         STARTED_TYPING_PACKET    = 4,
         STOPPED_TYPING_PACKET    = 5,
         CHAT_MESSAGE_PACKET      = 6,
         CHAT_DISPLAY_NAME_PACKET = 7,
         CLIENT_LEAVE_PACKET      = 8,
+        
+        // Entity Events
+        EVENT_ENTITY_MOVE_PACKET =      9,
+        EVENT_ENTITY_ROTATE_PACKET =    10,
+        EVENT_ENTITY_SCALE_PACKET =     11,
+        EVENT_ENTITY_TRANSFORM_PACKET = 12,
     };
 
     enum ConnectionStatus {

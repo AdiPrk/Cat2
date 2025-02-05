@@ -37,6 +37,9 @@ namespace Dog {
 
         // Entity events
         struct EntityMoved { uint32_t entityID; float oldX, oldY, oldZ, newX, newY, newZ; };
+        struct EntityRotated { uint32_t entityID; float oldX, oldY, oldZ, newX, newY, newZ; };
+        struct EntityScaled { uint32_t entityID; float oldX, oldY, oldZ, newX, newY, newZ; };
+        struct EntityTransform { uint32_t entityID; float oPX, oPY, oPZ, oRX, oRY, oRZ, oSX, oSY, oSZ, nPX, nPY, nPZ, nRX, nRY, nRZ, nSX, nSY, nSZ; };
     }
 
     // Event manager class

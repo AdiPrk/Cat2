@@ -21,33 +21,42 @@ namespace Dog {
 	template <typename T>
 	void DisplayAddComponent(Entity entity, const std::string& name);
 
+	template <typename EventType>
+	void DragFloat3WithEvent(const char* label, glm::vec3& value, float speed, uint32_t entityID) {
+		static glm::vec3 oldValue;
+		static bool isDragging = false;
+
+		ImGui::DragFloat3(label, &value.x, speed);
+
+		if (ImGui::IsItemActivated() && !isDragging) {
+			oldValue = value;
+			isDragging = true;
+		}
+
+		if (isDragging && ImGui::IsItemDeactivatedAfterEdit()) {
+			isDragging = false;
+
+			if (oldValue != value) {
+				PUBLISH_EVENT(EventType, entityID, oldValue.x, oldValue.y, oldValue.z, value.x, value.y, value.z);
+			}
+		}
+	}
+
+
 	void UpdateInspectorWindow() {
 		ImGui::Begin("Inspector");
 
 		// lock input if this window is focused
 		// log is window focused
 		Engine::Get().GetEditor().CaptureInput(ImGui::IsWindowFocused());
-		//Input::SetKeyInputLocked(ImGui::IsWindowFocused());
 
 		static Entity lastSelectedEntity;
 		Entity selectedEntity = GetSelectedEntity();
-
-		bool entityChanged = lastSelectedEntity != selectedEntity;
-
-		if (entityChanged) {
-			lastSelectedEntity = selectedEntity;
-		}
 
 		if (!selectedEntity) {
 			ImGui::Text("No entity selected.");
 			ImGui::End(); // Inspector
 			return;
-		}
-
-		if (entityChanged) {
-			// ImGui::Text("Switching Entities...");
-			// ImGui::End(); // Inspector
-			// return; // don't display for one frame.
 		}
 
 		ImGui::PushID(selectedEntity);
@@ -84,7 +93,7 @@ namespace Dog {
 		}
 	}
 
-	void RenderTagComponent(TagComponent& tagComponent) {
+	void RenderTagComponent(Entity entity, TagComponent& tagComponent) {
 		std::string& tag = tagComponent.Tag;
 
 		char buffer[256];
@@ -105,17 +114,18 @@ namespace Dog {
 		ImGui::GetIO().MouseDrawCursor = imguiDrawCursor;*/
 	}
 
-	void RenderTransformComponent(TransformComponent& transform) {
+	void RenderTransformComponent(Entity entity, TransformComponent& transform) {
 		ImGui::SetNextItemOpen(false, ImGuiCond_FirstUseEver);
 
-		if (ImGui::CollapsingHeader("Transform##header")) {
-			ImGui::DragFloat3("Position##TransformProp", &transform.Translation.x, 0.1f);
-			ImGui::DragFloat3("Rotation##TransformProp", &transform.Rotation.x, 0.1f);
-			ImGui::DragFloat3("Scale##TransformProp", &transform.Scale.x, 0.1f);
+		if (ImGui::CollapsingHeader("Transform##header")) 
+		{
+			DragFloat3WithEvent<Event::EntityMoved>("Position##TransformProp", transform.Translation, 0.1f, entity);
+			DragFloat3WithEvent<Event::EntityRotated>("Rotation##TransformProp", transform.Rotation, 0.1f, entity);
+			DragFloat3WithEvent<Event::EntityScaled>("Scale##TransformProp", transform.Scale, 0.1f, entity);
 		}
 	}
 
-	void RenderModelComponent(ModelComponent& model) {
+	void RenderModelComponent(Entity entity, ModelComponent& model) {
 		ImGui::SetNextItemOpen(false, ImGuiCond_FirstUseEver);
 
 		if (ImGui::CollapsingHeader("Model##header")) {
@@ -206,13 +216,13 @@ namespace Dog {
 		entt::registry& registry = entity.GetScene()->GetRegistry();
 
 		if (entity.HasComponent<TagComponent>())
-			RenderTagComponent(entity.GetComponent<TagComponent>());
+			RenderTagComponent(entity, entity.GetComponent<TagComponent>());
 
 		if (entity.HasComponent<TransformComponent>())
-			RenderTransformComponent(entity.GetComponent<TransformComponent>());
+			RenderTransformComponent(entity, entity.GetComponent<TransformComponent>());
 
 		if (entity.HasComponent<ModelComponent>())
-			RenderModelComponent(entity.GetComponent<ModelComponent>());
+			RenderModelComponent(entity, entity.GetComponent<ModelComponent>());
 
 		/*if (entity.HasComponent<SpriteComponent>())
 			RenderSpriteComponent(entity.GetComponent<SpriteComponent>());

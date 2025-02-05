@@ -27,6 +27,7 @@
 #include "ImGuizmo.h"
 
 #include "Scene/Entity/Entity.h"
+#include "Events/Actions.h"
 
 namespace ImGui {
 	/**
@@ -354,6 +355,7 @@ namespace Dog {
 		Input::SetKeyInputLocked(m_CapturingInput);
 		Input::SetMouseInputLocked(m_CapturingInput);
 
+		UndoAction();
 	}
 
 	void Editor::EndFrame(VkCommandBuffer commandBuffer)
@@ -494,6 +496,28 @@ namespace Dog {
 								   glm::toMat4(averageRotation) *
 								   glm::scale(glm::mat4(1.0f), averageScale);
 
+		if (m_CanCaptureImGuizmo && ImGuizmo::IsUsing())
+		{
+			m_CanCaptureImGuizmo = false;
+			oldGuizmoData.clear();
+			newGuizmoData.clear();
+
+            for (Entity selectedEntity : selectedEntities)
+            {
+                if (!selectedEntity) continue;
+                TransformComponent& tc = selectedEntity.GetComponent<TransformComponent>();
+
+				GuizmoData data;
+				data.id = selectedEntity;
+				data.translation = tc.Translation;
+				data.rotation = tc.Rotation;
+				data.scale = tc.Scale;
+                oldGuizmoData.push_back(data);
+            }
+
+			printf("STARTED GUIZMO\n");
+		}
+
 		// 2. Manipulate the Gizmo for the group transform
 		glm::mat4 manipulatedTransform = groupTransform;
 		ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
@@ -537,6 +561,42 @@ namespace Dog {
 				}
 			}
 		}
+
+		if (!m_CanCaptureImGuizmo && !ImGuizmo::IsUsing())
+		{
+			printf("DONE GUIZMO");
+			m_CanCaptureImGuizmo = true;
+
+			for (Entity selectedEntity : selectedEntities)
+			{
+				if (!selectedEntity) continue;
+				TransformComponent& tc = selectedEntity.GetComponent<TransformComponent>();
+
+				GuizmoData data;
+				data.id = selectedEntity;
+				data.translation = tc.Translation;
+				data.rotation = tc.Rotation;
+				data.scale = tc.Scale;
+				newGuizmoData.push_back(data);
+			}
+
+			for (int i = 0; i < oldGuizmoData.size(); i++)
+			{
+				if (oldGuizmoData[i].translation != newGuizmoData[i].translation ||
+					oldGuizmoData[i].rotation != newGuizmoData[i].rotation ||
+					oldGuizmoData[i].scale != newGuizmoData[i].scale)
+				{
+                    auto& oTr = oldGuizmoData[i].translation;
+                    auto& oRo = oldGuizmoData[i].rotation;
+                    auto& oSc = oldGuizmoData[i].scale;
+                    auto& nTr = newGuizmoData[i].translation;
+                    auto& nRo = newGuizmoData[i].rotation;
+                    auto& nSc = newGuizmoData[i].scale;
+
+                    PUBLISH_EVENT(Event::EntityTransform, oldGuizmoData[i].id, oTr.x, oTr.y, oTr.z, oRo.x, oRo.y, oRo.z, oSc.x, oSc.y, oSc.z, nTr.x, nTr.y, nTr.z, nRo.x, nRo.y, nRo.z, nSc.x, nSc.y, nSc.z);
+				}
+			}
+		}
 	}
 
 	void Editor::UpdateVisibility(unsigned windowWidth, unsigned windowHeight)
@@ -563,6 +623,44 @@ namespace Dog {
 		}
 		else {
 			keyHeld = false;
+		}
+	}
+
+	void Editor::UndoAction()
+	{
+		// check if ctrl + z is triggered
+		// use imgui input 
+		if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) && ImGui::IsKeyDown(ImGuiKey_LeftShift) && ImGui::IsKeyPressed(ImGuiKey_Z, false))
+		{
+            ActionManager& actionManager = Engine::Get().GetActionManager();
+            
+			auto lastAction = actionManager.GetCurrentAction();
+            if (!lastAction)
+            {
+                printf("nothing to redo!");
+                return;
+            }
+
+			std::string act = lastAction->Serialize();
+            printf("REDO: %s\n", act.c_str());
+
+			actionManager.Redo();
+        }
+		else if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) && ImGui::IsKeyPressed(ImGuiKey_Z, false))
+		{
+			ActionManager& actionManager = Engine::Get().GetActionManager();
+
+			auto lastAction = actionManager.GetLastAction();
+			if (!lastAction)
+			{
+				printf("nothing to undo!");
+				return;
+			}
+
+			std::string act = lastAction->Serialize();
+			printf("UNDO: %s\n", act.c_str());
+
+			actionManager.Undo();
 		}
 	}
 

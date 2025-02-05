@@ -46,6 +46,8 @@ namespace Dog {
 		VkDescriptorSetLayout samplerSetLayout;
 
         ChatWindow* GetChatWindow() { return chatWindow.get(); }
+
+		void UndoAction();
 		
 	private:
 		bool isActive = true;
@@ -59,6 +61,17 @@ namespace Dog {
 		bool startedRenderingFrame = false;
 
 		bool m_CapturingInput = false;
+
+        bool m_CanCaptureImGuizmo = true;
+		struct GuizmoData
+		{
+			uint32_t id;
+			glm::vec3 translation;
+            glm::vec3 rotation;
+            glm::vec3 scale;
+		};
+		std::vector<GuizmoData> oldGuizmoData;
+		std::vector<GuizmoData> newGuizmoData;
 	};
 
 } // namespace Dog
