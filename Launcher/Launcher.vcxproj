@@ -17,63 +17,85 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Ship|Win32">
+      <Configuration>Ship</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Ship|x64">
+      <Configuration>Ship</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\backends\imgui_impl_glfw.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui\backends\imgui_impl_opengl3.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui\backends\imgui_impl_vulkan.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui\GraphEditor.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui\ImCurveEdit.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui\ImGradient.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui\ImGuizmo.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui\imgui_demo.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui\imgui_draw.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui\imgui_stdlib.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui\imgui_tables.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui\ImSequencer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Dog\Assets\Assets.cpp" />
     <ClCompile Include="src\Dog\Assets\FileWatcher\FileWatcher.cpp" />
@@ -127,7 +149,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -222,6 +246,13 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -229,6 +260,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
@@ -246,10 +284,16 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Ship|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -259,6 +303,11 @@
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(ProjectDir)src;$(SolutionDir)Common\src;$(ProjectDir)src\Dog;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\Launcher\</OutDir>
+    <SourcePath>$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
     <IncludePath>$(ProjectDir)src;$(SolutionDir)Common\src;$(ProjectDir)src\Dog;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\Launcher\</OutDir>
     <SourcePath>$(SourcePath)</SourcePath>
@@ -291,6 +340,22 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Ship|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -306,7 +371,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)Dog\Dependencies\VulkanSDK\1.3.290.0\Lib;$(SolutionDir)Dog\Dependencies\glfw\lib-vc2022;$(SolutionDir)Dog\Dependencies\assimp\lib;$(SolutionDir)Dog\Dependencies\glslang\lib;$(SolutionDir)Dog\Dependencies\spdlog\lib;$(SolutionDir)Dog\Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(SolutionDir)Dog\Dependencies\msdfgen\lib\debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;yaml-cppd.lib;glslangd.lib;SPIRVd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-optd.lib;GenericCodeGend.lib;MachineIndependentd.lib;glslang-default-resource-limitsd.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2d.lib;freetyped.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpatd.lib;libpng16d.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibstaticd.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;yaml-cppd.lib;glslangd.lib;SPIRVd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-optd.lib;GenericCodeGend.lib;MachineIndependentd.lib;glslang-default-resource-limitsd.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2d.lib;freetyped.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpatd.lib;libpng16d.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>:: Copy Assimp DLLs (same for both Debug and Release)
@@ -316,12 +381,8 @@ xcopy "$(SolutionDir)Dog\Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
 
 :: Conditional copying for Debug vs Release
 IF "$(ConfigurationName)"=="Debug" (
-    xcopy "$(SolutionDir)Dog\Dependencies\assimp\assimp-vc143-mtd.dll" "$(OutDir)" /Y
-    xcopy "$(SolutionDir)Dog\Dependencies\assimp\zlibd1.dll" "$(OutDir)" /Y
     xcopy "$(SolutionDir)Dog\Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
 ) ELSE (
-    xcopy "$(SolutionDir)Dog\Dependencies\assimp\assimp-vc143-mt.dll" "$(OutDir)" /Y
-    xcopy "$(SolutionDir)Dog\Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
     xcopy "$(SolutionDir)Dog\Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
 )
 
@@ -350,7 +411,7 @@ xcopy "$(SolutionDir)Dog\Assets" "$(OutDir)Base/Assets" /I /E /Y
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)Dog\Dependencies\VulkanSDK\1.3.290.0\Lib;$(SolutionDir)Dog\Dependencies\glfw\lib-vc2022;$(SolutionDir)Dog\Dependencies\assimp\lib;$(SolutionDir)Dog\Dependencies\glslang\lib;$(SolutionDir)Dog\Dependencies\spdlog\lib;$(SolutionDir)Dog\Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(SolutionDir)Dog\Dependencies\msdfgen\lib\release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2.lib;freetype.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpat.lib;libpng16.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2.lib;freetype.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpat.lib;libpng16.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>:: Copy Assimp DLLs (same for both Debug and Release)
@@ -360,12 +421,48 @@ xcopy "$(SolutionDir)Dog\Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
 
 :: Conditional copying for Debug vs Release
 IF "$(ConfigurationName)"=="Debug" (
-    xcopy "$(SolutionDir)Dog\Dependencies\assimp\assimp-vc143-mtd.dll" "$(OutDir)" /Y
-    xcopy "$(SolutionDir)Dog\Dependencies\assimp\zlibd1.dll" "$(OutDir)" /Y
     xcopy "$(SolutionDir)Dog\Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
 ) ELSE (
-    xcopy "$(SolutionDir)Dog\Dependencies\assimp\assimp-vc143-mt.dll" "$(OutDir)" /Y
-    xcopy "$(SolutionDir)Dog\Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
+    xcopy "$(SolutionDir)Dog\Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
+)
+
+:: Copy Assets folder (same for both configurations)
+xcopy "$(ProjectDir)Assets" "$(OutDir)Assets" /I /E /Y
+xcopy "$(SolutionDir)Dog\Assets" "$(OutDir)Base/Assets" /I /E /Y
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dog\Dependencies\VulkanSDK\1.3.290.0\Include;$(SolutionDir)Dog\Dependencies\glfw\include;$(SolutionDir)Dog\Dependencies\assimp\include;$(SolutionDir)Dog\Dependencies\glm;$(SolutionDir)Dog\Dependencies\stb_image\stb;$(SolutionDir)Dog\Dependencies\tiny_obj_loader;$(SolutionDir)Dog\Dependencies\vk_extensions;$(ProjectDir)\imgui;$(SolutionDir)Dog\Dependencies\glslang\include;$(SolutionDir)Dog\Dependencies\spdlog\include;$(SolutionDir)Dog\Dependencies\entt\include;$(SolutionDir)Dog\Dependencies\yaml-cpp\include;$(SolutionDir)Dog\Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dog\Dependencies\VulkanSDK\1.3.290.0\Lib;$(SolutionDir)Dog\Dependencies\glfw\lib-vc2022;$(SolutionDir)Dog\Dependencies\assimp\lib;$(SolutionDir)Dog\Dependencies\glslang\lib;$(SolutionDir)Dog\Dependencies\spdlog\lib;$(SolutionDir)Dog\Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(SolutionDir)Dog\Dependencies\msdfgen\lib\release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2.lib;freetype.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpat.lib;libpng16.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>:: Copy Assimp DLLs (same for both Debug and Release)
+xcopy "$(SolutionDir)Dog\Dependencies\assimp\poly2tri.dll" "$(OutDir)" /Y
+xcopy "$(SolutionDir)Dog\Dependencies\assimp\minizip.dll" "$(OutDir)" /Y
+xcopy "$(SolutionDir)Dog\Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
+
+:: Conditional copying for Debug vs Release
+IF "$(ConfigurationName)"=="Debug" (
+    xcopy "$(SolutionDir)Dog\Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
+) ELSE (
     xcopy "$(SolutionDir)Dog\Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
 )
 
