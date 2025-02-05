@@ -24,7 +24,6 @@ namespace Dog
   void InstancedUniformInit(Uniform& uniform, TextureLibrary& textureLibrary, FontLibrary& fontLibrary, ModelLibrary& modelLibrary);
   void SharedUniformInit(Uniform& uniform, TextureLibrary& textureLibrary, FontLibrary& fontLibrary, ModelLibrary& modelLibrary);
   void ComputeUniformInit(Uniform& uniform, TextureLibrary& textureLibrary, FontLibrary& fontLibrary, ModelLibrary& modelLibrary);
-  void HeightmapUniformInit(Uniform& uniform, TextureLibrary& textureLibrary, FontLibrary& fontLibrary, ModelLibrary& modelLibrary);
 
   // MatrixUniformData holds camera and light info
   struct MatrixUniformData {
@@ -48,19 +47,6 @@ namespace Dog
     .AddSSBOBinding(VK_SHADER_STAGE_VERTEX_BIT, sizeof(GlyphData), GlyphDataBuffer::MAX_DRAW_COUNT)
     .AddISBinding(VK_SHADER_STAGE_FRAGMENT_BIT | VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT, sizeof(VkDescriptorImageInfo), TextureLibrary::MAX_TEXTURE_COUNT)
     .AddSSBOBinding(VK_SHADER_STAGE_VERTEX_BIT, sizeof(glm::mat4), Animation::MAX_BONES * ModelLibrary::MAX_MODEL_COUNT);
-
-  struct HeightmapUniformData 
-  {
-    glm::mat4 modelMatrix{ 1.0f };
-    glm::mat4 viewMatrix{ 1.0f };
-    glm::vec4 cameraPos;
-    unsigned tessellationFactor;
-    uint32_t heightmapTextureIndex;
-  };
-
-  // Uniform set 3
-  const UniformSettings heightmapUniformSettings = UniformSettings(HeightmapUniformInit)
-    .AddUBBinding(VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, sizeof(HeightmapUniformData));
 
   struct ComputeInstanceGroup
   {

@@ -45,11 +45,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(ProjectDir)src;$(SolutionDir)Common\src;$(ProjectDir)src\Dog;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\Client</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\Client\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(ProjectDir)src;$(SolutionDir)Common\src;$(ProjectDir)src\Dog;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\Client</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\Client\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -195,6 +195,7 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClCompile Include="src\Dog\Assets\Assets.cpp" />
     <ClCompile Include="src\Dog\Assets\FileWatcher\FileWatcher.cpp" />
     <ClCompile Include="src\Dog\Assets\UUID\UUID.cpp" />
+    <ClCompile Include="src\Dog\Events\Actions.cpp" />
     <ClCompile Include="src\Dog\Events\Event.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Editor.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Windows\AssetsWindow.cpp" />
@@ -272,6 +273,7 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClInclude Include="src\Dog\Assets\Assets.h" />
     <ClInclude Include="src\Dog\Assets\FileWatcher\FileWatcher.h" />
     <ClInclude Include="src\Dog\Assets\UUID\UUID.h" />
+    <ClInclude Include="src\Dog\Events\Actions.h" />
     <ClInclude Include="src\Dog\Events\Event.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Editor.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Windows\AssetsWindow.h" />

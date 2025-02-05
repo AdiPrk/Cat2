@@ -207,6 +207,8 @@ namespace Dog {
         mTexturesToAdd.clear();
         mTexturesToDelete.clear();
         mTexturesToModify.clear();
+
+		// Update the uniform
 	}
 
 } // namespace Dog

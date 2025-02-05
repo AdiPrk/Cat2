@@ -34,6 +34,9 @@ namespace Dog {
         struct ShaderFileDeleted { const std::string& path; };
         struct ShaderFileCreated { const std::string& path; };
         struct ShaderFileModified { const std::string& path; };
+
+        // Entity events
+        struct EntityMoved { uint32_t entityID; float oldX, oldY, oldZ, newX, newY, newZ; };
     }
 
     // Event manager class

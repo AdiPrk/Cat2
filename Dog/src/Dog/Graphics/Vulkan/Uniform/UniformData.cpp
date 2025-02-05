@@ -110,20 +110,4 @@ namespace Dog
     }
   }
   
-  void HeightmapUniformInit(Uniform& uniform, TextureLibrary& textureLibrary, FontLibrary& fontLibrary, ModelLibrary& modelLibrary)
-  {
-    uniform.GetDescriptorSets().resize(SwapChain::MAX_FRAMES_IN_FLIGHT);
-
-    // Build descriptor sets for each frame
-    for (int frameIndex = 0; frameIndex < SwapChain::MAX_FRAMES_IN_FLIGHT; ++frameIndex) {
-      DescriptorWriter writer(*uniform.GetDescriptorLayout(), *uniform.GetDescriptorPool());
-
-      // Bind the uniform buffer at binding 0
-      VkDescriptorBufferInfo bufferInfo = uniform.GetUniformBuffer(0, frameIndex)->descriptorInfo();
-      writer.WriteBuffer(0, &bufferInfo);
-
-      // Build descriptor set for the frame
-      writer.Build(uniform.GetDescriptorSets()[frameIndex]);
-    }
-  }
 }

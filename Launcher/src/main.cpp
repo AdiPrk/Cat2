@@ -1,14 +1,17 @@
 #include <PCH/pch.h>
 #include "Engine.h"
 #include "Networking/Networking.h"
+#include <Windows.h>
 
-int main(int argc, char* argv[])
-{
-    // Check command-line arguments
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    int argc = __argc;
+    char** argv = __argv;
+
+    // Check for "dev" mode
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
         if (arg == "dev") {
-            printf("Cannot run launcher directly through Visual Studio. Run the exe from the output directory");
+            MessageBoxA(nullptr, "Cannot run launcher directly through Visual Studio. Run the exe from the output directory.", "Error", MB_OK | MB_ICONERROR);
             return -1;
         }
     }

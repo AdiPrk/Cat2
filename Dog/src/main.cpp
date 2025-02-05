@@ -2,41 +2,47 @@
 #include "Engine.h"
 #include "Networking/Networking.h"
 
-int main(int argc, char* argv[])
-{
-    if (argc == 1)
-    {
-        // no project dir provided, exit
-        printf("No project directory provided. Use the launcher to run the engine. Press 'Enter' to exit.\n");
-        std::cin.get();
-        return -1;
+void PrintAndExit(const std::string& message) {
+    std::cerr << message << "\nPress 'Enter' to exit.\n";
+    std::cin.get();
+    exit(EXIT_FAILURE);
+}
+
+std::string GetProjectDirectory(int argc, char* argv[]) {
+    for (int i = 1; i < argc - 1; ++i) {
+        if (std::string(argv[i]) == "-projectdir") {
+            return argv[i + 1]; // Return the next argument as the project directory
+        }
+    }
+    return ""; // Return empty string if not found
+}
+
+int main(int argc, char* argv[]) {
+    if (argc == 1) {
+        PrintAndExit("No project directory provided. Use the launcher to run the engine.");
     }
 
-    // Parse command-line arguments
-    std::string projectDir;
-    for (int i = 1; i < argc; ++i) {
-        std::string arg = argv[i];
+    std::string projectDir = GetProjectDirectory(argc, argv);
+    if (projectDir.empty()) {
+        PrintAndExit("Invalid or missing '-projectdir' argument.");
+    }
 
-        if (arg == "-projectdir" && i + 1 < argc) {
-            projectDir = argv[i + 1]; // Assign the next argument as the directory
-            i++; // Skip the next argument since it's consumed
+    std::cout << "Project Directory: " << projectDir << '\n';
+
+    if (projectDir != "Dev") {
+        FreeConsole();
+        if (!SetCurrentDirectoryA(projectDir.c_str())) {
+            PrintAndExit("Failed to set project directory.");
         }
     }
 
-    if (projectDir != "Dev") {
-        std::cout << "Project Directory: " << projectDir << std::endl;
-        SetCurrentDirectoryA(projectDir.c_str());
+    char fullPath[_MAX_PATH];
+    if (_fullpath(fullPath, projectDir.c_str(), _MAX_PATH)) {
+        std::cout << "Full path is: " << fullPath << '\n';
     }
     else {
-        std::cout << "Project Directory: " << projectDir << std::endl;
+        PrintAndExit("Invalid path.");
     }
-
-    // print full path of current dir
-    char full[_MAX_PATH];
-    if (_fullpath(full, projectDir.c_str(), _MAX_PATH) != NULL)
-        printf("Full path is: %s\n", full);
-    else
-        printf("Invalid path\n");
 
     Dog::EngineSpec specs;
     specs.name = "Woof";

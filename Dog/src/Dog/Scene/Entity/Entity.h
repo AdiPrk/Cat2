@@ -44,8 +44,8 @@ namespace Dog {
             return handle;
         }
 
-        operator int() const {
-            return (int)handle;
+        operator uint32_t() const {
+            return (uint32_t)handle;
         }
 
         Scene* GetScene() { return scene; }

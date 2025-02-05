@@ -12,6 +12,7 @@
 namespace Dog {
 	// Forward Declarations
 	class Networking;
+	class ActionManager;
 
 	struct EngineSpec {
 		std::string name = "Dog Engine";         // The name of the window.
@@ -64,6 +65,7 @@ namespace Dog {
 		ModelLibrary& GetModelLibrary() { return modelLibrary; }
 		Editor& GetEditor() { return *m_Editor; }
         Networking& GetNetworking() { return *m_Networking; }
+        ActionManager& GetActionManager() { return *m_ActionManager; }
 
 	private:
 		Window m_Window; // { WIDTH, HEIGHT, "Woof" };
@@ -75,6 +77,9 @@ namespace Dog {
 
 		// Networking
         std::unique_ptr<Networking> m_Networking;
+
+		// Actions
+        std::unique_ptr<ActionManager> m_ActionManager;
 
 		// Editor
 		std::unique_ptr<Editor> m_Editor;

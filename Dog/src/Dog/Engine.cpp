@@ -22,6 +22,7 @@
 #include "Assets/FileWatcher/FileWatcher.h"
 
 #include "Networking/Networking.h"
+#include "Events/Actions.h"
 
 namespace Dog {
 
@@ -33,6 +34,7 @@ namespace Dog {
         , fps(specs.fps)
     {
         Logger::Init();
+        m_ActionManager = std::make_unique<ActionManager>();
         m_Editor = std::make_unique<Editor>();
         m_Networking = std::make_unique<Networking>(specs.serverAddress, specs.serverPort);
     }
