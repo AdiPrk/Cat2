@@ -3,6 +3,7 @@
 #include "PlayerManager.h"
 #include "Graphics/Editor/Editor.h"
 #include "Graphics/Editor/Windows/ChatWindow.h"
+#include "Events/Actions.h"
 #include "Engine.h"
 
 namespace Dog
@@ -95,11 +96,94 @@ namespace Dog
             // we shouldn't ever get this anyway
             break;
         }
+        case EVENT_ACTION:
+        {
+            std::string action(data);
+            HandleEventPacket(action, peer, packet, playerManager);
+            break;
+        }
+        case EVENT_ACTION_UNDO:
+        {
+            std::string action(data);
+            HandleEventPacket(action, peer, packet, playerManager, true);
+            break;
+        }
         default:
         {
             printf("Unknown packet ID: %d\n", packetID);
             break;
         }
+        }
+    }
+
+    void PacketHandler::HandleEventPacket(const std::string& event, ENetPeer* peer, ENetPacket* packet, PlayerManager& playerManager, bool undo)
+    {
+        // Create an input string stream from the action string.
+        std::istringstream iss(event);
+
+        int eventType;
+        if (!(iss >> eventType)) {
+            // malformed packet
+            return;
+        }
+
+        switch (eventType)
+        {
+        case EVENT_ENTITY_MOVE_PACKET:
+        {
+            uint32_t entityID;
+            float oldX, oldY, oldZ, newX, newY, newZ;
+            if (!(iss >> entityID >> oldX >> oldY >> oldZ >> newX >> newY >> newZ)) return;
+
+            Event::EntityMoved e = { entityID, oldX, oldY, oldZ, newX, newY, newZ };
+            MoveEntityAction action(e, false);
+            if (undo) action.Undo();
+            else action.Apply();
+
+            break;
+        }
+        case EVENT_ENTITY_ROTATE_PACKET:
+        {
+            uint32_t entityID;
+            float oldX, oldY, oldZ, newX, newY, newZ;
+            if (!(iss >> entityID >> oldX >> oldY >> oldZ >> newX >> newY >> newZ)) return;
+            
+            Event::EntityRotated e = { entityID, oldX, oldY, oldZ, newX, newY, newZ };
+            RotateEntityAction action(e, false);
+            if (undo) action.Undo();
+            else action.Apply();
+
+            break;
+        }
+        case EVENT_ENTITY_SCALE_PACKET:
+        {
+            uint32_t entityID;
+            float oldX, oldY, oldZ, newX, newY, newZ;
+            if (!(iss >> entityID >> oldX >> oldY >> oldZ >> newX >> newY >> newZ)) return;
+            
+            Event::EntityScaled e = { entityID, oldX, oldY, oldZ, newX, newY, newZ };
+            ScaleEntityAction action(e, false);
+            if (undo) action.Undo();
+            else action.Apply();
+
+            break;
+        }
+        case EVENT_ENTITY_TRANSFORM_PACKET:
+        {
+            uint32_t entityID;
+            float oPX, oPY, oPZ, oRX, oRY, oRZ, oSX, oSY, oSZ, nPX, nPY, nPZ, nRX, nRY, nRZ, nSX, nSY, nSZ;
+            if (!(iss >> entityID >> oPX >> oPY >> oPZ >> oRX >> oRY >> oRZ >> oSX >> oSY >> oSZ >> nPX >> nPY >> nPZ >> nRX >> nRY >> nRZ >> nSX >> nSY >> nSZ)) return;
+            
+            Event::EntityTransform e = { entityID, oPX, oPY, oPZ, oRX, oRY, oRZ, oSX, oSY, oSZ, nPX, nPY, nPZ, nRX, nRY, nRZ, nSX, nSY, nSZ };
+            TransformEntityAction action(e, false);
+            if (undo) action.Undo();
+            else action.Apply();
+
+            break;
+        }
+        default:
+            DOG_WARN("Unknown event action type: {0}", eventType);
+            break;
         }
     }
 

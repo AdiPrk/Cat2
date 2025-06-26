@@ -17,11 +17,6 @@ namespace Dog
         SubscribeAction<Event::EntityRotated, RotateEntityAction>();
         SubscribeAction<Event::EntityScaled, ScaleEntityAction>();
         SubscribeAction<Event::EntityTransform, TransformEntityAction>();
-
-        //m_EntityMovedHandle = SUBSCRIBE_EVENT(Event::EntityMoved, OnEntityMoved);
-        //m_EntityRotatedHandle = SUBSCRIBE_EVENT(Event::EntityRotated, OnEntityRotated);
-        //m_EntityScaledHandle = SUBSCRIBE_EVENT(Event::EntityScaled, OnEntityScaled);
-        //m_EntityTransformHandle = SUBSCRIBE_EVENT(Event::EntityTransform, OnEntityTransform);
     }
 
     void ActionManager::AddAction(std::unique_ptr<Action> action)
@@ -38,7 +33,7 @@ namespace Dog
             m_CurrentIndex = std::max(m_CurrentIndex - 1, 0u);
         }
 
-        // Add the new action and apply it
+        // Add the new action
         m_Actions.push_back(std::move(action));
         ++m_CurrentIndex;
     }

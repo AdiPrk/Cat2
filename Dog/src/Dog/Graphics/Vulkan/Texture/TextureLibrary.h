@@ -29,8 +29,11 @@ namespace Dog {
 		}
 
 		void CreateTextureSampler();
+		void CreateHtmlTextureSampler();
 
-		void CreateDescriptorSet(Texture& texture);
+		void CreateDescriptorSet(Texture& texture, bool html = false);
+		void UpdateDescriptorSet(Texture& texture, bool html = false);
+		VkDescriptorSet GetDescriptorSet(Texture& texture) { return texture.descriptorSet; }
 		VkDescriptorSet GetDescriptorSet(const std::string& texturePath) { return GetTexture(GetTexture(texturePath))->descriptorSet; }
 
 		const size_t getTextureCount() const { return textures.size(); }
@@ -61,6 +64,7 @@ namespace Dog {
 		uint32_t bakedInTextureCount = 0;
 
 		VkSampler textureSampler;
+		VkSampler htmlTextureSampler;
 
 		VkDescriptorPool mTexturePool;
 		VkDescriptorSetLayout mTextureDescriptorLayout;

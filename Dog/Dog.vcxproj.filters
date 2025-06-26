@@ -70,6 +70,7 @@
     <ClCompile Include="Dependencies\imgui\ImGuizmo.cpp" />
     <ClCompile Include="Dependencies\imgui\ImSequencer.cpp" />
     <ClCompile Include="src\Dog\Events\ActionManager.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Editor\TextEditor\TextEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dog\Graphics\Vulkan\Animation\Animation.h" />
@@ -145,6 +146,8 @@
     <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
     <ClInclude Include="Dependencies\imgui\ImZoomSlider.h" />
     <ClInclude Include="src\Dog\Events\ActionManager.h" />
+    <ClInclude Include="src\Dog\Graphics\Editor\TextEditor\TextEditor.h" />
+    <ClInclude Include="src\Dog\Input\ultralightKeyMap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Dog\Graphics\Vulkan\Models\Serialization\ModelFileFormat.md" />

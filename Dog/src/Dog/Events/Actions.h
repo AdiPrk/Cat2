@@ -8,7 +8,7 @@ namespace Dog
     class MoveEntityAction : public Action
     {
     public:
-        MoveEntityAction(Event::EntityMoved e);
+        MoveEntityAction(Event::EntityMoved e, bool propogate = true);
         void Apply() override;
         void Undo() override;
         std::string Serialize() const override;
@@ -21,7 +21,7 @@ namespace Dog
     class RotateEntityAction : public Action
     {
     public:
-        RotateEntityAction(Event::EntityRotated e);
+        RotateEntityAction(Event::EntityRotated e, bool propogate = true);
         void Apply() override;
         void Undo() override;
         std::string Serialize() const override;
@@ -34,7 +34,7 @@ namespace Dog
     class ScaleEntityAction : public Action
     {
     public:
-        ScaleEntityAction(Event::EntityScaled e);
+        ScaleEntityAction(Event::EntityScaled e, bool propogate = true);
         void Apply() override;
         void Undo() override;
         std::string Serialize() const override;
@@ -47,7 +47,7 @@ namespace Dog
     class TransformEntityAction : public Action
     {
     public:
-        TransformEntityAction(Event::EntityTransform e);
+        TransformEntityAction(Event::EntityTransform e, bool propogate = true);
         void Apply() override;
         void Undo() override;
         std::string Serialize() const override;

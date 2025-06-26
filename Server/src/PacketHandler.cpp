@@ -56,11 +56,18 @@ namespace Dog
             playerManager.popPlayer(peer);
             break;
         }
+        case EVENT_ACTION: {
+            packetUtils.broadcastPacket(host, peer, EVENT_ACTION, data);           
+            break;
+        }
+        case EVENT_ACTION_UNDO: {
+            packetUtils.broadcastPacket(host, peer, EVENT_ACTION_UNDO, data);
+            break;
+        }
         default: {
             printf("Unknown packet ID: %d\n", packetID);
             break;
         }
         }
     }
-
 }

@@ -19,6 +19,8 @@ namespace Dog
         void StopTyping();
         void SendMessage(const std::string& message);
         void SetUsername(const std::string& name);
+        void SendAction(const std::string& action);
+        void SendUndoAction(const std::string& action);
 
         const std::string& GetUsername() const;
         bool IsConnected() const { return m_ConnectionStatus == ConnectionStatus::CONNECTED; }

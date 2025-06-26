@@ -40,26 +40,31 @@ namespace Dog
     // --- Sending functions ---
 
     void PacketUtils::sendPacket(ENetPeer* peer, PacketID packetID) {
+        if (!peer) return;
         ENetPacket* packet = createFormattedPacket("%d", packetID);
         enet_peer_send(peer, 0, packet);
     }
 
     void PacketUtils::sendPacket(ENetPeer* peer, PacketID packetID, const char* data) {
+        if (!peer) return;
         ENetPacket* packet = createFormattedPacket("%d %s", packetID, data);
         enet_peer_send(peer, 0, packet);
     }
 
     void PacketUtils::sendPacketInt(ENetPeer* peer, PacketID packetID, int data) {
+        if (!peer) return;
         ENetPacket* packet = createFormattedPacket("%d %i", packetID, data);
         enet_peer_send(peer, 0, packet);
     }
 
     void PacketUtils::sendPacketVec2(ENetPeer* peer, PacketID packetID, float x, float y) {
+        if (!peer) return;
         ENetPacket* packet = createFormattedPacket("%d %f %f", packetID, x, y);
         enet_peer_send(peer, 0, packet);
     }
 
     void PacketUtils::sendPacketVec3(ENetPeer* peer, PacketID packetID, float x, float y, float z) {
+        if (!peer) return;
         ENetPacket* packet = createFormattedPacket("%d %f %f %f", packetID, x, y, z);
         enet_peer_send(peer, 0, packet);
     }
@@ -67,30 +72,35 @@ namespace Dog
     // --- Broadcasting functions ---
 
     void PacketUtils::broadcastPacket(ENetHost* host, ENetPeer* sender, PacketID packetID) {
+        if (!host) return;
         broadcastHelper(host, sender, [this, packetID](ENetPeer* p) {
             sendPacket(p, packetID);
         });
     }
 
     void PacketUtils::broadcastPacket(ENetHost* host, ENetPeer* sender, PacketID packetID, const char* data) {
+        if (!host) return;
         broadcastHelper(host, sender, [this, packetID, data](ENetPeer* p) {
             sendPacket(p, packetID, data);
         });
     }
 
     void PacketUtils::broadcastPacketInt(ENetHost* host, ENetPeer* sender, PacketID packetID, int data) {
+        if (!host) return;
         broadcastHelper(host, sender, [this, packetID, data](ENetPeer* p) {
             sendPacketInt(p, packetID, data);
         });
     }
 
     void PacketUtils::broadcastPacketVec2(ENetHost* host, ENetPeer* sender, PacketID packetID, float x, float y) {
+        if (!host) return;
         broadcastHelper(host, sender, [this, packetID, x, y](ENetPeer* p) {
             sendPacketVec2(p, packetID, x, y);
         });
     }
 
     void PacketUtils::broadcastPacketVec3(ENetHost* host, ENetPeer* sender, PacketID packetID, float x, float y, float z) {
+        if (!host) return;
         broadcastHelper(host, sender, [this, packetID, x, y, z](ENetPeer* p) {
             sendPacketVec3(p, packetID, x, y, z);
         }); 

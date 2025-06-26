@@ -15,5 +15,6 @@
 #include <cstring>
 #include <stdarg.h>
 #include <cstdio>
+#include <sstream>
 
 #endif // DOG_PCH_H

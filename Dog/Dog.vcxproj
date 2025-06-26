@@ -103,7 +103,12 @@ IF "$(ConfigurationName)"=="Debug" (
     xcopy "$(ProjectDir)Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
 ) ELSE (
     xcopy "$(ProjectDir)Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
-)</Command>
+)
+
+xcopy "$(ProjectDir)Dependencies\ultralight\bin\AppCore.dll" "$(OutDir)" /Y
+xcopy "$(ProjectDir)Dependencies\ultralight\bin\Ultralight.dll" "$(OutDir)" /Y
+xcopy "$(ProjectDir)Dependencies\ultralight\bin\UltralightCore.dll" "$(OutDir)" /Y
+xcopy "$(ProjectDir)Dependencies\ultralight\bin\WebCore.dll" "$(OutDir)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -142,7 +147,12 @@ IF "$(ConfigurationName)"=="Debug" (
     xcopy "$(ProjectDir)Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
 ) ELSE (
     xcopy "$(ProjectDir)Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
-)</Command>
+)
+
+xcopy "$(ProjectDir)Dependencies\ultralight\bin\AppCore.dll" "$(OutDir)" /Y
+xcopy "$(ProjectDir)Dependencies\ultralight\bin\Ultralight.dll" "$(OutDir)" /Y
+xcopy "$(ProjectDir)Dependencies\ultralight\bin\UltralightCore.dll" "$(OutDir)" /Y
+xcopy "$(ProjectDir)Dependencies\ultralight\bin\WebCore.dll" "$(OutDir)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
@@ -181,7 +191,12 @@ IF "$(ConfigurationName)"=="Debug" (
     xcopy "$(ProjectDir)Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
 ) ELSE (
     xcopy "$(ProjectDir)Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
-)</Command>
+)
+
+xcopy "$(ProjectDir)Dependencies\ultralight\bin\AppCore.dll" "$(OutDir)" /Y
+xcopy "$(ProjectDir)Dependencies\ultralight\bin\Ultralight.dll" "$(OutDir)" /Y
+xcopy "$(ProjectDir)Dependencies\ultralight\bin\UltralightCore.dll" "$(OutDir)" /Y
+xcopy "$(ProjectDir)Dependencies\ultralight\bin\WebCore.dll" "$(OutDir)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -262,6 +277,7 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClCompile Include="src\Dog\Events\Actions.cpp" />
     <ClCompile Include="src\Dog\Events\Event.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Editor.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Editor\TextEditor\TextEditor.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Windows\AssetsWindow.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Windows\ChatWindow.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Windows\EntitiesWindow.cpp" />
@@ -343,6 +359,7 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClInclude Include="src\Dog\Events\Actions.h" />
     <ClInclude Include="src\Dog\Events\Event.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Editor.h" />
+    <ClInclude Include="src\Dog\Graphics\Editor\TextEditor\TextEditor.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Windows\AssetsWindow.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Windows\ChatWindow.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Windows\EntitiesWindow.h" />
@@ -381,6 +398,7 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClInclude Include="src\Dog\Input\inputMap.h" />
     <ClInclude Include="src\Dog\Input\KeyboardController.h" />
     <ClInclude Include="src\Dog\Engine.h" />
+    <ClInclude Include="src\Dog\Input\ultralightKeyMap.h" />
     <ClInclude Include="src\Dog\Logger\Logger.h" />
     <ClInclude Include="src\Dog\Networking\Networking.h" />
     <ClInclude Include="src\Dog\Networking\PacketHandler.h" />
@@ -398,6 +416,5 @@ IF "$(ConfigurationName)"=="Debug" (
     <None Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

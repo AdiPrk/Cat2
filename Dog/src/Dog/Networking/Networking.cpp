@@ -81,11 +81,13 @@ namespace Dog {
 
     void Networking::Shutdown()
     {
-        m_PacketUtils.sendPacket(m_Peer, CLIENT_LEAVE_PACKET);
-        
-        enet_host_flush(m_Peer->host);
-        enet_peer_disconnect(m_Peer, 0);
-        running = false;
+        if (m_Peer) {
+            m_PacketUtils.sendPacket(m_Peer, CLIENT_LEAVE_PACKET);
+
+            enet_host_flush(m_Peer->host);
+            enet_peer_disconnect(m_Peer, 0);
+            running = false;
+        }
 
         if (m_NetworkThread.joinable())
         {
@@ -112,6 +114,16 @@ namespace Dog {
     {
         m_PacketUtils.sendPacket(m_Peer, CHAT_DISPLAY_NAME_PACKET, name.c_str());
         playerManager.SetUsername(name);
+    }
+
+    void Networking::SendAction(const std::string& action)
+    {
+        m_PacketUtils.sendPacket(m_Peer, EVENT_ACTION, action.c_str());
+    }
+
+    void Networking::SendUndoAction(const std::string& action)
+    {
+        m_PacketUtils.sendPacket(m_Peer, EVENT_ACTION_UNDO, action.c_str());
     }
 
     const std::string& Networking::GetUsername() const

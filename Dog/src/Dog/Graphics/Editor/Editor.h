@@ -5,18 +5,14 @@
 namespace Dog {
 
 	class FileBrowser;
-	class TextEditorWrapper;
+	class TextEditor;
 	class ChatWindow;
+	class Device;
 
 	class Editor {
 	public:
-		Editor();
+		Editor(Device& device);
 		~Editor();
-
-		static Editor& Get() {
-			static Editor instance;
-			return instance;
-		}
 
 		Editor(const Editor&) = delete;
 		Editor& operator=(const Editor&) = delete;
@@ -46,6 +42,7 @@ namespace Dog {
 		VkDescriptorSetLayout samplerSetLayout;
 
         ChatWindow* GetChatWindow() { return chatWindow.get(); }
+        //TextEditor* GetTextEditor() { return m_TextEditor.get(); }
 
 		void UndoAction();
 		
@@ -55,7 +52,8 @@ namespace Dog {
 
 		std::unique_ptr<FileBrowser> fileBrowser;
         std::unique_ptr<ChatWindow> chatWindow;
-		//std::unique_ptr<TextEditorWrapper> textEditorWrapper;
+		
+		//std::unique_ptr<TextEditor> m_TextEditor;
 
 		bool renderEditor = true;
 		bool startedRenderingFrame = false;
@@ -72,6 +70,8 @@ namespace Dog {
 		};
 		std::vector<GuizmoData> oldGuizmoData;
 		std::vector<GuizmoData> newGuizmoData;
+
+		Device& device;
 	};
 
 } // namespace Dog

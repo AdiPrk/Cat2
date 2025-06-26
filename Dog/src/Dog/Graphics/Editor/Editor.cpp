@@ -29,6 +29,10 @@
 #include "Scene/Entity/Entity.h"
 #include "Events/Actions.h"
 
+#include "Networking/Networking.h"
+
+#include "TextEditor/TextEditor.h"
+
 namespace ImGui {
 	/**
 	 * Draw an ImGui::Image using Vulkan.
@@ -60,11 +64,12 @@ namespace ImGui {
 
 namespace Dog {
 	
-	Editor::Editor()
+	Editor::Editor(Device& d)
+		: device(d)
 	{
 		fileBrowser = std::make_unique<FileBrowser>();
         chatWindow = std::make_unique<ChatWindow>();
-		// textEditorWrapper = std::make_unique<TextEditorWrapper>();
+		//m_TextEditor = std::make_unique<TextEditor>(device);
 	}
 
 	Editor::~Editor()
@@ -118,7 +123,7 @@ namespace Dog {
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable keyboard controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;      // Enable docking
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;    // Enable multi-viewport / platform windows
+		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;    // Enable multi-viewport / platform windows
 
 		ImGui_ImplGlfw_InitForVulkan(window.getGLFWwindow(), true);
 		ImGui_ImplVulkan_InitInfo init_info = {};
@@ -340,15 +345,26 @@ namespace Dog {
 		// UpdateToolbarWindow();
 		UpdateAssetsWindow(*fileBrowser);
 		chatWindow->Render();
+
+		//m_TextEditor->Update();
+
 		// UpdateTextEditorWindow(*textEditorWrapper);
 
-		ImGui::Begin("Textures");
+		// Essentially the browser
+		//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0)); // Remove window padding
+		//ImGui::Begin("Browser", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+        
+		//TextureLibrary& mx = Engine::Get().GetTextureLibrary();
+		//ImVec2 winSize = ImGui::GetContentRegionAvail();
+        //m_TextEditor->GetView()->Resize((uint32_t)winSize.x, (uint32_t)winSize.y);
+        //Texture& tex = m_TextEditor->GetTexture();
+		//auto ds = mx.GetDescriptorSet(tex);
+		//ImGui::Image(reinterpret_cast<void*>(ds), winSize);
 
-		TextureLibrary& mx = Engine::Get().GetTextureLibrary();
-		
-		ImGui::VulkanImage(mx, "assets/textures/dog.png", ImVec2(400, 400));
+		//ImGui::End();
+		//ImGui::PopStyleVar(); // Restore padding
 
-		ImGui::End();
+		//ImGui::VulkanImage(mx, "assets/textures/dog.png", ImVec2(400, 400));
 
 		DrawFPS();
 
@@ -363,7 +379,7 @@ namespace Dog {
 		if (!isActive) {
 			return;
 		}
-
+			
 		ImGui::Render();
 		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer);
 
@@ -644,6 +660,9 @@ namespace Dog {
 			std::string act = lastAction->Serialize();
             printf("REDO: %s\n", act.c_str());
 
+			Networking& networking = Engine::Get().GetNetworking();
+			networking.SendAction(act);
+
 			actionManager.Redo();
         }
 		else if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) && ImGui::IsKeyPressed(ImGuiKey_Z, false))
@@ -659,6 +678,10 @@ namespace Dog {
 
 			std::string act = lastAction->Serialize();
 			printf("UNDO: %s\n", act.c_str());
+
+			// Send to server
+			Networking& networking = Engine::Get().GetNetworking();
+			networking.SendUndoAction(act);
 
 			actionManager.Undo();
 		}

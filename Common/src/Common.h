@@ -23,10 +23,12 @@ namespace Dog
         CLIENT_LEAVE_PACKET      = 8,
         
         // Entity Events
-        EVENT_ENTITY_MOVE_PACKET =      9,
-        EVENT_ENTITY_ROTATE_PACKET =    10,
-        EVENT_ENTITY_SCALE_PACKET =     11,
-        EVENT_ENTITY_TRANSFORM_PACKET = 12,
+        EVENT_ACTION                  = 9,
+        EVENT_ACTION_UNDO             = 10,
+        EVENT_ENTITY_MOVE_PACKET      = 11,
+        EVENT_ENTITY_ROTATE_PACKET    = 12,
+        EVENT_ENTITY_SCALE_PACKET     = 13,
+        EVENT_ENTITY_TRANSFORM_PACKET = 14,
     };
 
     enum ConnectionStatus {

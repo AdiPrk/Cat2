@@ -12,6 +12,7 @@ namespace Dog
 
         // --- Packet handling ---
         void HandlePacket(ENetPeer* peer, ENetPacket* packet, PlayerManager& playerManager);
+        void HandleEventPacket(const std::string& event, ENetPeer* peer, ENetPacket* packet, PlayerManager& playerManager, bool undo = false);
 
     private:
         PacketUtils& packetUtils;

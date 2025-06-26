@@ -5,6 +5,7 @@
 #define _SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING
 #define _SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS
 #define NOMINMAX
+#define WIN32_LEAN_AND_MEAN 
 
 constexpr int AI_SBBC_DEFAULT_MAX_BONES = 100;
 constexpr int MAX_BONE_INFLUENCE = 4;
@@ -19,7 +20,6 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_vulkan.h>
-
 
 // glm
 #define GLM_FORCE_RADIANS
@@ -80,6 +80,13 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 
 // Enet
 #include "enet/enet.h"
+
+// Ultralight
+//#include <Ultralight/Ultralight.h>
+//#include <AppCore/AppCore.h>
+//#include <AppCore/App.h>
+//#include <AppCore/Window.h>
+//#include <AppCore/Overlay.h>
 
 // My files
 #include "Logger/Logger.h"

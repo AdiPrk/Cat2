@@ -6,6 +6,7 @@ namespace Dog {
 
     class Texture {
     public:
+        Texture(Device& device);
         Texture(Device& device, const std::string& filepath);
         Texture(Device& device, const std::string& filepath, const unsigned char* textureData, int textureSize);
         ~Texture();
@@ -16,6 +17,9 @@ namespace Dog {
         const VkImageView& getImageView() const { return textureImageView; }
 
         std::string path;
+
+        // Returns if new image was created
+        //bool CopyBitmapToTexture(ultralight::RefPtr<ultralight::Bitmap> bitmap);
 
     private:
         friend class TextureLibrary;
@@ -33,6 +37,7 @@ namespace Dog {
             VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
 
 
+
         Device& device;
         VkImage textureImage;
         VmaAllocation textureImageAllocation;
@@ -41,6 +46,10 @@ namespace Dog {
         uint32_t mipLevels;
 
         VkDescriptorSet descriptorSet;
+
+        VkFormat format;
+        uint32_t textureWidth = 0;
+        uint32_t textureHeight = 0;
     };
 
 } // namespace Dog

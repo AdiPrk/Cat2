@@ -7,33 +7,6 @@
 #include "Engine.h"
 //#include "Dog/Assets/Packer/assetPacker.h"
 
-/*
-
-struct CameraComponent
-	{
-		// The camera that is currently being used to render the scene
-		bool MainCamera = true;
-
-		enum class CameraType
-		{
-			Orthographic = 0,
-			Perspective
-		};
-
-		CameraType Projection = CameraType::Perspective;
-
-		float OrthographicLeft = -1.0f;
-		float OrthographicRight = 1.0f;
-		float OrthographicBottom = 1.0f;
-		float OrthographicTop = -1.0f;
-		float OrthographicNear = -1.0f;
-		float OrthographicFar = 1.0f;
-
-		float PerspectiveFOV = 45.0f;
-		float PerspectiveNear = 0.01f;
-		float PerspectiveFar = 1000.0f;
-*/
-
 namespace Dog {
 
 	void SceneSerializer::Serialize(Scene* scene, const std::string& filepath)

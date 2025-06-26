@@ -14,6 +14,7 @@ namespace Dog {
 		, bakedInTextureCount(0)
 	{
 		CreateTextureSampler();
+		CreateHtmlTextureSampler();
 
 		VkDescriptorPoolSize poolSize{};
 		poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -144,8 +145,49 @@ namespace Dog {
 		}
 	}
 
-	void TextureLibrary::CreateDescriptorSet(Texture& texture)
+	void TextureLibrary::CreateHtmlTextureSampler() {
+		VkPhysicalDeviceProperties properties{};
+		vkGetPhysicalDeviceProperties(device.getPhysicalDevice(), &properties);
+
+		VkSamplerCreateInfo samplerInfo{};
+		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+
+		// Force Linear filtering (should blur text)
+		samplerInfo.magFilter = VK_FILTER_LINEAR;
+		samplerInfo.minFilter = VK_FILTER_LINEAR;
+
+		// Use extreme addressing modes (should create visual artifacts at edges)
+		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
+		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
+		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
+
+		// Enable max anisotropy (should introduce some stretching)
+		samplerInfo.anisotropyEnable = VK_TRUE;
+		samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
+
+		// Use mipmapping with an extreme bias (should distort the texture)
+		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+		samplerInfo.mipLodBias = 5.0f; // High bias to force using lower mip levels
+		samplerInfo.minLod = 0.0f;
+		samplerInfo.maxLod = properties.limits.maxSamplerLodBias;
+
+		// Border color (not important for repeat mode)
+		samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_WHITE;
+
+		// Normalized UVs
+		samplerInfo.unnormalizedCoordinates = VK_FALSE;
+
+		if (vkCreateSampler(device, &samplerInfo, nullptr, &htmlTextureSampler) != VK_SUCCESS) {
+			throw std::runtime_error("Failed to create HTML texture sampler!");
+		}
+	}
+
+	void TextureLibrary::CreateDescriptorSet(Texture& texture, bool html)
 	{
+        if (texture.descriptorSet != VK_NULL_HANDLE) {
+            return; // Descriptor set already created
+        }
+
 		auto& descSet = texture.descriptorSet;
 		VkDescriptorSetAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -157,13 +199,36 @@ namespace Dog {
 
 		VkDescriptorImageInfo imageInfo{};
 		imageInfo.imageView = texture.getImageView(); // Get the VkImageView from the texture
-		imageInfo.sampler = textureSampler; // The sampler you created in TextureLibrary
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        
+		if (html) imageInfo.sampler = htmlTextureSampler;
+        else imageInfo.sampler = textureSampler;
 
 		VkWriteDescriptorSet descriptorWrite{};
 		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrite.dstSet = descSet;
 		descriptorWrite.dstBinding = 0; // Binding in the shader
+		descriptorWrite.dstArrayElement = 0;
+		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		descriptorWrite.descriptorCount = 1;
+		descriptorWrite.pImageInfo = &imageInfo;
+
+		vkUpdateDescriptorSets(device, 1, &descriptorWrite, 0, nullptr);
+	}
+
+	void TextureLibrary::UpdateDescriptorSet(Texture& texture, bool html)
+	{
+		VkDescriptorImageInfo imageInfo{};
+		imageInfo.imageView = texture.getImageView(); // New image view
+		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+        if (html) imageInfo.sampler = htmlTextureSampler;
+        else imageInfo.sampler = textureSampler;
+
+		VkWriteDescriptorSet descriptorWrite{};
+		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrite.dstSet = texture.descriptorSet; // Use existing descriptor set handle
+		descriptorWrite.dstBinding = 0;
 		descriptorWrite.dstArrayElement = 0;
 		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		descriptorWrite.descriptorCount = 1;

@@ -35,7 +35,7 @@ namespace Dog {
     {
         Logger::Init();
         m_ActionManager = std::make_unique<ActionManager>();
-        m_Editor = std::make_unique<Editor>();
+        m_Editor = std::make_unique<Editor>(device);
         m_Networking = std::make_unique<Networking>(specs.serverAddress, specs.serverPort);
     }
 
@@ -59,6 +59,7 @@ namespace Dog {
         FrameRateController frameRateController(fps);
 
         auto currentTime = std::chrono::high_resolution_clock::now();
+
         while (!m_Window.shouldClose() && m_Running) {
             Input::Update();
             float dt = frameRateController.WaitForNextFrame();
@@ -78,8 +79,11 @@ namespace Dog {
             SceneManager::Render(dt, true);
         }
 
-        m_Renderer->Exit();
+        vkDeviceWaitIdle(device);
 
+        tex.reset();
+        m_CloseWebview = true;
+        m_Renderer->Exit();
         m_Networking->Shutdown();
         
         return EXIT_SUCCESS;
@@ -88,6 +92,15 @@ namespace Dog {
     void Engine::Exit()
     {
         m_Running = false;
+    }
+
+    void Engine::WebViewThread()
+    {
+        //webview::webview w(true, nullptr);
+        //w.set_title("Minimal WebView Test");
+        //w.set_size(800, 600, WEBVIEW_HINT_NONE);
+        //w.navigate("https://example.com/");
+        //w.run(&m_CloseWebview);
     }
 
 } // namespace Dog

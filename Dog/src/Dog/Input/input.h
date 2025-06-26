@@ -19,6 +19,8 @@ namespace Dog {
 		static void Update();
 
 		static bool isKeyDown(const Key& key);
+		static bool isKeyTriggered(const Key& key);
+        static bool isKeyReleased(const Key& key);
 		static bool isMouseDown(const Mouse& button);
 		static void UpdateMousePosition();
 
@@ -36,6 +38,11 @@ namespace Dog {
 		static float getMouseWorldXDelta() { return mouseWorldX - lastMouseWorldX; }
 		static float getMouseWorldYDelta() { return mouseWorldY - lastMouseWorldY; }
 
+        // scene mouse positions
+        static glm::vec2 getMouseScenePosition() { return { mouseSceneX, mouseSceneY }; }
+        static float getMouseSceneX() { return mouseSceneX; }
+        static float getMouseSceneY() { return mouseSceneY; }
+
 		// mouse scroll
 		static float getMouseScrollX() { return scrollX; }
 		static float getMouseScrollY() { return scrollY; }
@@ -45,16 +52,10 @@ namespace Dog {
 		static void SetKeyInputLocked(bool locked);
 		static void SetMouseInputLocked(bool locked);
 
-	private:
-		static GLFWwindow* pwindow;
-
 		struct KeyStates
 		{
 			bool keyDown = false;
-			bool keyTriggered = false;
-			bool keyReleased = false;
-			bool prevTriggered = false;
-			bool doTriggered = false;
+			bool prevKeyDown = false;
 		};
 
 		struct MouseStates
@@ -68,6 +69,10 @@ namespace Dog {
 
 		static KeyStates keyStates[static_cast<int>(Key::LAST)];
 		static MouseStates mouseStates[static_cast<int>(Mouse::LAST)];
+
+	private:
+		static GLFWwindow* pwindow;
+
 		static GLFWcursor* standardCursor;
 
 		static float scrollX;
@@ -82,13 +87,18 @@ namespace Dog {
 		static float lastMouseWorldY;
 		static float mouseWorldX;
 		static float mouseWorldY;
+		static float mouseSceneX;
+        static float mouseSceneY;
 
 		static bool keyInputLocked;
 		static bool mouseInputLocked;
+		static bool charInputLocked;
 
 		static void keyPressCallback(GLFWwindow* windowPointer, int key, int scanCode, int action, int mod);
 		static void mouseButtonCallback(GLFWwindow* windowPointer, int mouseButton, int action, int mod);
 		static void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+		static void charCallback(GLFWwindow* window, unsigned int codepoint);
+
 	};
 
 }

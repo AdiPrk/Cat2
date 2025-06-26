@@ -4,16 +4,24 @@
 #include <stb_image.h>
 #include <vulkan/vulkan.h>
 #include "Texture.h"
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image_write.h>
 #include "../Core/Device.h"
 
 namespace Dog {
+    Texture::Texture(Device& device)
+        : device{ device }
+    {
+        format = VK_FORMAT_B8G8R8A8_UNORM;
+    }
 
     // Constructor
     Texture::Texture(Device& device, const std::string& filepath)
         : device{ device }
     {
         path = filepath;
-
+        format = VK_FORMAT_R8G8B8A8_SRGB;
         createTextureImage(filepath);
         createTextureImageView();
     }
@@ -22,7 +30,7 @@ namespace Dog {
         : device{ device }
     {
         path = filepath;
-
+        format = VK_FORMAT_R8G8B8A8_SRGB;
         createTextureImageFromMemory(textureData, textureSize);
         createTextureImageView();
     }
@@ -81,12 +89,12 @@ namespace Dog {
         stbi_image_free(pixels);
 
         // Create the Vulkan image
-        createImage(texWidth, texHeight, mipLevels, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
+        createImage(texWidth, texHeight, mipLevels, format, VK_IMAGE_TILING_OPTIMAL,
             VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
             VMA_MEMORY_USAGE_GPU_ONLY);
 
         // Transition the image layout and copy from staging buffer
-        transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
+        transitionImageLayout(textureImage, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
         copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight), 1);
 
         // Clean up the staging buffer
@@ -136,13 +144,13 @@ namespace Dog {
         createImage(texWidth,
             texHeight,
             mipLevels,
-            VK_FORMAT_R8G8B8A8_SRGB,
+            format,
             VK_IMAGE_TILING_OPTIMAL,
             VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
             VMA_MEMORY_USAGE_GPU_ONLY);
 
         // Transition the image layout and copy from staging buffer
-        transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
+        transitionImageLayout(textureImage, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
         copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight), 1);
 
         // Clean up the staging buffer
@@ -154,14 +162,14 @@ namespace Dog {
 
     // Create an image view for the texture
     void Texture::createTextureImageView() {
-        textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels);
+        textureImageView = createImageView(textureImage, format, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels);
     }
 
     void Texture::GenerateMipmaps(int32_t texWidth, int32_t texHeight)
     {
         // Check if image format supports linear blitting
         VkFormatProperties formatProperties;
-        vkGetPhysicalDeviceFormatProperties(device.getPhysicalDevice(), VK_FORMAT_R8G8B8A8_SRGB, &formatProperties);
+        vkGetPhysicalDeviceFormatProperties(device.getPhysicalDevice(), format, &formatProperties);
 
         if (!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT)) {
             throw std::runtime_error("texture image format does not support linear blitting!");
@@ -327,6 +335,12 @@ namespace Dog {
             sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
             destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
         }
+        else if (oldLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
+            barrier.srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+            sourceStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+            destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+        }
         else {
             throw std::invalid_argument("Unsupported layout transition!");
         }
@@ -368,5 +382,92 @@ namespace Dog {
             &region);
         device.endSingleTimeCommands(commandBuffer);
     }
+
+    /*
+    bool Texture::CopyBitmapToTexture(ultralight::RefPtr<ultralight::Bitmap> bitmap) {
+        // Lock pixels and get new image parameters.
+        bool textureCreated = false;
+        void* pixels = bitmap->LockPixels();
+        uint32_t newWidth = bitmap->width();
+        uint32_t newHeight = bitmap->height();
+        uint32_t stride = bitmap->row_bytes();
+        VkDeviceSize imageSize = newHeight * stride;
+        VkFormat textureFormat = format;
+
+        static int first = 1000;
+        --first;
+        if (first == 1) {
+            stbi_write_png("bitmop.png", newWidth, newHeight, 4, pixels, 0);
+            first = 0;
+        }
+
+        // Create a staging buffer and copy the bitmap data into it.
+        VkBuffer stagingBuffer;
+        VmaAllocation stagingBufferAllocation;
+        device.createBuffer(
+            imageSize,
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+            VMA_MEMORY_USAGE_CPU_ONLY,
+            stagingBuffer,
+            stagingBufferAllocation
+        );
+
+        void* data;
+        vmaMapMemory(device.allocator, stagingBufferAllocation, &data);
+        memcpy(data, pixels, static_cast<size_t>(imageSize));
+        vmaUnmapMemory(device.allocator, stagingBufferAllocation);
+        bitmap->UnlockPixels();
+
+        // Calculate new mip levels based on the new dimensions.
+        uint32_t newMipLevels = 1;// static_cast<uint32_t>(std::floor(std::log2(std::max(newWidth, newHeight)))) + 1;
+
+        // Check if we need to (re)create the texture image.
+        if (textureImage == VK_NULL_HANDLE || newWidth != textureWidth || newHeight != textureHeight) {
+            // If a texture already exists, clean up the old image and view.
+            if (textureImage != VK_NULL_HANDLE) {
+                vkDestroyImageView(device, textureImageView, nullptr);
+                vmaDestroyImage(device.allocator, textureImage, textureImageAllocation);
+                textureImage = VK_NULL_HANDLE;
+                textureImageView = VK_NULL_HANDLE;
+                textureCreated = true;
+            }
+
+            // Update stored dimensions and mip levels.
+            textureWidth = newWidth;
+            textureHeight = newHeight;
+            mipLevels = newMipLevels;
+
+            // Create a new image.
+            createImage(
+                newWidth, newHeight, mipLevels, textureFormat, VK_IMAGE_TILING_OPTIMAL,
+                VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+                VMA_MEMORY_USAGE_GPU_ONLY
+            );
+            // Transition from UNDEFINED to TRANSFER_DST_OPTIMAL.
+            transitionImageLayout(textureImage, textureFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
+        }
+        else {
+            // Texture exists and dimensions are the same—transition for updating.
+            transitionImageLayout(textureImage, textureFormat, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
+        }
+
+        // Copy the new pixel data from the staging buffer into the texture image.
+        copyBufferToImage(stagingBuffer, textureImage, newWidth, newHeight, 1);
+
+        // Regenerate mipmaps (this also transitions the image to SHADER_READ_ONLY_OPTIMAL).
+        //GenerateMipmaps(newWidth, newHeight);
+        transitionImageLayout(textureImage, textureFormat, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 1);
+
+        // Clean up the staging buffer.
+        vmaDestroyBuffer(device.allocator, stagingBuffer, stagingBufferAllocation);
+
+        // Create the image view if it hasn't been created yet.
+        if (textureImageView == VK_NULL_HANDLE) {
+            createTextureImageView();
+        }
+
+        return textureCreated;
+    }
+    */
 
 } // namespace Dog
