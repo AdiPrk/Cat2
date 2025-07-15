@@ -11,6 +11,12 @@ namespace Dog {
     }
 
     float FrameRateController::WaitForNextFrame() {
+        // To avoid waiting;
+        // auto currentTime = std::chrono::high_resolution_clock::now(); // earlier
+        // auto newTime = std::chrono::high_resolution_clock::now();
+        // float dt = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
+        // currentTime = newTime;
+
         auto now = high_resolution_clock::now();
         auto timeSinceLastFrame = now - m_lastFrameTime;
 

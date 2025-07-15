@@ -58,19 +58,10 @@ namespace Dog {
 
         FrameRateController frameRateController(fps);
 
-        auto currentTime = std::chrono::high_resolution_clock::now();
-
-        while (!m_Window.shouldClose() && m_Running) {
+        while (!m_Window.shouldClose() && m_Running) 
+        {
             Input::Update();
             float dt = frameRateController.WaitForNextFrame();
-            
-            // Need to move in frame rate controller
-            // auto newTime = std::chrono::high_resolution_clock::now();
-            // float dt = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
-            // currentTime = newTime;
-
-            // Swap scenes if necessary (also does Init/Exit)
-            SceneManager::SwapScenes();
 
             // Update scenes
             SceneManager::Update(dt);
@@ -81,8 +72,6 @@ namespace Dog {
 
         vkDeviceWaitIdle(device);
 
-        tex.reset();
-        m_CloseWebview = true;
         m_Renderer->Exit();
         m_Networking->Shutdown();
         
@@ -92,15 +81,6 @@ namespace Dog {
     void Engine::Exit()
     {
         m_Running = false;
-    }
-
-    void Engine::WebViewThread()
-    {
-        //webview::webview w(true, nullptr);
-        //w.set_title("Minimal WebView Test");
-        //w.set_size(800, 600, WEBVIEW_HINT_NONE);
-        //w.navigate("https://example.com/");
-        //w.run(&m_CloseWebview);
     }
 
 } // namespace Dog

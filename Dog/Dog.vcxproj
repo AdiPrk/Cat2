@@ -103,12 +103,7 @@ IF "$(ConfigurationName)"=="Debug" (
     xcopy "$(ProjectDir)Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
 ) ELSE (
     xcopy "$(ProjectDir)Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
-)
-
-xcopy "$(ProjectDir)Dependencies\ultralight\bin\AppCore.dll" "$(OutDir)" /Y
-xcopy "$(ProjectDir)Dependencies\ultralight\bin\Ultralight.dll" "$(OutDir)" /Y
-xcopy "$(ProjectDir)Dependencies\ultralight\bin\UltralightCore.dll" "$(OutDir)" /Y
-xcopy "$(ProjectDir)Dependencies\ultralight\bin\WebCore.dll" "$(OutDir)" /Y</Command>
+)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,12 +142,7 @@ IF "$(ConfigurationName)"=="Debug" (
     xcopy "$(ProjectDir)Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
 ) ELSE (
     xcopy "$(ProjectDir)Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
-)
-
-xcopy "$(ProjectDir)Dependencies\ultralight\bin\AppCore.dll" "$(OutDir)" /Y
-xcopy "$(ProjectDir)Dependencies\ultralight\bin\Ultralight.dll" "$(OutDir)" /Y
-xcopy "$(ProjectDir)Dependencies\ultralight\bin\UltralightCore.dll" "$(OutDir)" /Y
-xcopy "$(ProjectDir)Dependencies\ultralight\bin\WebCore.dll" "$(OutDir)" /Y</Command>
+)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
@@ -191,12 +181,7 @@ IF "$(ConfigurationName)"=="Debug" (
     xcopy "$(ProjectDir)Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
 ) ELSE (
     xcopy "$(ProjectDir)Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
-)
-
-xcopy "$(ProjectDir)Dependencies\ultralight\bin\AppCore.dll" "$(OutDir)" /Y
-xcopy "$(ProjectDir)Dependencies\ultralight\bin\Ultralight.dll" "$(OutDir)" /Y
-xcopy "$(ProjectDir)Dependencies\ultralight\bin\UltralightCore.dll" "$(OutDir)" /Y
-xcopy "$(ProjectDir)Dependencies\ultralight\bin\WebCore.dll" "$(OutDir)" /Y</Command>
+)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -273,6 +258,7 @@ xcopy "$(ProjectDir)Dependencies\ultralight\bin\WebCore.dll" "$(OutDir)" /Y</Com
     <ClCompile Include="src\Dog\Assets\Assets.cpp" />
     <ClCompile Include="src\Dog\Assets\FileWatcher\FileWatcher.cpp" />
     <ClCompile Include="src\Dog\Assets\UUID\UUID.cpp" />
+    <ClCompile Include="src\Dog\Core\Core.cpp" />
     <ClCompile Include="src\Dog\Events\ActionManager.cpp" />
     <ClCompile Include="src\Dog\Events\Actions.cpp" />
     <ClCompile Include="src\Dog\Events\Event.cpp" />
@@ -324,6 +310,7 @@ xcopy "$(ProjectDir)Dependencies\ultralight\bin\WebCore.dll" "$(OutDir)" /Y</Com
     <ClCompile Include="src\Dog\Scene\SceneManager.cpp" />
     <ClCompile Include="src\Dog\Scene\Serializer\Conversions.cpp" />
     <ClCompile Include="src\Dog\Scene\Serializer\SceneSerializer.cpp" />
+    <ClCompile Include="src\Dog\Core\Systems\ISystem.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PCH\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -355,6 +342,7 @@ xcopy "$(ProjectDir)Dependencies\ultralight\bin\WebCore.dll" "$(OutDir)" /Y</Com
     <ClInclude Include="src\Dog\Assets\Assets.h" />
     <ClInclude Include="src\Dog\Assets\FileWatcher\FileWatcher.h" />
     <ClInclude Include="src\Dog\Assets\UUID\UUID.h" />
+    <ClInclude Include="src\Dog\Core\Core.h" />
     <ClInclude Include="src\Dog\Events\ActionManager.h" />
     <ClInclude Include="src\Dog\Events\Actions.h" />
     <ClInclude Include="src\Dog\Events\Event.h" />
@@ -409,6 +397,7 @@ xcopy "$(ProjectDir)Dependencies\ultralight\bin\WebCore.dll" "$(OutDir)" /Y</Com
     <ClInclude Include="src\Dog\Scene\SceneManager.h" />
     <ClInclude Include="src\Dog\Scene\Serializer\Conversions.h" />
     <ClInclude Include="src\Dog\Scene\Serializer\SceneSerializer.h" />
+    <ClInclude Include="src\Dog\Core\Systems\ISystem.h" />
     <ClInclude Include="src\PCH\pch.h" />
   </ItemGroup>
   <ItemGroup>

@@ -67,9 +67,6 @@ namespace Dog {
         Networking& GetNetworking() { return *m_Networking; }
         ActionManager& GetActionManager() { return *m_ActionManager; }
 
-		void WebViewThread();
-		std::unique_ptr<Texture> tex = nullptr;
-
 	private:
 		Window m_Window; // { WIDTH, HEIGHT, "Woof" };
 		Device device{ m_Window };
@@ -87,13 +84,11 @@ namespace Dog {
 		// Editor
 		std::unique_ptr<Editor> m_Editor;
 
-
 		// target fps
 		unsigned fps;
 
 		// running
 		bool m_Running = true;
-		bool m_CloseWebview = false;
 	};
 
 } // namespace Dog

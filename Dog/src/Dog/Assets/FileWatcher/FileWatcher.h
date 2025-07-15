@@ -3,7 +3,7 @@
 namespace Dog {
 
 #define WATCH_DIRECTORY(path) \
-	FileWatcher<Event::path##FileCreated, Event::path##FileModified, Event::path##FileDeleted> path##Watcher(Assets::path##sPath);
+	FileWatcher<Event::path##FileCreated, Event::path##FileModified, Event::path##FileDeleted> path##Watcher(Assets::path##sPath)
 
 #define STOP_WATCHING(path) \
 	path##Watcher.stop();

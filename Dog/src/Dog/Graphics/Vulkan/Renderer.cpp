@@ -60,8 +60,6 @@ namespace Dog {
         auto& textureLibrary = Engine::Get().GetTextureLibrary();
         auto& modelLibrary = Engine::Get().GetModelLibrary();
 
-        printf("BEFORE");
-
         textureLibrary.AddTexture("assets/textures/square.png");
         textureLibrary.AddTexture("assets/textures/texture.jpg");
         textureLibrary.AddTexture("assets/textures/dog.png");

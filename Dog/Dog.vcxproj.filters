@@ -71,6 +71,8 @@
     <ClCompile Include="Dependencies\imgui\ImSequencer.cpp" />
     <ClCompile Include="src\Dog\Events\ActionManager.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\TextEditor\TextEditor.cpp" />
+    <ClCompile Include="src\Dog\Core\Systems\ISystem.cpp" />
+    <ClCompile Include="src\Dog\Core\Core.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dog\Graphics\Vulkan\Animation\Animation.h" />
@@ -148,6 +150,8 @@
     <ClInclude Include="src\Dog\Events\ActionManager.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\TextEditor\TextEditor.h" />
     <ClInclude Include="src\Dog\Input\ultralightKeyMap.h" />
+    <ClInclude Include="src\Dog\Core\Systems\ISystem.h" />
+    <ClInclude Include="src\Dog\Core\Core.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Dog\Graphics\Vulkan\Models\Serialization\ModelFileFormat.md" />

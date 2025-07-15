@@ -54,6 +54,9 @@ namespace Dog {
 
 	void SceneManager::Update(float dt)
 	{
+		// Swap scenes if necessary (also does Init/Exit)
+		SceneManager::SwapScenes();
+
 		if (!m_ActiveScene) return;
 
 		// Update the active scene.

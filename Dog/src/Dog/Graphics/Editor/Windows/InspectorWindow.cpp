@@ -114,10 +114,10 @@ namespace Dog {
 		ImGui::GetIO().MouseDrawCursor = imguiDrawCursor;*/
 
 		// get mouse pos
-    ImGuiIO& io = ImGui::GetIO();
-    ImVec2 mousePos = io.MousePos;
+		//ImGuiIO& io = ImGui::GetIO();
+		//ImVec2 mousePos = io.MousePos;
 
-    printf("x, y: %f, %f\n", mousePos.x, mousePos.y);
+		//printf("x, y: %f, %f\n", mousePos.x, mousePos.y);
 	}
 
 	void RenderTransformComponent(Entity entity, TransformComponent& transform) {
