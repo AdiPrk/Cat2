@@ -6,8 +6,8 @@
 #include "Dog/engine.h"
 #include "Dog/Input/input.h"
 
-#include "Dog/Scene/sceneManager.h"
-#include "Dog/Scene/scene.h"
+#include "Core/Scene/sceneManager.h"
+#include "Core/Scene/scene.h"
 #include "Dog/Graphics/Vulkan/Window/Window.h"
 #include "Dog/Graphics/Vulkan/Core/Device.h"
 #include "Dog/Graphics/Vulkan/Core/SwapChain.h"

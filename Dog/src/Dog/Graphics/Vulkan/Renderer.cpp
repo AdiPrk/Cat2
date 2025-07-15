@@ -12,9 +12,9 @@
 
 #include "Graphics/Editor/Editor.h"
 
-#include "Scene/Scene.h"
-#include "Scene/Entity/Components.h"
-#include "Scene/Entity/Entity.h"
+#include "Core/Scene/Scene.h"
+#include "Core/Scene/Entity/Components.h"
+#include "Core/Scene/Entity/Entity.h"
 
 //anim
 #include "Animation/Animation.h"

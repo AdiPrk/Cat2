@@ -13,10 +13,10 @@
 
 #include "Graphics/Vulkan/Window/FrameRate.h"
 
-#include "Scene/SceneManager.h"
-#include "Scene/Scene.h"
-#include "Scene/Entity/Entity.h"
-#include "Scene/Entity/Components.h"
+#include "Core/Scene/SceneManager.h"
+#include "Core/Scene/Scene.h"
+#include "Core/Scene/Entity/Entity.h"
+#include "Core/Scene/Entity/Components.h"
 
 #include "Graphics/Editor/Editor.h"
 #include "Assets/FileWatcher/FileWatcher.h"
@@ -32,6 +32,7 @@ namespace Dog {
         , textureLibrary(device)
         , modelLibrary(device, textureLibrary)
         , fps(specs.fps)
+        , ecs()
     {
         Logger::Init();
         m_ActionManager = std::make_unique<ActionManager>();
@@ -63,11 +64,9 @@ namespace Dog {
             Input::Update();
             float dt = frameRateController.WaitForNextFrame();
 
-            // Update scenes
-            SceneManager::Update(dt);
-
-            // Render scenes
-            SceneManager::Render(dt, true);
+            ecs.FrameStart();
+            ecs.Update(dt);
+            ecs.FrameEnd();
         }
 
         vkDeviceWaitIdle(device);

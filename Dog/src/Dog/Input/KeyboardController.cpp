@@ -2,7 +2,7 @@
 #include "Graphics/Vulkan/Window/Window.h"
 #include "KeyboardController.h"
 #include "Input/input.h"
-#include "Scene/Entity/Components.h"
+#include "Core/Scene/Entity/Components.h"
 
 namespace Dog {
 

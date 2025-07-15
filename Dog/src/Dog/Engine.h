@@ -9,6 +9,8 @@
 #include "Graphics/Vulkan/Animation/Animation.h"
 #include "Graphics/Vulkan/Animation/Animator.h"
 
+#include "Core/ECS.h"
+
 namespace Dog {
 	// Forward Declarations
 	class Networking;
@@ -89,6 +91,9 @@ namespace Dog {
 
 		// running
 		bool m_Running = true;
+
+		// Entity Component System for the engine
+        ECS ecs; 
 	};
 
 } // namespace Dog

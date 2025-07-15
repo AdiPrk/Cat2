@@ -7,14 +7,14 @@
     <ClCompile Include="src\Dog\Graphics\Vulkan\Models\assimpGlmHelper.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Animation\Bone.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Buffers\Buffer.cpp" />
-    <ClCompile Include="src\Dog\Scene\Entity\Components.cpp" />
-    <ClCompile Include="src\Dog\Scene\Serializer\Conversions.cpp" />
+    <ClCompile Include="src\Dog\Core\Scene\Entity\Components.cpp" />
+    <ClCompile Include="src\Dog\Core\Scene\Serializer\Conversions.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Descriptors\Descriptors.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Core\Device.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Editor.cpp" />
     <ClCompile Include="src\Dog\Engine.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Windows\EntitiesWindow.cpp" />
-    <ClCompile Include="src\Dog\Scene\Entity\Entity.cpp" />
+    <ClCompile Include="src\Dog\Core\Scene\Entity\Entity.cpp" />
     <ClCompile Include="src\Dog\Events\Event.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Models\Serialization\FileHash.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Font\Font.cpp" />
@@ -33,9 +33,9 @@
     <ClCompile Include="src\PCH\pch.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Pipeline\Pipeline.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Renderer.cpp" />
-    <ClCompile Include="src\Dog\Scene\Scene.cpp" />
-    <ClCompile Include="src\Dog\Scene\SceneManager.cpp" />
-    <ClCompile Include="src\Dog\Scene\Serializer\SceneSerializer.cpp" />
+    <ClCompile Include="src\Dog\Core\Scene\Scene.cpp" />
+    <ClCompile Include="src\Dog\Core\Scene\SceneManager.cpp" />
+    <ClCompile Include="src\Dog\Core\Scene\Serializer\SceneSerializer.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Pipeline\Shader.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Systems\IndirectRenderer.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Core\SwapChain.cpp" />
@@ -71,8 +71,10 @@
     <ClCompile Include="Dependencies\imgui\ImSequencer.cpp" />
     <ClCompile Include="src\Dog\Events\ActionManager.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\TextEditor\TextEditor.cpp" />
-    <ClCompile Include="src\Dog\Core\Systems\ISystem.cpp" />
+    <ClCompile Include="src\Dog\Core\ISystem.cpp" />
     <ClCompile Include="src\Dog\Core\Core.cpp" />
+    <ClCompile Include="src\Dog\Core\ECS.cpp" />
+    <ClCompile Include="src\Dog\Systems\TestSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dog\Graphics\Vulkan\Animation\Animation.h" />
@@ -81,14 +83,14 @@
     <ClInclude Include="src\Dog\Graphics\Vulkan\Models\assimpGlmHelper.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Animation\Bone.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Buffers\Buffer.h" />
-    <ClInclude Include="src\Dog\Scene\Entity\Components.h" />
-    <ClInclude Include="src\Dog\Scene\Serializer\Conversions.h" />
+    <ClInclude Include="src\Dog\Core\Scene\Entity\Components.h" />
+    <ClInclude Include="src\Dog\Core\Scene\Serializer\Conversions.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Descriptors\Descriptors.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\Device.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Editor.h" />
     <ClInclude Include="src\Dog\Engine.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Windows\EntitiesWindow.h" />
-    <ClInclude Include="src\Dog\Scene\Entity\Entity.h" />
+    <ClInclude Include="src\Dog\Core\Scene\Entity\Entity.h" />
     <ClInclude Include="src\Dog\Events\Event.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Models\Serialization\FileHash.hpp" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Font\Font.h" />
@@ -108,9 +110,9 @@
     <ClInclude Include="src\PCH\pch.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Pipeline\Pipeline.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Renderer.h" />
-    <ClInclude Include="src\Dog\Scene\Scene.h" />
-    <ClInclude Include="src\Dog\Scene\SceneManager.h" />
-    <ClInclude Include="src\Dog\Scene\Serializer\SceneSerializer.h" />
+    <ClInclude Include="src\Dog\Core\Scene\Scene.h" />
+    <ClInclude Include="src\Dog\Core\Scene\SceneManager.h" />
+    <ClInclude Include="src\Dog\Core\Scene\Serializer\SceneSerializer.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Pipeline\Shader.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Systems\IndirectRenderer.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\SwapChain.h" />
@@ -150,8 +152,10 @@
     <ClInclude Include="src\Dog\Events\ActionManager.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\TextEditor\TextEditor.h" />
     <ClInclude Include="src\Dog\Input\ultralightKeyMap.h" />
-    <ClInclude Include="src\Dog\Core\Systems\ISystem.h" />
+    <ClInclude Include="src\Dog\Core\ISystem.h" />
     <ClInclude Include="src\Dog\Core\Core.h" />
+    <ClInclude Include="src\Dog\Core\ECS.h" />
+    <ClInclude Include="src\Dog\Systems\TestSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Dog\Graphics\Vulkan\Models\Serialization\ModelFileFormat.md" />

@@ -2,7 +2,7 @@
 
 #include "../Buffers/Buffer.h"
 #include "../Core/Device.h"
-#include "Scene/Entity/Components.h"
+#include "Core/Scene/Entity/Components.h"
 
 namespace Dog {
 

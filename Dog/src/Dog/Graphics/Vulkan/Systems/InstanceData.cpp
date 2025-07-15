@@ -1,8 +1,8 @@
 #include <PCH/pch.h>
 #include "InstanceData.h"
-#include "Scene/SceneManager.h"
-#include "Scene/Scene.h"
-#include "Scene/Entity/Components.h"
+#include "Core/Scene/SceneManager.h"
+#include "Core/Scene/Scene.h"
+#include "Core/Scene/Entity/Components.h"
 #include "Graphics/Vulkan/Models/Model.h"
 #include "Graphics/Vulkan/Models/ModelLibrary.h"
 

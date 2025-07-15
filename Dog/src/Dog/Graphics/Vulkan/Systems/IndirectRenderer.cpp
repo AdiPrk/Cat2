@@ -1,9 +1,9 @@
 #include <PCH/pch.h>
 #include "IndirectRenderer.h"
 #include "Engine.h"
-#include "Scene/SceneManager.h"
-#include "Scene/Scene.h"
-#include "Scene/Entity/Components.h"
+#include "Core/Scene/SceneManager.h"
+#include "Core/Scene/Scene.h"
+#include "Core/Scene/Entity/Components.h"
 #include "../Pipeline/Pipeline.h"
 
 namespace Dog {

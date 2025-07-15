@@ -3,10 +3,10 @@
 #ifndef DOG_SHIP
 
 #include "entitiesWindow.h"
-#include "Dog/Scene/sceneManager.h"
-#include "Dog/Scene/scene.h"
-#include "Dog/Scene/Entity/entity.h"
-#include "Dog/Scene/Entity/components.h"
+#include "Core/Scene/sceneManager.h"
+#include "Core/Scene/scene.h"
+#include "Core/Scene/Entity/entity.h"
+#include "Core/Scene/Entity/components.h"
 #include "Engine.h"
 #include "../Editor.h"
 
