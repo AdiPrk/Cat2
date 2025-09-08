@@ -1,4 +1,4 @@
-/*********************************************************************
+/*****************************************************************//**
  * file:   UniformData.hpp
  * author: aditya.prakash (aditya.prakash@digipen.edu) and evan.gray (evan.gray@digipen.edu)
  * date:   October 10, 2024

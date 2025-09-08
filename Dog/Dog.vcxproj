@@ -77,13 +77,13 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.3.290.0\Include;$(ProjectDir)Dependencies\glfw\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\stb_image\stb;$(ProjectDir)Dependencies\tiny_obj_loader;$(ProjectDir)Dependencies\vk_extensions;$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies\glslang\include;$(ProjectDir)Dependencies\spdlog\include;$(ProjectDir)Dependencies\entt\include;$(ProjectDir)Dependencies\yaml-cpp\include;$(ProjectDir)Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Include;$(ProjectDir)Dependencies\glfw\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\stb_image\stb;$(ProjectDir)Dependencies\tiny_obj_loader;$(ProjectDir)Dependencies\vk_extensions;$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies\glslang\include;$(ProjectDir)Dependencies\spdlog\include;$(ProjectDir)Dependencies\entt\include;$(ProjectDir)Dependencies\yaml-cpp\include;$(ProjectDir)Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.3.290.0\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>zlibstaticd.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;yaml-cppd.lib;glslangd.lib;SPIRVd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-optd.lib;GenericCodeGend.lib;MachineIndependentd.lib;glslang-default-resource-limitsd.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2d.lib;freetyped.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpatd.lib;libpng16d.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
@@ -116,7 +116,7 @@ IF "$(ConfigurationName)"=="Debug" (
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.3.290.0\Include;$(ProjectDir)Dependencies\glfw\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\stb_image\stb;$(ProjectDir)Dependencies\tiny_obj_loader;$(ProjectDir)Dependencies\vk_extensions;$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies\glslang\include;$(ProjectDir)Dependencies\spdlog\include;$(ProjectDir)Dependencies\entt\include;$(ProjectDir)Dependencies\yaml-cpp\include;$(ProjectDir)Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Include;$(ProjectDir)Dependencies\glfw\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\stb_image\stb;$(ProjectDir)Dependencies\tiny_obj_loader;$(ProjectDir)Dependencies\vk_extensions;$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies\glslang\include;$(ProjectDir)Dependencies\spdlog\include;$(ProjectDir)Dependencies\entt\include;$(ProjectDir)Dependencies\yaml-cpp\include;$(ProjectDir)Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -124,7 +124,7 @@ IF "$(ConfigurationName)"=="Debug" (
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.3.290.0\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2.lib;freetype.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpat.lib;libpng16.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
@@ -155,7 +155,7 @@ IF "$(ConfigurationName)"=="Debug" (
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.3.290.0\Include;$(ProjectDir)Dependencies\glfw\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\stb_image\stb;$(ProjectDir)Dependencies\tiny_obj_loader;$(ProjectDir)Dependencies\vk_extensions;$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies\glslang\include;$(ProjectDir)Dependencies\spdlog\include;$(ProjectDir)Dependencies\entt\include;$(ProjectDir)Dependencies\yaml-cpp\include;$(ProjectDir)Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Include;$(ProjectDir)Dependencies\glfw\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\stb_image\stb;$(ProjectDir)Dependencies\tiny_obj_loader;$(ProjectDir)Dependencies\vk_extensions;$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies\glslang\include;$(ProjectDir)Dependencies\spdlog\include;$(ProjectDir)Dependencies\entt\include;$(ProjectDir)Dependencies\yaml-cpp\include;$(ProjectDir)Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -163,7 +163,7 @@ IF "$(ConfigurationName)"=="Debug" (
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.3.290.0\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2.lib;freetype.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpat.lib;libpng16.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
@@ -255,6 +255,11 @@ IF "$(ConfigurationName)"=="Debug" (
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Dependencies\vk-bootstrap\src\VkBootstrap.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\Dog\Assets\Assets.cpp" />
     <ClCompile Include="src\Dog\Assets\FileWatcher\FileWatcher.cpp" />
     <ClCompile Include="src\Dog\Assets\UUID\UUID.cpp" />
@@ -269,30 +274,30 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClCompile Include="src\Dog\Graphics\Editor\Windows\ChatWindow.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Windows\EntitiesWindow.cpp" />
     <ClCompile Include="src\Dog\Graphics\Editor\Windows\InspectorWindow.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Animation\Animation.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Animation\Animator.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Animation\Bone.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Buffers\Buffer.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Core\Device.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Core\SwapChain.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Descriptors\Descriptors.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Animation\Animation.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Animation\Animator.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Font\Font.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Font\FontLibrary.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Models\assimpGlmHelper.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Animation\Bone.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Models\Serialization\FileHash.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Models\Serialization\ModelSerializer.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Models\UnifiedMeshes.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Pipeline\Shader.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Texture\ImGuiTexture.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Models\Mesh.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Models\Model.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Models\ModelLibrary.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Texture\Texture.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Texture\TextureLibrary.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Models\Serialization\FileHash.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Models\Serialization\ModelSerializer.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Models\UnifiedMeshes.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Pipeline\Pipeline.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Pipeline\Shader.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Renderer.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Systems\IndirectRenderer.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Systems\InstanceData.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Texture\ImGuiTexture.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Texture\Texture.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Texture\TextureLibrary.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\UniformData.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\UniformSettings.cpp" />
@@ -355,6 +360,9 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClInclude Include="src\Dog\Graphics\Editor\Windows\ChatWindow.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Windows\EntitiesWindow.h" />
     <ClInclude Include="src\Dog\Graphics\Editor\Windows\InspectorWindow.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Animation\Animation.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Animation\Animator.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Animation\Bone.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Buffers\Buffer.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\Device.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\SwapChain.h" />
@@ -362,24 +370,21 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClInclude Include="src\Dog\Graphics\Vulkan\Font\Font.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Font\FontLibrary.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\FrameInfo.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Animation\Animation.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Animation\Animator.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Models\assimpGlmHelper.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Animation\Bone.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Models\Serialization\FileHash.hpp" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Models\Serialization\ModelSerializer.hpp" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Models\UnifiedMeshes.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Pipeline\Shader.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Texture\ImGuiTexture.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Models\Mesh.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Models\Model.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Models\ModelLibrary.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Texture\Texture.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Texture\TextureLibrary.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Models\Serialization\FileHash.hpp" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Models\Serialization\ModelSerializer.hpp" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Models\UnifiedMeshes.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Pipeline\Pipeline.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Pipeline\Shader.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Renderer.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Systems\IndirectRenderer.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Systems\InstanceData.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Texture\ImGuiTexture.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Texture\Texture.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Texture\TextureLibrary.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\UniformData.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\UniformSettings.h" />
@@ -405,7 +410,6 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClInclude Include="src\PCH\pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Dog\Graphics\Vulkan\Models\Serialization\ModelFileFormat.md" />
     <None Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

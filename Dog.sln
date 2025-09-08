@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "Common\Common.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Launcher", "Launcher\Launcher.vcxproj", "{D6D1BD17-6FAA-4D5E-9619-8C8BCD25690E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BSRenderer", "BSRenderer\BSRenderer.vcxproj", "{F22C8408-0B6C-41DA-A85B-201B4E292B00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -48,6 +50,12 @@ Global
 		{D6D1BD17-6FAA-4D5E-9619-8C8BCD25690E}.Release|x64.Build.0 = Release|x64
 		{D6D1BD17-6FAA-4D5E-9619-8C8BCD25690E}.Ship|x64.ActiveCfg = Ship|x64
 		{D6D1BD17-6FAA-4D5E-9619-8C8BCD25690E}.Ship|x64.Build.0 = Ship|x64
+		{F22C8408-0B6C-41DA-A85B-201B4E292B00}.Debug|x64.ActiveCfg = Debug|x64
+		{F22C8408-0B6C-41DA-A85B-201B4E292B00}.Debug|x64.Build.0 = Debug|x64
+		{F22C8408-0B6C-41DA-A85B-201B4E292B00}.Release|x64.ActiveCfg = Release|x64
+		{F22C8408-0B6C-41DA-A85B-201B4E292B00}.Release|x64.Build.0 = Release|x64
+		{F22C8408-0B6C-41DA-A85B-201B4E292B00}.Ship|x64.ActiveCfg = Debug|x64
+		{F22C8408-0B6C-41DA-A85B-201B4E292B00}.Ship|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
