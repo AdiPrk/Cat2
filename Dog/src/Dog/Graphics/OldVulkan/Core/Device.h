@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Allocator.h"
+//#include "../Window/Window.h"
 
 namespace Dog {
 
@@ -40,10 +40,10 @@ namespace Dog {
         operator VkDevice() const { return device_; }
 
         VkCommandPool getCommandPool() const { return commandPool; }
-        VkDevice getDevice() const { return device_; }
-        VkSurfaceKHR getSurface() const { return surface_; }
-        VkQueue getGraphicsQueue() const { return graphicsQueue_; }
-        VkQueue getPresentQueue() const { return presentQueue_; }
+        VkDevice device() const { return device_; }
+        VkSurfaceKHR surface() const { return surface_; }
+        VkQueue graphicsQueue() const { return graphicsQueue_; }
+        VkQueue presentQueue() const { return presentQueue_; }
         const VkPhysicalDevice& getPhysicalDevice() const { return physicalDevice; }
         const VkInstance& getInstance() const { return instance; }
 
@@ -75,10 +75,8 @@ namespace Dog {
             VkImage& image,
             VmaAllocation& imageAllocation);
 
-        std::unique_ptr<Allocator>& GetAllocator() { return allocator; }
-        VmaAllocator GetVmaAllocator() { return allocator->GetAllocator(); }
-
         VkPhysicalDeviceProperties properties;
+        VmaAllocator allocator;
 
     private:
         void createInstance();
@@ -112,15 +110,13 @@ namespace Dog {
         uint32_t graphicsFamily_ = 0;
         uint32_t presentFamily_ = 0;
 
-        std::unique_ptr<Allocator> allocator;
-
         const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
         const std::vector<const char*> deviceExtensions = {
             VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-            //VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
-            //VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME,
-            //VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME,
-            //VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME
+            VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
+            VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME,
+            VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME,
+            VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME
         };
 
     };

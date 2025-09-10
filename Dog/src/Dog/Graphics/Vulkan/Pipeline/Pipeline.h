@@ -2,62 +2,104 @@
 
 #include "../Core/Device.h"
 
-namespace Dog {
+namespace Dog
+{
+	class Uniform;
+	class Device;
 
-    struct PipelineConfigInfo {
-        PipelineConfigInfo() = default;
-        PipelineConfigInfo(const PipelineConfigInfo&) = delete;
-        PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
+	//Holds also configuration info for a pipeline
+	struct PipelineConfigInfo
+	{
+		//Delete copy operations
+		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
+		PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
 
-        std::vector<VkVertexInputBindingDescription> bindingDescriptions{};
-        std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
-        VkPipelineViewportStateCreateInfo viewportInfo;
-        VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
-        VkPipelineRasterizationStateCreateInfo rasterizationInfo;
-        VkPipelineMultisampleStateCreateInfo multisampleInfo;
-        VkPipelineColorBlendAttachmentState colorBlendAttachment;
-        VkPipelineColorBlendStateCreateInfo colorBlendInfo;
-        VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
-        std::vector<VkDynamicState> dynamicStateEnables;
-        VkPipelineDynamicStateCreateInfo dynamicStateInfo;
-        VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
-        VkRenderPass renderPass = VK_NULL_HANDLE;
-        uint32_t subpass = 0;
-        int32_t basePipelineIndex = -1;
-        VkPipeline basePipelineHandle = VK_NULL_HANDLE;
-        VkPipelineCreateFlags flags = 0;
-    };
+		/*********************************************************************
+		 * brief:  Create config info object
+		 *********************************************************************/
+		PipelineConfigInfo()
+			: viewportCreateInfo(),
+			inputAssemblyCreateInfo(),
+			rasterizationCreateInfo(),
+			multisampleCreateInfo(),
+			colorBlendAttachment(),
+			colorBlendCreateInfo(),
+			depthStencilCreateInfo(),
+			dynamicStateCreateInfo(),
+			dynamicStateEnables()
+		{
+		};
 
-    class Pipeline {
-    public:
-        Pipeline(
-            Device& device,
-            const std::string& vertFilepath,
-            const std::string& fragFilepath,
-            const PipelineConfigInfo& configInfo);
-        ~Pipeline();
+		VkPipelineViewportStateCreateInfo viewportCreateInfo;
+		VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo;
+		VkPipelineRasterizationStateCreateInfo rasterizationCreateInfo;
+		VkPipelineMultisampleStateCreateInfo multisampleCreateInfo;
+		VkPipelineColorBlendAttachmentState colorBlendAttachment;
+		VkPipelineColorBlendStateCreateInfo colorBlendCreateInfo;
+		VkPipelineDepthStencilStateCreateInfo depthStencilCreateInfo;
+		VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo;
+		std::vector<VkDynamicState> dynamicStateEnables;
+		VkPipelineLayout pipeLineLayout = nullptr;
+		VkRenderPass renderPass = nullptr;
+		uint32_t subpass = 0;
+	};
 
-        Pipeline(const Pipeline&) = delete;
-        Pipeline& operator=(const Pipeline&) = delete;
+	class Pipeline
+	{
+	public:
+		// MUST BE TRUE to recompile shaders!
+		/*
+		* True: Read from .frag/.vert files and save to .spv files. This *always* recompiles shaders
+		* False: Try reading from .spv file directly. This will NOT recompile shaders. If file doesn't exist default to Option 1.
+		*/
+		static const bool RecompileShaders = true;
 
-        void bind(VkCommandBuffer commandBuffer);
+		// Shader Directories
+		inline static const std::string ShaderDir = "assets/shaders/";
+		inline static const std::string SpvDir = "assets/shaders/spv/";
 
-        static void defaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
+		Pipeline(Device& device, const std::vector<Uniform*>& uniforms, VkRenderPass renderPass, bool wireframe, const std::string& vertFile, const std::string& fragFile);
+		Pipeline(Device& device, const std::vector<Uniform*>& uniforms, VkRenderPass renderPass, bool wireframe, const std::string& vertFile, const std::string& fragFile, const std::string& tescFile, const std::string& teseFile);
 
-        VkPipeline& getPipeline() { return graphicsPipeline; }
+		~Pipeline();
 
-    private:
-        void createGraphicsPipeline(
-            const std::string& vertFile,
-            const std::string& fragFile,
-            const PipelineConfigInfo& configInfo);
+		Pipeline(const Pipeline&) = delete;
+		Pipeline& operator=(const Pipeline&) = delete;
 
-        void createShaderModule(const std::vector<uint32_t>& code, VkShaderModule* shaderModule);
+		void Bind(VkCommandBuffer commandBuffer);
 
-        Device& device;
-        VkPipeline graphicsPipeline;
-        VkShaderModule vertShaderModule;
-        VkShaderModule fragShaderModule;
-    };
+		VkPipelineLayout& GetLayout() { return mPipelineLayout; };
 
-} // namespace Dog
+	private:
+
+		void CreatePipelineLayout(const std::vector<Uniform*>& uniforms);
+
+		void CreatePipeline(VkRenderPass renderPass);
+
+		void DefaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
+
+		void CreateGraphicsPipeline(const PipelineConfigInfo& configInfo);
+
+		void ReadShaders(const std::string& vertFilePath, const std::string& fragFilePath);
+
+		
+		Device& mPipelineDevice;				     
+		VkPipeline mGraphicsPipeline;		         
+		VkShaderModule mVertShaderModule;            
+		VkShaderModule mFragShaderModule;            
+		VkShaderModule mTessCtrlShaderModule = NULL; 
+		VkShaderModule mTessEvalShaderModule = NULL; 
+		VkPipelineLayout mPipelineLayout;            
+		bool isWireframe;
+
+		// Shader paths
+		std::string mVertPath;
+		std::string mFragPath;
+		std::string mTescPath;
+		std::string mTesePath;
+		std::string mSpvVertPath;
+		std::string mSpvFragPath;
+		std::string mSpvTescPath;
+		std::string mSpvTesePath;
+	};
+}

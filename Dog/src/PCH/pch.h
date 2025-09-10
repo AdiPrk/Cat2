@@ -92,7 +92,7 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 #include "Logger/Logger.h"
 #include "Assets/Assets.h"
 #include "Events/Event.h"
-#include "Graphics/Vulkan/Models/assimpGlmHelper.h"
+//#include "Graphics/Vulkan/Models/assimpGlmHelper.h"
 #include "Assets/UUID/UUID.h"
 
 // Shared files

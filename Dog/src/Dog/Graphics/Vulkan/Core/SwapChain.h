@@ -1,87 +1,242 @@
 #pragma once
 
-#include "Device.h"
+#include <PCH/pch.h>
 
-namespace Dog {
+namespace Dog
+{
+    class Device;
+    struct RenderingResource;
+    class Synchronizer;
 
-    class SwapChain {
+    class SwapChain
+    {
     public:
+
+        //Max number of frames to be executing commands/presenting for at once
         static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-        SwapChain(Device& deviceRef, VkExtent2D windowExtent);
-        SwapChain(
-            Device& deviceRef, VkExtent2D windowExtent, std::shared_ptr<SwapChain> previous);
-
-        ~SwapChain();
-
+        //Delete copy constructor/operator
         SwapChain(const SwapChain&) = delete;
         SwapChain& operator=(const SwapChain&) = delete;
 
-        VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
-        VkRenderPass getRenderPass() { return renderPass; }
-        VkImageView getImageView(int index) { return swapChainImageViews[index]; }
-        size_t imageCount() { return swapChainImages.size(); }
-        VkFormat& getSwapChainImageFormat() { return swapChainImageFormat; }
-        VkExtent2D getSwapChainExtent() { return swapChainExtent; }
-        uint32_t width() { return swapChainExtent.width; }
-        uint32_t height() { return swapChainExtent.height; }
+        /*********************************************************************
+         * param:  deviceRef: Device to create this swapchain for
+         * param:  windowExtent: Size of the window this swapchain is supporting
+         * param:  instance: instance that this swapchan will be created for
+         *
+         * brief:  Create the swapchain and all other parts required to drawing
+         *         a frame
+         *********************************************************************/
+        SwapChain(Device& deviceRef, VkExtent2D windowExtent);
 
-        float extentAspectRatio() {
-            return static_cast<float>(swapChainExtent.width) / static_cast<float>(swapChainExtent.height);
+        /*********************************************************************
+         * param:  deviceRef: Device to create this swapchain for
+         * param:  windowExtent: Size of the window this swapchain is supporting
+         * param:  previous: Previous swapchain used that is being recreated
+         * param:  instance: instance that this swapchan will be created for
+         *
+         * brief:  Create the swapchain and all other parts required to drawing
+         *         a frame, reuse memeory when  possible from old swapchain
+         *********************************************************************/
+        SwapChain(Device& deviceRef, VkExtent2D windowExtent, std::shared_ptr<SwapChain> previous);
+
+        /*********************************************************************
+         * brief:  Delete all data created by this class
+         *********************************************************************/
+        ~SwapChain();
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        /// Getters  ///////////////////////////////////////////////////////////////////////////////
+
+        /*********************************************************************
+         * param:  index: Image index to get the framebuffer of
+         * return: Framebuffer at wanted index
+         *
+         * brief:  Gets framebuffer at wanted image index
+         *********************************************************************/
+        VkFramebuffer GetFrameBuffer(int index) { return mSwapChainFramebuffers[index]; }
+
+        /*********************************************************************
+         * return: This swapchain's renderpass
+         *
+         * brief:  Gets this swapchain's renderpass
+         *********************************************************************/
+        VkRenderPass GetRenderPass() { return mRenderPass; }
+
+        /*********************************************************************
+         * return: The number of images this swapchain uses
+         *
+         * brief:  Get the number of images this swapchain uses
+         *********************************************************************/
+        size_t ImageCount() { return mSwapChainImages.size(); }
+
+        /*********************************************************************
+         * return: The format of the images this swapchain uses
+         *
+         * brief:  Get the format of the images this swapchain uses
+         *********************************************************************/
+        VkFormat GetSwapChainImageFormat() { return mSwapChainImageFormat; }
+
+        /*********************************************************************
+         * return: The extent (size) of the images this swapchain uses
+         *
+         * brief:  Get the extent (size) of the images this swapchain uses
+         *********************************************************************/
+        VkExtent2D GetSwapChainExtent() { return mSwapChainExtent; }
+
+        /*********************************************************************
+         * return: The width of the images this swapchain uses
+         *
+         * brief:  Gets the width of the images this swapchain uses
+         *********************************************************************/
+        uint32_t GetWidth() { return mSwapChainExtent.width; }
+
+        /*********************************************************************
+         * return: The height of the images this swapchain uses
+         *
+         * brief:  Gets the height of the images this swapchain uses
+         *********************************************************************/
+        uint32_t GetHeight() { return mSwapChainExtent.height; }
+
+        /*********************************************************************
+         * return: The aspect ratio of the extent of the swapchain
+         *
+         * brief:  Gets the aspect ratio of the extent of the swapchain
+         *********************************************************************/
+        float GetExtentAspectRatio() { return static_cast<float>(mSwapChainExtent.width) / static_cast<float>(mSwapChainExtent.height); }
+
+        /*********************************************************************
+         * return: Image format to use for depth buffer
+         *
+         * brief:  Finds image format to use for depth buffers in this swapchain
+         *********************************************************************/
+        VkFormat FindDepthFormat();
+
+        /*********************************************************************
+         * param:  imageIndex: Will be set to next image index
+         * return: The result of vkGetNextImage call (error report)
+         *
+         * brief:  Get the index of the next image to use in the swapchain
+         *********************************************************************/
+        VkResult AcquireNextImage(uint32_t* imageIndex, Synchronizer& renderData);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        /// Helpers ////////////////////////////////////////////////////////////////////////////////
+
+        VkResult PresentImage(uint32_t* imageIndex, Synchronizer& syncObjects);
+
+        /*********************************************************************
+         * param:  swapChain: Swapchain to compare againt
+         * return: If the swapchain formats match
+         *
+         * brief:  Compares this swapchain's image and depth formats to
+         *         passed swapchain
+         *********************************************************************/
+        bool CompareSwapFormats(const SwapChain& swapChain) const
+        {
+            return swapChain.mSwapChainDepthFormat == mSwapChainDepthFormat &&
+                swapChain.mSwapChainImageFormat == mSwapChainImageFormat;
         }
-        VkFormat findDepthFormat();
 
-        VkResult acquireNextImage(uint32_t* imageIndex);
-        VkResult submitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
-
-        bool compareSwapFormats(const SwapChain& swapChain) const {
-            return swapChain.swapChainDepthFormat == swapChainDepthFormat &&
-                swapChain.swapChainImageFormat == swapChainImageFormat;
-        }
-
-        // get current frame
-        size_t getCurrentFrame() const { return currentFrame; }
+        VkFormat GetImageFormat() { return mSwapChainImageFormat; }
+        VkFormat GetDepthFormat() { return mSwapChainDepthFormat; }
+        VkImage GetImage(int index) { return mSwapChainImages[index]; }
+        VkImageView GetImageView(int index) { return mSwapChainImageViews[index]; }
+        VkImage GetDepthImage(int index) { return mDepthImages[index]; }
+        VkImageView GetDepthImageView(int index) { return mDepthImageViews[index]; }
 
     private:
-        void init();
-        void createSwapChain();
-        void createImageViews();
-        void createDepthResources();
-        void createRenderPass();
-        void createFramebuffers();
-        void createSyncObjects();
 
-        // Helper functions
-        VkSurfaceFormatKHR chooseSwapSurfaceFormat(
-            const std::vector<VkSurfaceFormatKHR>& availableFormats);
-        VkPresentModeKHR chooseSwapPresentMode(
-            const std::vector<VkPresentModeKHR>& availablePresentModes);
-        VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        /// Helpers ////////////////////////////////////////////////////////////////////////////////
 
-        VkFormat swapChainImageFormat;
-        VkFormat swapChainDepthFormat;
-        VkExtent2D swapChainExtent;
+        /*********************************************************************
+         * param: instance: Instance to init for
+         *
+         *
+         * brief:  Called in all constructors, required setup for a swapchain
+         *         object
+         *********************************************************************/
+        void Init(VkInstance instance);
 
-        std::vector<VkFramebuffer> swapChainFramebuffers;
-        VkRenderPass renderPass;
+        /*********************************************************************
+         * param:  instance: instance that this swapchan will be created for
+         *
+         * brief: Create a swapchain object in vulkan
+         *********************************************************************/
+        void CreateSwapChain(VkInstance instance);
 
-        std::vector<VkImage> depthImages;
-        std::vector<VmaAllocation> depthImageMemorys;
-        std::vector<VkImageView> depthImageViews;
-        std::vector<VkImage> swapChainImages;
-        std::vector<VkImageView> swapChainImageViews;
+        /*********************************************************************
+         * brief: Creates an image view for each image the swapchain has
+         *********************************************************************/
+        void CreateImageViews();
 
-        Device& device;
-        VkExtent2D windowExtent;
+        /*********************************************************************
+         * brief: Creates all the resoures needed to preform needed depth tests
+         *        (Images, image memeory, image views)
+         *********************************************************************/
+        void CreateDepthResources();
 
-        VkSwapchainKHR swapChain;
-        std::shared_ptr<SwapChain> oldSwapChain;
+        /*********************************************************************
+         * brief: Creates this swapchain's renderpass object
+         *********************************************************************/
+        void CreateRenderPass();
 
-        std::vector<VkSemaphore> imageAvailableSemaphores;
-        std::vector<VkSemaphore> renderFinishedSemaphores;
-        std::vector<VkFence> inFlightFences;
-        std::vector<VkFence> imagesInFlight;
-        size_t currentFrame = 0;
+        /*********************************************************************
+         * brief: Creates framebuffers for each image in the swapchain
+         *********************************************************************/
+        void CreateFramebuffers();
+
+        /*********************************************************************
+         * param:  availableFormats: A vector of all available formats that
+         *                           our device can use
+         * return: The format out of passed vector that should be used
+         *
+         * brief:  Looks through all available formats and finds which should
+         *         be used for this swapchain
+         *********************************************************************/
+        VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+
+        /*********************************************************************
+         * param:  availablePresentModes: A vector of all available present
+         *                                modes that our device can use
+         * return: The present mode out of passed vector that should be used
+         *
+         * brief:  Looks through all available present modes and finds which
+         *         should be used for this swapchain
+         *********************************************************************/
+        VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+
+        /*********************************************************************
+         * param:  capabilities: Capabilities of our device's surface
+         * return: The extent (size) that should be used for this swapchain
+         *
+         * brief:  Using the passed surface capabilities find the extent (size)
+         *         that should be used for this swapchain
+         *********************************************************************/
+        VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        /// Varibles ///////////////////////////////////////////////////////////////////////////////
+        /// 
+        VkFormat mSwapChainImageFormat; //Format used by this swapchain's images
+        VkFormat mSwapChainDepthFormat; //Format used by this swapchain's depthbuffer
+        VkExtent2D mSwapChainExtent;    //Extent (size) of this swapchain's images
+
+        std::vector<VkFramebuffer> mSwapChainFramebuffers; //Framebuffer to each swapchain image
+        VkRenderPass mRenderPass;                          //Renderpass to be preformed on swapchain images
+
+        std::vector<VkImage> mDepthImages;              //Holds the images that will be used to do depth tests
+        std::vector<VmaAllocation> mDepthImageMemorys; //Holds the memory of the depth images
+        std::vector<VkImageView> mDepthImageViews;      //Holds the views of the depth images
+        std::vector<VkImage> mSwapChainImages;          //Vector of all images this swapchain is using for colors (rendering)
+        std::vector<VkImageView> mSwapChainImageViews;  //Vector of all image views for each image, which are descriptors for the images (stuff like if 2d or 3d, how many layers, ect.)
+
+        Device& mDevice;          //Device this swapchain is created for
+        VkExtent2D mWindowExtent; //Extent (size) of the window this swapchain is rendering too
+
+        VkSwapchainKHR mSwapChain;                //Swapchain object in vulkan (Like the whole point of this class)
+        std::shared_ptr<SwapChain> mOldSwapChain; //Old swapchain that existed before this one (only exists if this is a recreated swapchain)
     };
+}
 
-} // namespace Dog

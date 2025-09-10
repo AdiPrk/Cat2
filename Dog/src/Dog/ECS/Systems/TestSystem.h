@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/ISystem.h"
+#include "ISystem.h"
 
 namespace Dog
 {

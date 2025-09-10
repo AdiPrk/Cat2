@@ -12,9 +12,8 @@ namespace Dog {
         void* pUserData) 
     {
         std::vector<std::string> blacklistedMessages = {
-            "Layer VK_LAYER_OW_OVERLAY uses API version 1.2 which is older than the application specified API version of 1.4. May cause issues.",
-            "Layer VK_LAYER_OW_OBS_HOOK uses API version 1.2 which is older than the application specified API version of 1.4. May cause issues.",
-            "Layer VK_LAYER_OBS_HOOK uses API version 1.3 which is older than the application specified API version of 1.4. May cause issues."
+            "Layer VK_LAYER_OW_OVERLAY uses API version 1.2 which is older than the application specified API version of 1.3. May cause issues.",
+            "Layer VK_LAYER_OW_OBS_HOOK uses API version 1.2 which is older than the application specified API version of 1.3. May cause issues."
         };
 
         for (const auto& message : blacklistedMessages) {
@@ -57,9 +56,7 @@ namespace Dog {
     }
 
     // class member functions
-    Device::Device(Window& window) 
-        : window{ window }
-    {
+    Device::Device(Window& window) : window{ window } {
         createInstance();
         setupDebugMessenger();
         createSurface();
@@ -67,12 +64,16 @@ namespace Dog {
         createLogicalDevice();
         createCommandPool();
 
-        allocator = std::make_unique<Allocator>(*this);
+        VmaAllocatorCreateInfo allocatorInfo = {};
+        allocatorInfo.physicalDevice = physicalDevice;
+        allocatorInfo.device = device_;
+        allocatorInfo.instance = instance;
+        allocatorInfo.vulkanApiVersion = VK_API_VERSION_1_3;
+        vmaCreateAllocator(&allocatorInfo, &allocator);
     }
 
-    Device::~Device() 
-    {
-        allocator.reset();
+    Device::~Device() {
+        vmaDestroyAllocator(allocator);
 
         vkDestroyCommandPool(device_, commandPool, nullptr);
         vkDestroyDevice(device_, nullptr);
@@ -85,8 +86,7 @@ namespace Dog {
         vkDestroyInstance(instance, nullptr);
     }
 
-    void Device::createInstance() 
-    {
+    void Device::createInstance() {
         if (enableValidationLayers && !checkValidationLayerSupport()) {
             throw std::runtime_error("validation layers requested, but not available!");
         }
@@ -127,8 +127,7 @@ namespace Dog {
         hasGflwRequiredInstanceExtensions();
     }
 
-    void Device::pickPhysicalDevice() 
-    {
+    void Device::pickPhysicalDevice() {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
         if (deviceCount == 0) {
@@ -238,8 +237,7 @@ namespace Dog {
 
     void Device::createSurface() { window.createWindowSurface(instance, &surface_); }
 
-    bool Device::isDeviceSuitable(VkPhysicalDevice device)
-    {
+    bool Device::isDeviceSuitable(VkPhysicalDevice device) {
         QueueFamilyIndices indices = findQueueFamilies(device);
 
         bool extensionsSupported = checkDeviceExtensionSupport(device);
@@ -257,8 +255,7 @@ namespace Dog {
             supportedFeatures.samplerAnisotropy;
     }
 
-    void Device::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)
-    {
+    void Device::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
         createInfo = {};
         createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
         createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
@@ -270,8 +267,7 @@ namespace Dog {
         createInfo.pUserData = nullptr;  // Optional
     }
 
-    void Device::setupDebugMessenger() 
-    {
+    void Device::setupDebugMessenger() {
         if (!enableValidationLayers) return;
         VkDebugUtilsMessengerCreateInfoEXT createInfo;
         populateDebugMessengerCreateInfo(createInfo);
@@ -280,8 +276,7 @@ namespace Dog {
         }
     }
 
-    bool Device::checkValidationLayerSupport() 
-    {
+    bool Device::checkValidationLayerSupport() {
         uint32_t layerCount;
         vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
@@ -306,8 +301,7 @@ namespace Dog {
         return true;
     }
 
-    std::vector<const char*> Device::getRequiredExtensions() 
-    {
+    std::vector<const char*> Device::getRequiredExtensions() {
         uint32_t glfwExtensionCount = 0;
         const char** glfwExtensions;
         glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
@@ -321,8 +315,7 @@ namespace Dog {
         return extensions;
     }
 
-    void Device::hasGflwRequiredInstanceExtensions() 
-    {
+    void Device::hasGflwRequiredInstanceExtensions() {
         uint32_t extensionCount = 0;
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
         std::vector<VkExtensionProperties> extensions(extensionCount);
@@ -470,7 +463,7 @@ namespace Dog {
         allocInfo.usage = memoryUsage;
 
         // Create the buffer and allocate memory using VMA
-        if (vmaCreateBuffer(GetVmaAllocator(), &bufferInfo, &allocInfo, &buffer, &bufferAllocation, nullptr) != VK_SUCCESS) {
+        if (vmaCreateBuffer(allocator, &bufferInfo, &allocInfo, &buffer, &bufferAllocation, nullptr) != VK_SUCCESS) {
             throw std::runtime_error("failed to create and allocate buffer using VMA!");
         }
     }
@@ -539,7 +532,7 @@ namespace Dog {
         allocInfo.usage = memoryUsage;
 
         // Create the image and allocate memory using VMA
-        if (vmaCreateImage(GetVmaAllocator(), &imageInfo, &allocInfo, &image, &imageAllocation, nullptr) != VK_SUCCESS) {
+        if (vmaCreateImage(allocator, &imageInfo, &allocInfo, &image, &imageAllocation, nullptr) != VK_SUCCESS) {
             throw std::runtime_error("failed to create image with VMA!");
         }
     }

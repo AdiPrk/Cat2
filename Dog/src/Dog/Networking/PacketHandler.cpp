@@ -33,62 +33,62 @@ namespace Dog
             break;
         }
         case REMOVE_PLAYER_PACKET: {
-            ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
-            if (chatWindow)
-            {
-                chatWindow->AddMessage("Server", std::string(data) + " has left the chat.");
-                chatWindow->UserStoppedTyping(data);
-            }
+            //ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
+            //if (chatWindow)
+            //{
+            //    chatWindow->AddMessage("Server", std::string(data) + " has left the chat.");
+            //    chatWindow->UserStoppedTyping(data);
+            //}
             playerManager.RemoveClient(data);
             break;
         }
         case CHAT_MESSAGE_PACKET:
         {
             printf("Received message: %s\n", data);
-            ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
-            if (chatWindow)
-            {
-                std::string message(data);
-                std::string sender = message.substr(0, message.find(":"));
-                std::string messageText = message.substr(message.find(":") + 2);
-
-                chatWindow->AddMessage(sender, messageText);
-            }
+            //ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
+            //if (chatWindow)
+            //{
+            //    std::string message(data);
+            //    std::string sender = message.substr(0, message.find(":"));
+            //    std::string messageText = message.substr(message.find(":") + 2);
+            //
+            //    chatWindow->AddMessage(sender, messageText);
+            //}
 
             break;
         }
         case STARTED_TYPING_PACKET:
         {
-            ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
-            if (chatWindow)
-            {
-                chatWindow->UserStartedTyping(data);
-            }
+            //ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
+            //if (chatWindow)
+            //{
+            //    chatWindow->UserStartedTyping(data);
+            //}
 
             break;
         }
         case STOPPED_TYPING_PACKET:
         {
-            ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
-            if (chatWindow)
-            {
-                chatWindow->UserStoppedTyping(data);
-            }
+            //ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
+            //if (chatWindow)
+            //{
+            //    chatWindow->UserStoppedTyping(data);
+            //}
 
             break;
         }
         case CHAT_DISPLAY_NAME_PACKET:
         {
-            ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
-            if (chatWindow)
-            {
-                std::string nameChange(data);
-                std::string oldName = nameChange.substr(0, nameChange.find(","));
-                std::string newName = nameChange.substr(nameChange.find(",") + 1);
-                chatWindow->AddMessage("Server", oldName + " changed their name to " + newName);
-                chatWindow->UserChangedName(oldName);
-                playerManager.ChangeClientName(oldName, newName);
-            }
+            //ChatWindow* chatWindow = Engine::Get().GetEditor().GetChatWindow();
+            //if (chatWindow)
+            //{
+            //    std::string nameChange(data);
+            //    std::string oldName = nameChange.substr(0, nameChange.find(","));
+            //    std::string newName = nameChange.substr(nameChange.find(",") + 1);
+            //    chatWindow->AddMessage("Server", oldName + " changed their name to " + newName);
+            //    chatWindow->UserChangedName(oldName);
+            //    playerManager.ChangeClientName(oldName, newName);
+            //}
             break;
         }
         case CLIENT_LEAVE_PACKET:

@@ -1,3 +1,11 @@
+/*********************************************************************
+ * file:   Shader.cpp
+ * author: aditya.prakash (aditya.prakash@digipen.edu) and evan.gray (evan.gray@digipen.edu)
+ * date:   October 15, 2024
+ * Copyright © 2024 DigiPen (USA) Corporation. 
+ * 
+ * brief:  Handles the creation of shader modules
+ *********************************************************************/
 #include <PCH/pch.h>
 
 #include "Shader.h"
@@ -72,7 +80,7 @@ namespace Dog
 		return PreprocessShader(shaderSource, shaderPath, includedFiles);
 	}
 
-	std::string Shader::ReadShader(const std::string& filePath)
+	std::string ReadShader(const std::string& filePath)
 	{
 		//Read file        path       start at end     read as binaryCompile Shaders
 		std::ifstream file{ filePath, std::ios::ate | std::ios::binary };
@@ -101,7 +109,7 @@ namespace Dog
 		return PreprocessShaderWithIncludes(shaderSource, filePath);
 	}
 
-	void Shader::CreateShaderModule(Device& device, const std::vector<uint32_t>& code, VkShaderModule* shaderModule)
+	void CreateShaderModule(Device& device, const std::vector<uint32_t>& code, VkShaderModule* shaderModule)
 	{
 		//Struct to hold information on how to create this shader module
 		VkShaderModuleCreateInfo createInfo{};
@@ -123,7 +131,7 @@ namespace Dog
 		}
 	}
 
-	std::vector<uint32_t> Shader::CompileGLSLtoSPV(const std::string& source, EShLanguage stage, std::string debugFileName)
+	std::vector<uint32_t> CompileGLSLtoSPV(const std::string& source, EShLanguage stage)
 	{
 		const char* shaderStrings[1];
 		shaderStrings[0] = source.c_str();
@@ -133,17 +141,17 @@ namespace Dog
 		// macros
 		static std::vector<std::pair<std::string, std::string>> macros = 
 		{
-			{ "DOG_MAX_INSTANCES", std::to_string(1000) },
-			{ "DOG_MAX_GLYPHS", std::to_string(95) },
-			{ "DOG_MAX_MODELS", std::to_string(100) },
-			{ "DOG_MAX_TEXTURES", std::to_string(10000) },
-			{ "DOG_MAX_BONES ", std::to_string(200) },
-			{ "DOG_MAX_BONE_INFLUENCE ", std::to_string(4) },
-			{ "DOG_INVALID_FONT_INDEX", std::to_string(9999) },
-			{ "DOG_INVALID_ANIMATION_INDEX", std::to_string(9999) },
-			{ "DOG_WIREFRAME_TEXTURE_INDEX", std::to_string(10002) },
-			{ "DOG_NO_TEXTURES", std::to_string(10001) },
-			{ "DOG_PATCH_SIZE", std::to_string(4)}
+			{ "NL_MAX_INSTANCES", std::to_string(1000) },
+			{ "NL_MAX_GLYPHS", std::to_string(95) },
+			{ "NL_MAX_MODELS", std::to_string(100) },
+			{ "NL_MAX_TEXTURES", std::to_string(10000) },
+			{ "NL_MAX_BONES ", std::to_string(200) },
+			{ "NL_MAX_BONE_INFLUENCE ", std::to_string(4) },
+			{ "NL_INVALID_FONT_INDEX", std::to_string(9999) },
+			{ "NL_INVALID_ANIMATION_INDEX", std::to_string(9999) },
+			{ "NL_WIREFRAME_TEXTURE_INDEX", std::to_string(10002) },
+			{ "NL_NO_TEXTURES", std::to_string(10001) },
+			{ "NL_PATCH_SIZE", std::to_string(4)}
 		};
 
 		// Construct the preamble string from the macros
@@ -170,41 +178,7 @@ namespace Dog
 			std::string infoLog = shader.getInfoLog();
 			std::string infoDebugLog = shader.getInfoDebugLog();
 
-			// Attempt to extract error from the infoLog
-			size_t pos = infoLog.find("ERROR: 0:");
-			if (pos != std::string::npos)
-			{
-				// Advance the position past "ERROR: 0:"
-				pos += std::string("ERROR: 0:").length();
-				size_t endPos = infoLog.find(":", pos);
-				if (endPos != std::string::npos)
-				{
-					std::string lineNumStr = infoLog.substr(pos, endPos - pos);
-					int errorLine = std::stoi(lineNumStr);
-
-					// Retrieve the error line from the source string
-					std::istringstream sourceStream(source);
-					std::string line;
-					int currentLine = 1;
-					int loopLimit = 0;
-					while (std::getline(sourceStream, line))
-					{
-						if (currentLine == errorLine)
-						{
-							line = line.substr(line.find_first_not_of(" \t"));
-                            DOG_CRITICAL("GLSL Parsing Error at Line {0} in file {1}\n\t{2}\n{3}\n{4}\n", errorLine, debugFileName, line, infoLog, infoDebugLog);
-							break;
-						}
-						++currentLine;
-
-						if (++loopLimit > 99999)
-						{
-                            DOG_CRITICAL("Parsing shader error for {0} canceled, potential infinite loop", debugFileName);
-							break;
-						}
-					}
-				}
-			}
+			DOG_CRITICAL("GLSL Parsing Failed:\n{0}\n{1}", infoLog, infoDebugLog);
 		}
 
 		glslang::TProgram program;

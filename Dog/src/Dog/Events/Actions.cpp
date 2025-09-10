@@ -21,14 +21,14 @@ namespace Dog
 
     void MoveEntityAction::Apply()
     {
-        auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
-        transform.Translation = { newX, newY, newZ };
+        //auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
+        //transform.Translation = { newX, newY, newZ };
     }
     
     void MoveEntityAction::Undo()
     {
-        auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
-        transform.Translation = { oldX, oldY, oldZ };
+        //auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
+        //transform.Translation = { oldX, oldY, oldZ };
     }
     
     std::string MoveEntityAction::Serialize() const
@@ -49,14 +49,14 @@ namespace Dog
 
     void RotateEntityAction::Apply()
     {
-        auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
-        transform.Rotation = { newX, newY, newZ };
+        //auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
+        //transform.Rotation = { newX, newY, newZ };
     }
 
     void RotateEntityAction::Undo()
     {
-        auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
-        transform.Rotation = { oldX, oldY, oldZ };
+        //auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
+        //transform.Rotation = { oldX, oldY, oldZ };
     }
 
     std::string RotateEntityAction::Serialize() const
@@ -77,14 +77,14 @@ namespace Dog
 
     void ScaleEntityAction::Apply()
     {
-        auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
-        transform.Scale = { newX, newY, newZ };
+        //auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
+        //transform.Scale = { newX, newY, newZ };
     }
 
     void ScaleEntityAction::Undo()
     {
-        auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
-        transform.Scale = { oldX, oldY, oldZ };
+        //auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
+        //transform.Scale = { oldX, oldY, oldZ };
     }
 
     std::string ScaleEntityAction::Serialize() const
@@ -105,18 +105,18 @@ namespace Dog
 
     void TransformEntityAction::Apply()
     {
-        auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
-        transform.Translation = { nPX, nPY, nPZ };
-        transform.Rotation = { nRX, nRY, nRZ };
-        transform.Scale = { nSX, nSY, nSZ };
+        //auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
+        //transform.Translation = { nPX, nPY, nPZ };
+        //transform.Rotation = { nRX, nRY, nRZ };
+        //transform.Scale = { nSX, nSY, nSZ };
     }
 
     void TransformEntityAction::Undo()
     {
-        auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
-        transform.Translation = { oPX, oPY, oPZ };
-        transform.Rotation = { oRX, oRY, oRZ };
-        transform.Scale = { oSX, oSY, oSZ };
+        //auto& transform = SceneManager::GetCurrentScene()->GetRegistry().get<TransformComponent>((entt::entity)entityID);
+        //transform.Translation = { oPX, oPY, oPZ };
+        //transform.Rotation = { oRX, oRY, oRZ };
+        //transform.Scale = { oSX, oSY, oSZ };
     }
 
     std::string TransformEntityAction::Serialize() const

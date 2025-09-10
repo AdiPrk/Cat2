@@ -1,27 +1,34 @@
 #include <PCH/pch.h>
 #include "ECS.h"
 
-#include "Systems/TestSystem.h"
+#include "Resources/IResource.h"
 
-#include "Scene/SceneManager.h"
+//#include "Scene/SceneManager.h"
 
 namespace Dog
 {
     ECS::ECS()
         : systems()
     {
-        // Register systems
-        AddSystem<TestSystem>();
-
-        // Run Init
-        for (auto& system : systems)
-        {
-            system->Init();
-        }
     }
 
     ECS::~ECS()
     {
+    }
+
+    void ECS::Init()
+    {
+        // Run Init
+        for (auto& resource : m_Resources)
+        {
+            resource.second->ecs = this;
+        }
+
+        for (auto& system : systems)
+        {
+            system->ecs = this;
+            system->Init();
+        }
     }
 
     void ECS::FrameStart()
@@ -38,10 +45,6 @@ namespace Dog
         {
             system->Update(dt);
         }
-
-        // TEMPORARILY;;
-        SceneManager::Update(dt);
-        SceneManager::Render(dt, true);
     }
 
     void ECS::FrameEnd()
@@ -49,6 +52,14 @@ namespace Dog
         for (auto& system : systems)
         {
             system->FrameEnd();
+        }
+    }
+
+    void ECS::Exit()
+    {
+        for (auto& system : systems)
+        {
+            system->Exit();
         }
     }
 }

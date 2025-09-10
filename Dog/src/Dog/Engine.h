@@ -1,15 +1,18 @@
 #pragma once
 
-#include "Graphics/Vulkan/Descriptors/Descriptors.h"
-#include "Graphics/Vulkan/Core/Device.h"
-#include "Graphics/Vulkan/Renderer.h"
-#include "Graphics/Vulkan/Window/Window.h"
-#include "Graphics/Vulkan/Texture/TextureLibrary.h"
-#include "Graphics/Vulkan/Models/ModelLibrary.h"
-#include "Graphics/Vulkan/Animation/Animation.h"
-#include "Graphics/Vulkan/Animation/Animator.h"
+//#include "Graphics/Vulkan/Descriptors/Descriptors.h"
+//#include "Graphics/Vulkan/Core/Device.h"
+//#include "Graphics/Vulkan/Renderer.h"
+//#include "Graphics/Vulkan/Texture/TextureLibrary.h"
+//#include "Graphics/Vulkan/Models/ModelLibrary.h"
+//#include "Graphics/Vulkan/Animation/Animation.h"
+//#include "Graphics/Vulkan/Animation/Animator.h"
 
-#include "Core/ECS.h"
+#include "Graphics/Window/Window.h"
+
+#include "ECS/ECS.h"
+
+#include "ECS/Resources/IResource.h"
 
 namespace Dog {
 	// Forward Declarations
@@ -60,22 +63,21 @@ namespace Dog {
 		void Exit();
 
 		// getters
-		Window& GetWindow() { return m_Window; }
-		Device& GetDevice() { return device; }
-		Renderer& GetRenderer() { return *m_Renderer; }
-		TextureLibrary& GetTextureLibrary() { return textureLibrary; }
-		ModelLibrary& GetModelLibrary() { return modelLibrary; }
-		Editor& GetEditor() { return *m_Editor; }
+		//Window& GetWindow() { return m_Window; }
+		//Device& GetDevice() { return device; }
+		//Renderer& GetRenderer() { return *m_Renderer; }
+		//TextureLibrary& GetTextureLibrary() { return textureLibrary; }
+		//ModelLibrary& GetModelLibrary() { return modelLibrary; }
+		//Editor& GetEditor() { return *m_Editor; }
         Networking& GetNetworking() { return *m_Networking; }
         ActionManager& GetActionManager() { return *m_ActionManager; }
 
 	private:
-		Window m_Window; // { WIDTH, HEIGHT, "Woof" };
-		Device device{ m_Window };
-		std::unique_ptr<Renderer> m_Renderer;
+		//Window m_Window; // { WIDTH, HEIGHT, "Woof" };
+		//std::unique_ptr<Renderer> m_Renderer;
 
-		TextureLibrary textureLibrary;
-		ModelLibrary modelLibrary;
+		//TextureLibrary textureLibrary;
+		//ModelLibrary modelLibrary;
 
 		// Networking
         std::unique_ptr<Networking> m_Networking;
@@ -84,7 +86,7 @@ namespace Dog {
         std::unique_ptr<ActionManager> m_ActionManager;
 
 		// Editor
-		std::unique_ptr<Editor> m_Editor;
+		//std::unique_ptr<Editor> m_Editor;
 
 		// target fps
 		unsigned fps;

@@ -70,7 +70,7 @@ namespace Dog {
         }
 
 		glfwPollEvents();
-		UpdateMousePosition();
+		//UpdateMousePosition();
 
 		for (int i = 0; i < static_cast<int>(Key::LAST); i++)
 		{
@@ -102,6 +102,7 @@ namespace Dog {
 
 	void Input::UpdateMousePosition()
 	{
+		/*
 		lastMouseScreenX = mouseScreenX;
 		lastMouseScreenY = mouseScreenY;
 		lastMouseWorldX = mouseWorldX;
@@ -168,6 +169,7 @@ namespace Dog {
 
 		mouseWorldX = worldPos.x;
 		mouseWorldY = worldPos.y;
+		*/
 	}
 
 	void Input::SetKeyInputLocked(bool locked)

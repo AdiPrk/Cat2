@@ -1,5 +1,5 @@
 #include <PCH/pch.h>
-#include "Core.h"
+#include "Utils.h"
 
 namespace Dog
 {
@@ -32,7 +32,7 @@ namespace Dog
         std::cout << "Project Directory: " << projectDir << '\n';
 
         if (projectDir != "Dev") {
-            FreeConsole();
+            //FreeConsole();
             if (!SetCurrentDirectoryA(projectDir.c_str())) {
                 PrintAndExit("Failed to set project directory.");
             }
