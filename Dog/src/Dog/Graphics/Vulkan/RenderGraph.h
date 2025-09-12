@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 
 namespace Dog
 {
@@ -6,6 +6,7 @@ namespace Dog
     // This abstracts away the underlying VkImage/VkBuffer.
     struct RGResourceHandle {
         uint32_t index;
+        bool operator==(const RGResourceHandle& other) const { return index == other.index; }
     };
 
     // Internal representation of a resource's state.

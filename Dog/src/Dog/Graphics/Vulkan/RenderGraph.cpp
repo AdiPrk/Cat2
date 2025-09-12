@@ -160,7 +160,7 @@ namespace Dog
         // After all passes, transition the backbuffer for presenting.
         if (!m_resources.empty())
         {
-            RGResource& backbuffer = m_resources[0]; // Assuming backbuffer is always the first imported resource
+            RGResource& backbuffer = m_resources[1]; // Assuming backbuffer is always the first imported resource
             if (backbuffer.currentLayout != VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
             {
                 VkImageMemoryBarrier barrier{};

@@ -10,6 +10,7 @@ namespace Dog
     class Synchronizer;
     class Pipeline;
     class Renderer;
+    class Allocator;
 
     struct RenderingResource : public IResource
     {
@@ -19,6 +20,7 @@ namespace Dog
         std::unique_ptr<SwapChain> swapChain;
         std::unique_ptr<Synchronizer> syncObjects;
         std::unique_ptr<Pipeline> basicTriPipeline;
+        std::unique_ptr<Allocator> allocator;
 
         std::unique_ptr<Renderer> renderer;
 

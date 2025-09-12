@@ -37,7 +37,7 @@ namespace Dog
         void RecreateSceneTexture();
 
         VkImage sceneImage{ VK_NULL_HANDLE };
-        VkDeviceMemory sceneImageMemory{ VK_NULL_HANDLE };
+        VmaAllocation sceneImageAllocation{ VK_NULL_HANDLE }; // Changed from VkDeviceMemory
         VkImageView sceneImageView{ VK_NULL_HANDLE };
         VkSampler sceneSampler{ VK_NULL_HANDLE };
 

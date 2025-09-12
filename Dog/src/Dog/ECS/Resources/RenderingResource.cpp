@@ -14,6 +14,7 @@ namespace Dog
     RenderingResource::RenderingResource(Window& window)
         : device(std::make_unique<Device>(window))
         , window{ window }
+        , allocator(std::make_unique<Allocator>(*device))
     {
         RecreateSwapChain();
         syncObjects = std::make_unique<Synchronizer>(device->getDevice(), swapChain->ImageCount());
