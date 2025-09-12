@@ -102,7 +102,6 @@ namespace Dog
 
     void EditorSystem::Update(float)
     {
-        ecs->GetResource<RenderingResource>()->renderer->drawFrame();
     }
 
     void EditorSystem::FrameEnd()

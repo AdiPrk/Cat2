@@ -30,12 +30,12 @@ namespace Dog
             "basic_tri.vert",
             "basic_tri.frag"
         );
-
-        //CreateSceneTexture();
     }
 
     Renderer::~Renderer()
     {
+        vkDeviceWaitIdle(renderingResource.device->getDevice());
+        CleanupSceneTexture();
     }
 
     void Renderer::drawFrame()
@@ -80,6 +80,7 @@ namespace Dog
 
         // --- Render Graph Setup and Execution ---
 
+        // Temporary;
         if (!sceneTextureDescriptorSet)
         {
             CreateSceneTexture();

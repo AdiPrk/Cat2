@@ -19,10 +19,14 @@ namespace Dog
     {
         for (size_t i = 0; i < SwapChain::MAX_FRAMES_IN_FLIGHT; i++)
         {
-            vkDestroySemaphore(mDevice, mRenderFinishedSemaphores[i], nullptr);
             vkDestroySemaphore(mDevice, mImageAvailableSemaphores[i], nullptr);
             vkDestroySemaphore(mDevice, mComputeFinishedSemaphores[i], nullptr);
             vkDestroyFence(mDevice, mCommandBuffInFlightFences[i], nullptr);
+        }
+
+        for (size_t i = 0; i < swapChainImageCount; i++)
+        {
+            vkDestroySemaphore(mDevice, mRenderFinishedSemaphores[i], nullptr);
         }
     }
 
