@@ -3,7 +3,8 @@
 namespace Dog
 {
     struct RenderingResource;
-    class PresentPass;
+    class RenderGraph;
+    class Pipeline;
 
     class Renderer
     {
@@ -19,12 +20,27 @@ namespace Dog
         uint32_t GetCurrentImageIndex() const { return mCurrentImageIndex; }
 
     private:
-        friend class RenderGraph;
+        friend RenderGraph;
         RenderingResource& renderingResource;
+
+        std::vector<VkCommandBuffer> mCommandBuffers;
         uint32_t mCurrentImageIndex;
         uint32_t mCurrentFrameIndex;
 
-        std::vector<VkCommandBuffer> mCommandBuffers;
-        std::unique_ptr<PresentPass> mPresentPass;
+        std::unique_ptr<RenderGraph> mRenderGraph;
+        std::unique_ptr<Pipeline> mTrianglePipeline;
+
+    // This stuff should be temporary
+    private:
+        void CreateSceneTexture();
+        void CleanupSceneTexture();
+        void RecreateSceneTexture();
+
+        VkImage sceneImage{ VK_NULL_HANDLE };
+        VkDeviceMemory sceneImageMemory{ VK_NULL_HANDLE };
+        VkImageView sceneImageView{ VK_NULL_HANDLE };
+        VkSampler sceneSampler{ VK_NULL_HANDLE };
+
+        VkDescriptorSet sceneTextureDescriptorSet{ VK_NULL_HANDLE };
     };
 }

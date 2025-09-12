@@ -1,78 +1,80 @@
 #pragma once
 
-#include "ECS/Resources/RenderingResource.h"
-#include "Core/SwapChain.h"
-#include "Renderer.h"
-
 namespace Dog
 {
-    // Logical description of a render pass
+    // Opaque handle to a resource managed by the render graph.
+    // This abstracts away the underlying VkImage/VkBuffer.
+    struct RGResourceHandle {
+        uint32_t index;
+    };
+
+    // Internal representation of a resource's state.
+    struct RGResource
+    {
+        std::string name;
+        VkImage image{ VK_NULL_HANDLE };
+        VkImageView imageView{ VK_NULL_HANDLE };
+        VkExtent2D extent;
+        VkFormat format;
+
+        // State tracking for automatic barriers
+        VkImageLayout currentLayout{ VK_IMAGE_LAYOUT_UNDEFINED };
+    };
+
+    struct RGPass; // Forward declaration
+
+    // A transient helper object passed to the pass setup lambda.
+    // It provides a clean API for declaring what a pass reads from and writes to.
+    class RGPassBuilder
+    {
+    public:
+        RGPassBuilder(RGPass& pass) : m_pass(pass) {}
+
+        // Declare that this pass writes to a resource.
+        void writes(RGResourceHandle handle);
+
+        // Declare that this pass reads from a resource.
+        void reads(RGResourceHandle handle);
+
+
+    private:
+        RGPass& m_pass;
+    };
+
+    // Logical description of a render pass and its resource usage.
     struct RGPass {
         std::string name;
+        std::function<void(RGPassBuilder&)> setupCallback;
         std::function<void(VkCommandBuffer)> executeCallback;
+
+        std::vector<RGResourceHandle> writeTargets;
+        std::vector<RGResourceHandle> readTargets;
     };
 
     // The main orchestrator class
     class RenderGraph {
     public:
-        RenderGraph(RenderingResource& rr) : renderingResource(rr) {}
-        // --- Declaration API ---
-        // In this minimal example, we only have one pass that outputs to the screen.
-        void add_present_pass(const char* name, std::function<void(VkCommandBuffer)>&& callback) {
-            RGPass pass;
-            pass.name = name;
-            pass.executeCallback = std::move(callback);
+        RenderGraph() = default;
 
-            // For now, we just store the single pass.
-            m_passes.push_back(pass);
-        }
+        // Imports an existing, externally managed image (like the swapchain) into the graph.
+        RGResourceHandle import_backbuffer(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format);
 
-        // --- Backend Execution ---
-        void execute(VkCommandBuffer cmd,
-            VkImageView colorTargetView, VkImageView depthTargetView,
-            VkExtent2D targetExtent, VkDevice device,
-            VkFormat colorFormat, VkFormat depthFormat) 
-        {
-            // 1. Define the color attachment on-the-fly
-            VkRenderingAttachmentInfoKHR colorAttachment{};
-            colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
-            colorAttachment.imageView = colorTargetView;
-            colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL; // Layout during rendering
-            colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-            colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-            colorAttachment.clearValue.color = { {0.0f, 0.0f, 0.0f, 1.0f} };
+        // Create a transient texture owned by the graph
+        RGResourceHandle create_texture(const char* name, VkExtent2D extent, VkFormat format);
 
-            // 2. Define the depth attachment on-the-fly
-            VkRenderingAttachmentInfoKHR depthAttachment{};
-            depthAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
-            depthAttachment.imageView = depthTargetView;
-            depthAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-            depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-            depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-            depthAttachment.clearValue.depthStencil = { 1.0f, 0 };
+        // Adds a new pass to the graph. The setup callback declares dependencies.
+        void add_pass(const char* name,
+            std::function<void(RGPassBuilder&)>&& setup,
+            std::function<void(VkCommandBuffer)>&& execute);
 
-            // 3. Define the overall rendering info
-            VkRenderingInfoKHR renderingInfo{};
-            renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR;
-            renderingInfo.renderArea = { {0, 0}, targetExtent };
-            renderingInfo.layerCount = 1;
-            renderingInfo.colorAttachmentCount = 1;
-            renderingInfo.pColorAttachments = &colorAttachment;
-            renderingInfo.pDepthAttachment = &depthAttachment;
-            renderingInfo.pStencilAttachment = nullptr;
+        // Compiles and executes the graph, recording commands into the provided buffer.
+        void execute(VkCommandBuffer cmd, VkDevice device);
 
-            // --- 4. BEGIN DYNAMIC RENDERING --- 
-            vkCmdBeginRendering(cmd, &renderingInfo);
-
-            // Execute the pass's draw commands (this part is the same)
-            m_passes[0].executeCallback(cmd);
-
-            // --- 5. END DYNAMIC RENDERING ---
-            vkCmdEndRendering(cmd);
-        }
+        // Clears all passes and resources for the next frame.
+        void clear();
 
     private:
+        std::vector<RGResource> m_resources;
         std::vector<RGPass> m_passes;
-        RenderingResource& renderingResource;
     };
 }

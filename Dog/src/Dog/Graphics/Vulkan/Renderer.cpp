@@ -6,8 +6,8 @@
 #include "Core/SwapChain.h"
 #include "Core/Device.h"
 
+#include "Pipeline/Pipeline.h"
 #include "RenderGraph.h"
-#include "RenderPass/PresentPass.h"
 
 namespace Dog
 {
@@ -17,7 +17,21 @@ namespace Dog
         , mCurrentFrameIndex{ 0 }
     {
         CreateCommandBuffers();
-        mPresentPass = std::make_unique<PresentPass>(*renderingResource.device, *renderingResource.swapChain, *renderingResource.syncObjects);
+
+        mRenderGraph = std::make_unique<RenderGraph>();
+
+        std::vector<Uniform*> unis{}; // temp empty
+        mTrianglePipeline = std::make_unique<Pipeline>(
+            *renderingResource.device,
+            renderingResource.swapChain->GetImageFormat(),
+            renderingResource.swapChain->FindDepthFormat(),
+            unis,
+            false,
+            "basic_tri.vert",
+            "basic_tri.frag"
+        );
+
+        CreateSceneTexture();
     }
 
     Renderer::~Renderer()
@@ -36,6 +50,7 @@ namespace Dog
         if (result == VK_ERROR_OUT_OF_DATE_KHR)
         {
             renderingResource.RecreateSwapChain();
+            RecreateSceneTexture();
             return;
         }
 
@@ -63,64 +78,49 @@ namespace Dog
             throw std::runtime_error("failed to begin recording command buffer!");
         }
 
-        VkImageMemoryBarrier imageBarrier_to_render{};
-        imageBarrier_to_render.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        imageBarrier_to_render.srcAccessMask = 0;
-        imageBarrier_to_render.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-        imageBarrier_to_render.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        imageBarrier_to_render.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-        imageBarrier_to_render.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        imageBarrier_to_render.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        // You'll need a way to get the VkImage handle from your SwapChain class
-        imageBarrier_to_render.image = renderingResource.swapChain->GetImage();
-        imageBarrier_to_render.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        imageBarrier_to_render.subresourceRange.baseMipLevel = 0;
-        imageBarrier_to_render.subresourceRange.levelCount = 1;
-        imageBarrier_to_render.subresourceRange.baseArrayLayer = 0;
-        imageBarrier_to_render.subresourceRange.layerCount = 1;
+        // --- Render Graph Setup and Execution ---
 
-        vkCmdPipelineBarrier(
-            commandBuffer,
-            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-            0, 0, nullptr, 0, nullptr, 1, &imageBarrier_to_render);
+        // 1. Clear graph from previous frame.
+        mRenderGraph->clear();
 
-        RenderGraph graph(renderingResource);
-        graph.add_present_pass("PresentToScreen", [&](VkCommandBuffer cmd) {
-            mPresentPass->Execute(cmd);
-        });
-
-        graph.execute(
-            commandBuffer,
+        // 2. Import the current swapchain image into the graph.
+        RGResourceHandle backbufferHandle = mRenderGraph->import_backbuffer(
+            "Backbuffer",
+            renderingResource.swapChain->GetImage(),
             renderingResource.swapChain->GetImageView(),
-            renderingResource.swapChain->GetDepthImageView(),
             renderingResource.swapChain->GetSwapChainExtent(),
-            renderingResource.device->getDevice(),
-            renderingResource.swapChain->GetImageFormat(),
-            renderingResource.swapChain->FindDepthFormat()
+            renderingResource.swapChain->GetImageFormat()
         );
 
-        VkImageMemoryBarrier imageBarrier_to_present{};
-        imageBarrier_to_present.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        imageBarrier_to_present.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-        imageBarrier_to_present.dstAccessMask = 0;
-        imageBarrier_to_present.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-        imageBarrier_to_present.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-        imageBarrier_to_present.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        imageBarrier_to_present.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        // Use the same image handle as before
-        imageBarrier_to_present.image = renderingResource.swapChain->GetImage();
-        imageBarrier_to_present.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        imageBarrier_to_present.subresourceRange.baseMipLevel = 0;
-        imageBarrier_to_present.subresourceRange.levelCount = 1;
-        imageBarrier_to_present.subresourceRange.baseArrayLayer = 0;
-        imageBarrier_to_present.subresourceRange.layerCount = 1;
+        // 3. Declare passes for this frame.
+        mRenderGraph->add_pass(
+            "TrianglePresentPass",
+            // Setup Lambda: Declare resource dependencies.
+            [&](RGPassBuilder& builder) {
+                builder.writes(backbufferHandle);
+            },
+            // Execute Lambda: Record the actual draw commands.
+            [&](VkCommandBuffer cmd) {
+                mTrianglePipeline->Bind(cmd);
 
-        vkCmdPipelineBarrier(
-            commandBuffer,
-            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-            VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-            0, 0, nullptr, 0, nullptr, 1, &imageBarrier_to_present);
+                VkViewport viewport{};
+                viewport.width = static_cast<float>(renderingResource.swapChain->GetSwapChainExtent().width);
+                viewport.height = static_cast<float>(renderingResource.swapChain->GetSwapChainExtent().height);
+                viewport.minDepth = 0.0f;
+                viewport.maxDepth = 1.0f;
+                vkCmdSetViewport(cmd, 0, 1, &viewport);
+
+                VkRect2D scissor{ {0, 0}, renderingResource.swapChain->GetSwapChainExtent() };
+                vkCmdSetScissor(cmd, 0, 1, &scissor);
+
+                vkCmdDraw(cmd, 3, 1, 0, 0);
+            }
+        );
+
+        // 4. Execute the graph. This is where barriers are automatically inserted.
+        mRenderGraph->execute(commandBuffer, renderingResource.device->getDevice());
+
+        // --- End Graph ---
 
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
             throw std::runtime_error("failed to record command buffer!");
@@ -181,5 +181,19 @@ namespace Dog
             //If failed throw error
             DOG_CRITICAL("Failed to allocate command buffers");
         }
+    }
+
+    void Renderer::CreateSceneTexture()
+    {
+    }
+
+    void Renderer::CleanupSceneTexture()
+    {
+    }
+
+    void Renderer::RecreateSceneTexture()
+    {
+        CleanupSceneTexture();
+        CreateSceneTexture();
     }
 }

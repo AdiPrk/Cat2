@@ -1,8 +1,8 @@
 #include <PCH/pch.h>
 #include "PacketHandler.h"
 #include "PlayerManager.h"
-#include "Graphics/Editor/Editor.h"
-#include "Graphics/Editor/Windows/ChatWindow.h"
+#include "Graphics/OldEditor/Editor.h"
+#include "Graphics/OldEditor/Windows/ChatWindow.h"
 #include "Events/Actions.h"
 #include "Engine.h"
 

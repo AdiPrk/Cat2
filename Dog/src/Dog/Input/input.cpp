@@ -7,8 +7,8 @@
 #include "Core/Scene/Scene.h"
 #include "imgui_internal.h"
 #include "Engine.h"
-#include "Graphics/Editor/Editor.h"
-#include "Graphics/Editor/TextEditor/TextEditor.h"
+#include "Graphics/OldEditor/Editor.h"
+#include "Graphics/OldEditor/TextEditor/TextEditor.h"
 
 #define DO_INPUT_LOGGING 0
 

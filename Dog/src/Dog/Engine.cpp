@@ -18,7 +18,7 @@
 #include "Core/Scene/Entity/Entity.h"
 #include "Core/Scene/Entity/Components.h"
 
-#include "Graphics/Editor/Editor.h"
+#include "Graphics/OldEditor/Editor.h"
 #include "Assets/FileWatcher/FileWatcher.h"
 
 #include "Networking/Networking.h"
@@ -26,9 +26,12 @@
 
 #include "ECS/Systems/TestSystem.h"
 #include "ECS/Systems/RenderSystem.h"
+#include "ECS/Systems/EditorSystem.h"
 
 #include "ECS/Resources/WindowResource.h"
 #include "ECS/Resources/RenderingResource.h"
+#include "ECS/Resources/EditorResource.h"
+
 #include "Graphics/Vulkan/Core/Device.h"
 
 namespace Dog {
@@ -45,9 +48,11 @@ namespace Dog {
 
         ecs.AddSystem<TestSystem>();
         ecs.AddSystem<RenderSystem>();
+        ecs.AddSystem<EditorSystem>();
 
         ecs.CreateResource<WindowResource>(specs.width, specs.height, specs.name);
         ecs.CreateResource<RenderingResource>(*ecs.GetResource<WindowResource>()->window);
+        ecs.CreateResource<EditorResource>();
 
         // tbd; change input to a system
         Input::Init(ecs.GetResource<WindowResource>()->window->getGLFWwindow());

@@ -258,6 +258,8 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClCompile Include="src\Dog\Assets\Assets.cpp" />
     <ClCompile Include="src\Dog\Assets\FileWatcher\FileWatcher.cpp" />
     <ClCompile Include="src\Dog\Assets\UUID\UUID.cpp" />
+    <ClCompile Include="src\Dog\ECS\Resources\EditorResource.cpp" />
+    <ClCompile Include="src\Dog\ECS\Systems\EditorSystem.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Core\Allocator.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Buffers\Buffer.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Core\SwapChain.cpp" />
@@ -267,7 +269,6 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClCompile Include="src\Dog\Graphics\Vulkan\Pipeline\Shader.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Renderer.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\RenderGraph.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\RenderPass\PresentPass.cpp" />
     <ClCompile Include="src\Dog\Utils\Utils.cpp" />
     <ClCompile Include="src\Dog\ECS\ECS.cpp" />
     <ClCompile Include="src\Dog\Events\ActionManager.cpp" />
@@ -319,6 +320,8 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClInclude Include="src\Dog\Assets\Assets.h" />
     <ClInclude Include="src\Dog\Assets\FileWatcher\FileWatcher.h" />
     <ClInclude Include="src\Dog\Assets\UUID\UUID.h" />
+    <ClInclude Include="src\Dog\ECS\Resources\EditorResource.h" />
+    <ClInclude Include="src\Dog\ECS\Systems\EditorSystem.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\Allocator.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Buffers\Buffer.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\SwapChain.h" />
@@ -328,7 +331,6 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClInclude Include="src\Dog\Graphics\Vulkan\Pipeline\Shader.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Renderer.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\RenderGraph.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\RenderPass\PresentPass.h" />
     <ClInclude Include="src\Dog\Utils\Utils.h" />
     <ClInclude Include="src\Dog\ECS\ECS.h" />
     <ClInclude Include="src\Dog\Events\ActionManager.h" />

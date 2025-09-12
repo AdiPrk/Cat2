@@ -10,8 +10,6 @@ namespace Dog
     {
         WindowResource(int w, int h, std::string name);
 
-        
-
         std::unique_ptr<Window> window;
     };
 }

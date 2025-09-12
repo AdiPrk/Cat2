@@ -49,7 +49,8 @@
     <ClCompile Include="src\Dog\Graphics\Vulkan\Core\SwapChain.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Core\Synchronization.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\RenderGraph.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\RenderPass\PresentPass.cpp" />
+    <ClCompile Include="src\Dog\ECS\Systems\EditorSystem.cpp" />
+    <ClCompile Include="src\Dog\ECS\Resources\EditorResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dog\Engine.h" />
@@ -105,6 +106,7 @@
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\SwapChain.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\Synchronization.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\RenderGraph.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\RenderPass\PresentPass.h" />
+    <ClInclude Include="src\Dog\ECS\Systems\EditorSystem.h" />
+    <ClInclude Include="src\Dog\ECS\Resources\EditorResource.h" />
   </ItemGroup>
 </Project>

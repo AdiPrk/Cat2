@@ -1,7 +1,7 @@
 #include <PCH/pch.h>
 #include "Networking.h"
-#include "Graphics/Editor/Editor.h"
-#include "Graphics/Editor/Windows/ChatWindow.h"
+#include "Graphics/OldEditor/Editor.h"
+#include "Graphics/OldEditor/Windows/ChatWindow.h"
 #include "Engine.h"
 
 namespace Dog {
