@@ -13,7 +13,6 @@ namespace Dog
         PresentPass(Device& device, SwapChain& swapChain, Synchronizer& sync);
         ~PresentPass();
 
-        void CreateRenderPass();
         void CreatePipeline();
         void Execute(VkCommandBuffer cmd);
         void Cleanup();

@@ -59,7 +59,7 @@ namespace Dog
             renderingInfo.colorAttachmentCount = 1;
             renderingInfo.pColorAttachments = &colorAttachment;
             renderingInfo.pDepthAttachment = &depthAttachment;
-            renderingInfo.pStencilAttachment = nullptr; // Or set to &depthAttachment if using stencil
+            renderingInfo.pStencilAttachment = nullptr;
 
             // --- 4. BEGIN DYNAMIC RENDERING --- 
             vkCmdBeginRendering(cmd, &renderingInfo);

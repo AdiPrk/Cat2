@@ -38,8 +38,8 @@ namespace Dog
         std::vector<VkSemaphore> mImageAvailableSemaphores;  // Signaled when images are ready to be used
         std::vector<VkSemaphore> mRenderFinishedSemaphores;  // Signaled when command buffers are finished being submitted
         std::vector<VkSemaphore> mComputeFinishedSemaphores; // Signaled when compute command buffers are finished being submitted
-        std::vector<VkFence> mCommandBuffInFlightFences;    // Signaled when command buffer finish execution
-        std::vector<VkFence> mImagesInFlightFences;                // Signaled when image is being used
+        std::vector<VkFence> mCommandBuffInFlightFences;     // Signaled when command buffer finish execution
+        std::vector<VkFence> mImagesInFlightFences;          // Signaled when image is being used
 
         size_t mCurrentFrame = 0;                           // Current frame being rendered
     };
