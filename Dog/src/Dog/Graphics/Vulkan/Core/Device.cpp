@@ -154,6 +154,9 @@ namespace Dog {
     }
 
     void Device::createLogicalDevice() {
+        // Check for indirect count rendering support
+        CheckIndirectDrawSupport();
+
         QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -172,29 +175,48 @@ namespace Dog {
         }
 
         VkPhysicalDeviceFeatures deviceFeatures = {};
-        deviceFeatures.samplerAnisotropy = VK_TRUE;
+        deviceFeatures.samplerAnisotropy = VK_TRUE;   //Set the feature samplerAnisotropy to true to sigify that we want for this device
+        deviceFeatures.multiDrawIndirect = VK_TRUE;   //Set the feature multiDrawIndirect to true to sigify that we want for this device
+        deviceFeatures.tessellationShader = VK_TRUE;  //Set the feature tessellationShader to true to sigify that we want for this device
+        deviceFeatures.pipelineStatisticsQuery = VK_TRUE;
+        deviceFeatures.logicOp = VK_TRUE;
         deviceFeatures.fillModeNonSolid = VK_TRUE;
+        deviceFeatures.shaderInt16 = VK_TRUE;
 
-        VkPhysicalDeviceDescriptorIndexingFeatures indexingFeatures{};
-        indexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT;
-        indexingFeatures.shaderSampledImageArrayNonUniformIndexing = VK_TRUE;
-        indexingFeatures.runtimeDescriptorArray = VK_TRUE;
-        indexingFeatures.descriptorBindingPartiallyBound = VK_TRUE;
-        indexingFeatures.descriptorBindingVariableDescriptorCount = VK_TRUE;
+        VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeatures{};
+        dynamicRenderingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR;
+        dynamicRenderingFeatures.dynamicRendering = VK_TRUE;
+
+        VkPhysicalDevice16BitStorageFeatures storage16BitFeatures = {};
+        storage16BitFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES;
+        storage16BitFeatures.storageBuffer16BitAccess = VK_TRUE;  // Allow uint16_t in SSBOs
+
+        VkPhysicalDeviceVulkan12Features vulkan12Features = {};
+        vulkan12Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
+        vulkan12Features.drawIndirectCount = VK_TRUE;
+        vulkan12Features.shaderSampledImageArrayNonUniformIndexing = VK_TRUE;
+        vulkan12Features.runtimeDescriptorArray = VK_TRUE;
+        vulkan12Features.descriptorBindingPartiallyBound = VK_TRUE;
+        vulkan12Features.descriptorBindingVariableDescriptorCount = VK_TRUE;
+        vulkan12Features.shaderFloat16 = VK_TRUE;
+        vulkan12Features.shaderInt8 = VK_TRUE;
 
         VkPhysicalDeviceAccelerationStructureFeaturesKHR accelFeature{};
         accelFeature.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR;
         accelFeature.accelerationStructure = VK_TRUE; // not in guide, is it needed?
-        accelFeature.pNext = &indexingFeatures;
 
         VkPhysicalDeviceRayTracingPipelineFeaturesKHR rtPipelineFeature{};
         rtPipelineFeature.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR;
         rtPipelineFeature.rayTracingPipeline = VK_TRUE;
-        rtPipelineFeature.pNext = &accelFeature;
 
         // Make sure you pass these enabled features and extensions when creating your device
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+        
+        storage16BitFeatures.pNext = &dynamicRenderingFeatures;
+        vulkan12Features.pNext = &storage16BitFeatures;
+        accelFeature.pNext = &vulkan12Features;
+        rtPipelineFeature.pNext = &accelFeature;
         createInfo.pNext = &rtPipelineFeature;
 
         createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
@@ -233,6 +255,23 @@ namespace Dog {
 
         if (vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
             throw std::runtime_error("failed to create command pool!");
+        }
+    }
+
+    void Device::CheckIndirectDrawSupport()
+    {
+        VkPhysicalDeviceVulkan12Features supportedFeatures = {};
+        supportedFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
+
+        VkPhysicalDeviceFeatures2 features2 = {};
+        features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+        features2.pNext = &supportedFeatures;
+
+        vkGetPhysicalDeviceFeatures2(physicalDevice, &features2);
+
+        // Check for specific feature support
+        if (!supportedFeatures.drawIndirectCount) {
+            DOG_ERROR("drawIndirectCount is not supported on this GPU!");
         }
     }
 

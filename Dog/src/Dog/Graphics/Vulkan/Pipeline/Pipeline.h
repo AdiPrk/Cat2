@@ -26,7 +26,12 @@ namespace Dog
 			colorBlendCreateInfo(),
 			depthStencilCreateInfo(),
 			dynamicStateCreateInfo(),
-			dynamicStateEnables()
+			dynamicStateEnables(),
+            pipeLineLayout(nullptr),
+            renderPass(nullptr),
+            colorFormat(VK_FORMAT_UNDEFINED),
+            depthFormat(VK_FORMAT_UNDEFINED),
+            subpass(0)
 		{
 		};
 
@@ -41,6 +46,8 @@ namespace Dog
 		std::vector<VkDynamicState> dynamicStateEnables;
 		VkPipelineLayout pipeLineLayout = nullptr;
 		VkRenderPass renderPass = nullptr;
+		VkFormat colorFormat;
+		VkFormat depthFormat;
 		uint32_t subpass = 0;
 	};
 
@@ -58,8 +65,8 @@ namespace Dog
 		inline static const std::string ShaderDir = "assets/shaders/";
 		inline static const std::string SpvDir = "assets/shaders/spv/";
 
-		Pipeline(Device& device, const std::vector<Uniform*>& uniforms, VkRenderPass renderPass, bool wireframe, const std::string& vertFile, const std::string& fragFile);
-		Pipeline(Device& device, const std::vector<Uniform*>& uniforms, VkRenderPass renderPass, bool wireframe, const std::string& vertFile, const std::string& fragFile, const std::string& tescFile, const std::string& teseFile);
+		Pipeline(Device& device, VkFormat colorFormat, VkFormat depthFormat, const std::vector<Uniform*>& uniforms, bool wireframe, const std::string& vertFile, const std::string& fragFile);
+		Pipeline(Device& device, VkFormat colorFormat, VkFormat depthFormat, const std::vector<Uniform*>& uniforms, bool wireframe, const std::string& vertFile, const std::string& fragFile, const std::string& tescFile, const std::string& teseFile);
 
 		~Pipeline();
 
@@ -74,14 +81,11 @@ namespace Dog
 
 		void CreatePipelineLayout(const std::vector<Uniform*>& uniforms);
 
-		void CreatePipeline(VkRenderPass renderPass);
+		void CreatePipeline(VkFormat colorFormat, VkFormat depthFormat);
 
 		void DefaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
 
 		void CreateGraphicsPipeline(const PipelineConfigInfo& configInfo);
-
-		void ReadShaders(const std::string& vertFilePath, const std::string& fragFilePath);
-
 		
 		Device& mPipelineDevice;				     
 		VkPipeline mGraphicsPipeline;		         

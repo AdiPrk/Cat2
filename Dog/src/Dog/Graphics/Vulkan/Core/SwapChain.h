@@ -140,10 +140,10 @@ namespace Dog
 
         VkFormat GetImageFormat() { return mSwapChainImageFormat; }
         VkFormat GetDepthFormat() { return mSwapChainDepthFormat; }
-        VkImage GetImage(int index) { return mSwapChainImages[index]; }
-        VkImageView GetImageView(int index) { return mSwapChainImageViews[index]; }
-        VkImage GetDepthImage(int index) { return mDepthImages[index]; }
-        VkImageView GetDepthImageView(int index) { return mDepthImageViews[index]; }
+        VkImage GetImage() { return mSwapChainImages[mCurrentImageIndex]; }
+        VkImageView GetImageView() { return mSwapChainImageViews[mCurrentImageIndex]; }
+        VkImage GetDepthImage() { return mDepthImages[mCurrentImageIndex]; }
+        VkImageView GetDepthImageView() { return mDepthImageViews[mCurrentImageIndex]; }
 
     private:
 
@@ -237,6 +237,8 @@ namespace Dog
 
         VkSwapchainKHR mSwapChain;                //Swapchain object in vulkan (Like the whole point of this class)
         std::shared_ptr<SwapChain> mOldSwapChain; //Old swapchain that existed before this one (only exists if this is a recreated swapchain)
+
+        uint32_t mCurrentImageIndex;
     };
 }
 

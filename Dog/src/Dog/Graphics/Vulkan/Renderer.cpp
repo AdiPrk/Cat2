@@ -63,20 +63,64 @@ namespace Dog
             throw std::runtime_error("failed to begin recording command buffer!");
         }
 
-        RenderGraph graph;
+        VkImageMemoryBarrier imageBarrier_to_render{};
+        imageBarrier_to_render.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        imageBarrier_to_render.srcAccessMask = 0;
+        imageBarrier_to_render.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        imageBarrier_to_render.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        imageBarrier_to_render.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        imageBarrier_to_render.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        imageBarrier_to_render.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        // You'll need a way to get the VkImage handle from your SwapChain class
+        imageBarrier_to_render.image = renderingResource.swapChain->GetImage();
+        imageBarrier_to_render.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        imageBarrier_to_render.subresourceRange.baseMipLevel = 0;
+        imageBarrier_to_render.subresourceRange.levelCount = 1;
+        imageBarrier_to_render.subresourceRange.baseArrayLayer = 0;
+        imageBarrier_to_render.subresourceRange.layerCount = 1;
+
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            0, 0, nullptr, 0, nullptr, 1, &imageBarrier_to_render);
+
+        RenderGraph graph(renderingResource);
         graph.add_present_pass("PresentToScreen", [&](VkCommandBuffer cmd) {
             mPresentPass->Execute(cmd);
         });
 
         graph.execute(
             commandBuffer,
-            renderingResource.swapChain->GetImageView(mCurrentImageIndex),
-            renderingResource.swapChain->GetDepthImageView(mCurrentImageIndex),
+            renderingResource.swapChain->GetImageView(),
+            renderingResource.swapChain->GetDepthImageView(),
             renderingResource.swapChain->GetSwapChainExtent(),
             renderingResource.device->getDevice(),
             renderingResource.swapChain->GetImageFormat(),
             renderingResource.swapChain->FindDepthFormat()
         );
+
+        VkImageMemoryBarrier imageBarrier_to_present{};
+        imageBarrier_to_present.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        imageBarrier_to_present.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        imageBarrier_to_present.dstAccessMask = 0;
+        imageBarrier_to_present.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        imageBarrier_to_present.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        imageBarrier_to_present.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        imageBarrier_to_present.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        // Use the same image handle as before
+        imageBarrier_to_present.image = renderingResource.swapChain->GetImage();
+        imageBarrier_to_present.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        imageBarrier_to_present.subresourceRange.baseMipLevel = 0;
+        imageBarrier_to_present.subresourceRange.levelCount = 1;
+        imageBarrier_to_present.subresourceRange.baseArrayLayer = 0;
+        imageBarrier_to_present.subresourceRange.layerCount = 1;
+
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+            0, 0, nullptr, 0, nullptr, 1, &imageBarrier_to_present);
 
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
             throw std::runtime_error("failed to record command buffer!");

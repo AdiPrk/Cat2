@@ -69,6 +69,9 @@ namespace Dog
             syncObjects.GetImageAvailableSemaphore(),              //Give semaphore to be triggered when image is ready for rendering (must be a not signaled semaphore)
             VK_NULL_HANDLE,                                            //No fences in use for this
             imageIndex);                                               //Gets set to image index to use
+
+        mCurrentImageIndex = *imageIndex; //Set current image index to the one we just got
+
         return result; //Return result of image get call
     }
 

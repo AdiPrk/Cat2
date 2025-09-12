@@ -15,7 +15,11 @@ namespace Dog
 
         void CreateCommandBuffers();
 
+        uint32_t GetCurrentFrameIndex() const { return mCurrentFrameIndex; }
+        uint32_t GetCurrentImageIndex() const { return mCurrentImageIndex; }
+
     private:
+        friend class RenderGraph;
         RenderingResource& renderingResource;
         uint32_t mCurrentImageIndex;
         uint32_t mCurrentFrameIndex;

@@ -7,7 +7,7 @@
 
 namespace Dog
 {
-	Pipeline::Pipeline(Device& device, const std::vector<Uniform*>& uniforms, VkRenderPass renderPass, bool wireframe, const std::string& vertFile, const std::string& fragFile)
+	Pipeline::Pipeline(Device& device, VkFormat colorFormat, VkFormat depthFormat, const std::vector<Uniform*>& uniforms, bool wireframe, const std::string& vertFile, const std::string& fragFile)
 		: mPipelineDevice(device)
 		, isWireframe(wireframe)
 		, mVertPath(ShaderDir + vertFile)
@@ -19,10 +19,10 @@ namespace Dog
 		mSpvFragPath = SpvDir + fragFile + ".spv";
 
 		CreatePipelineLayout(uniforms);
-		CreatePipeline(renderPass);
+		CreatePipeline(colorFormat, depthFormat);
 	}
 
-	Pipeline::Pipeline(Device& device, const std::vector<Uniform*>& uniforms, VkRenderPass renderPass, bool wireframe, const std::string& vertFile, const std::string& fragFile, const std::string& tescFile, const std::string& teseFile)
+	Pipeline::Pipeline(Device& device, VkFormat colorFormat, VkFormat depthFormat, const std::vector<Uniform*>& uniforms, bool wireframe, const std::string& vertFile, const std::string& fragFile, const std::string& tescFile, const std::string& teseFile)
 		: mPipelineDevice(device)
 		, isWireframe(wireframe)
 		, mVertPath(ShaderDir + vertFile)
@@ -36,7 +36,7 @@ namespace Dog
 		mSpvTesePath = SpvDir + teseFile + ".spv";
 
 		CreatePipelineLayout(uniforms);
-		CreatePipeline(renderPass);
+		CreatePipeline(colorFormat, depthFormat);
 	}
 
 	Pipeline::~Pipeline()
@@ -102,7 +102,7 @@ namespace Dog
 		}
 	}
 
-	void Pipeline::CreatePipeline(VkRenderPass renderPass)
+	void Pipeline::CreatePipeline(VkFormat colorFormat, VkFormat depthFormat)
 	{
 		//Make sure everything needed exists
 		if (mPipelineLayout == nullptr)
@@ -121,10 +121,14 @@ namespace Dog
 		pipelineConfig.inputAssemblyCreateInfo.topology = isWireframe ? VK_PRIMITIVE_TOPOLOGY_LINE_LIST : VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
 		//Set renderpass
-		pipelineConfig.renderPass = renderPass;
+		pipelineConfig.renderPass = VK_NULL_HANDLE; //renderPass;
 
 		//Set layout
 		pipelineConfig.pipeLineLayout = mPipelineLayout;
+
+		//Formats
+        pipelineConfig.colorFormat = colorFormat;
+        pipelineConfig.depthFormat = depthFormat;
 
 		//Create the pipeline
 		CreateGraphicsPipeline(pipelineConfig);
@@ -132,85 +136,36 @@ namespace Dog
 
 	void Pipeline::DefaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
 	{
-		//-----------------------------------------------------------------------------------------------------------------------------------
-		//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-		//InputAssembly (How Vulkan with interprat the array of numbers given as the triangles to draw)--------------------------------------
-
-		//Set what will be created to a input assembly state (what processes the list of triangles into meaningful geometry)
 		configInfo.inputAssemblyCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-
-		//Set topology to a triangle list (as opposed to a line list, triangle strip, or simular)
 		configInfo.inputAssemblyCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-
-		//Turns off being able to interupt a list with a special value (used in triangle strips but not lists)
 		configInfo.inputAssemblyCreateInfo.primitiveRestartEnable = VK_FALSE;
-
-		//Set next to null
 		configInfo.inputAssemblyCreateInfo.pNext = nullptr;
-
-		//Set to no falgs
 		configInfo.inputAssemblyCreateInfo.flags = 0;
 
-		//-----------------------------------------------------------------------------------------------------------------------------------
-		//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-		//Viewport (View Transformation)-----------------------------------------------------------------------------------------------------
+		configInfo.viewportCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+		configInfo.viewportCreateInfo.viewportCount = 1;                                            
+		configInfo.viewportCreateInfo.pViewports = nullptr;                                         
+		configInfo.viewportCreateInfo.scissorCount = 1;                                             
+		configInfo.viewportCreateInfo.pScissors = nullptr;                                          
 
-		//Make create info for viewport (the combonation of viewportinfos and scissors)
-		configInfo.viewportCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO; //Set what will be created to a viewport state
-		configInfo.viewportCreateInfo.viewportCount = 1;                                             //Number of viewports being used
-		configInfo.viewportCreateInfo.pViewports = nullptr;                                          //Pointer to viewport data
-		configInfo.viewportCreateInfo.scissorCount = 1;                                              //Number of scissors being used
-		configInfo.viewportCreateInfo.pScissors = nullptr;                                           //Pointer to scissor data
-
-		//-----------------------------------------------------------------------------------------------------------------------------------
-		//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-		//RaserizationCreateInfo (Create info for what seperates a triangle into fragments (usually pixels) for the fragment shader)---------
-
-		//Set what will be created to a rasterizor
 		configInfo.rasterizationCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-
-		//Turn of z clamping (For example this would make things at -0.56 z (behind the camera) clamp to 0z (visable to the camera))
 		configInfo.rasterizationCreateInfo.depthClampEnable = VK_FALSE;
-
-		//Turn of discard, if left on it will discard all primatives before rasterization (Used if only using first few stages of the grapics pipeline)
 		configInfo.rasterizationCreateInfo.rasterizerDiscardEnable = VK_FALSE;
-
-		//Set how we want our polygon (triangle) filled, this could do edge drawing for example
 		configInfo.rasterizationCreateInfo.polygonMode = VK_POLYGON_MODE_FILL;
-
-		//Width of drawn lines
 		configInfo.rasterizationCreateInfo.lineWidth = 1.0f;
-
-		//Backface culling setting (Currently off), sets which winding gets culled if any
 		configInfo.rasterizationCreateInfo.cullMode = VK_CULL_MODE_NONE;
 		configInfo.rasterizationCreateInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
-
-		//Adds constant/factor/clamp to the depth value if wanted (Currently unsure of use and is off)
 		configInfo.rasterizationCreateInfo.depthBiasEnable = VK_FALSE;
 		configInfo.rasterizationCreateInfo.depthBiasConstantFactor = 0.0f;
 		configInfo.rasterizationCreateInfo.depthBiasClamp = 0.0f;
 		configInfo.rasterizationCreateInfo.depthBiasSlopeFactor = 0.0f;
 
-		//-----------------------------------------------------------------------------------------------------------------------------------
-		//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-		//MultiSampler (Runs anti-aliasing sampling to see how much of a pixel is in the fragment and color accordingly)---------------------
 
-		//Set what will be created to a multisampler
 		configInfo.multisampleCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-
-		//Set if the anti-aliasing pixels should be shaded by how much is within the fragment
 		configInfo.multisampleCreateInfo.sampleShadingEnable = VK_FALSE;
-
-		//Number of sample to preform
 		configInfo.multisampleCreateInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-
-		//Specifies a minimum fraction of sample shading
 		configInfo.multisampleCreateInfo.minSampleShading = 1.0f;
-
-		//Allows you to provide a mask to use when multisampler shades (not being used here)
 		configInfo.multisampleCreateInfo.pSampleMask = nullptr;
-
-		//Honestly dont understand these two, but not being used currently
 		configInfo.multisampleCreateInfo.alphaToCoverageEnable = VK_FALSE;
 		configInfo.multisampleCreateInfo.alphaToOneEnable = VK_FALSE;
 
@@ -308,19 +263,8 @@ namespace Dog
 		//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 		//-----------------------------------------------------------------------------------------------------------------------------------
 
-		//No defualt setting for pipeline layout and renderpass
+		
 	}
-
-	//void Pipeline::BindPushConstants(VkCommandBuffer& commandBuffer, PushConstantData& data)
-	//{
-	//	//Add bind push constants command
-	//	vkCmdPushConstants(commandBuffer,
-	//										 mPipelineLayout,
-	//										 VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, //What shaders to push too
-	//										 0,
-	//										 sizeof(PushConstantData),
-	//										 &data);
-	//}
 
 	void Pipeline::CreateGraphicsPipeline(const PipelineConfigInfo& configInfo)
 	{
@@ -329,10 +273,10 @@ namespace Dog
 		{
             DOG_CRITICAL("Cannot create graphics pipeline: no pipelineLayout provided in configInfo");
 		}
-		if (configInfo.renderPass == VK_NULL_HANDLE)
-		{
-            DOG_CRITICAL("Cannot create graphics pipeline: no renderPass provided in configInfo");
-		}
+		//if (configInfo.renderPass == VK_NULL_HANDLE)
+		//{
+        //    DOG_CRITICAL("Cannot create graphics pipeline: no renderPass provided in configInfo");
+		//}
 
 		//Read code files
 		bool useSPV = !RecompileShaders;
@@ -458,14 +402,24 @@ namespace Dog
 		//	pipelineCreateInfo.pTessellationState = &pipelineTessellationStateCreateInfo;
 		//}
 
+		// Provide information for dynamic rendering
+		VkPipelineRenderingCreateInfoKHR pipeline_create{ VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO };
+		pipeline_create.pNext = VK_NULL_HANDLE;
+		pipeline_create.colorAttachmentCount = 1;
+        pipeline_create.pColorAttachmentFormats = &configInfo.colorFormat;
+        pipeline_create.depthAttachmentFormat = configInfo.depthFormat;
+        pipeline_create.stencilAttachmentFormat = VK_FORMAT_UNDEFINED;
+
 		pipelineCreateInfo.pDynamicState = &configInfo.dynamicStateCreateInfo;				//Provides create information for what should be dynamic (changable after creation)
 
 		pipelineCreateInfo.layout = configInfo.pipeLineLayout;												//Set data from config
-		pipelineCreateInfo.renderPass = configInfo.renderPass;												//Set data from config
+		pipelineCreateInfo.renderPass = VK_NULL_HANDLE;// configInfo.renderPass;												//Set data from config
 		pipelineCreateInfo.subpass = configInfo.subpass;															//Set data from config
 
 		pipelineCreateInfo.basePipelineIndex = -1;                                    //Used for optimazion by deriving new pipelines from existing ones (not currently using)
 		pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;												//Used for optimazion by deriving new pipelines from existing ones (not currently using)
+
+        pipelineCreateInfo.pNext = &pipeline_create; // Link the dynamic rendering info to the pipeline create info
 
 		//Create the pipeline          not using pipeline cashe vvvvvvvvvv     no allocation callbacks vvvvv
 		if (vkCreateGraphicsPipelines(mPipelineDevice.getDevice(), VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &mGraphicsPipeline) != VK_SUCCESS)

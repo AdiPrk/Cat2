@@ -34,7 +34,6 @@
     <ClCompile Include="src\Dog\Utils\Utils.cpp" />
     <ClCompile Include="src\Dog\ECS\ECS.cpp" />
     <ClCompile Include="src\Dog\ECS\Systems\TestSystem.cpp" />
-    <ClCompile Include="Dependencies\vk-bootstrap\src\VkBootstrap.cpp" />
     <ClCompile Include="src\Dog\ECS\Systems\RenderSystem.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\RenderingResource.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\WindowResource.cpp" />

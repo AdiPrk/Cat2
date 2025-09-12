@@ -100,12 +100,26 @@ namespace Dog
     void PresentPass::CreatePipeline()
     {
         std::vector<Uniform*> unis{}; // temp empty
-        pipeline = std::make_unique<Pipeline>(device, unis, mRenderPass, false, "basic_tri.vert", "basic_tri.frag");
+        pipeline = std::make_unique<Pipeline>(device, swapChain.GetImageFormat(), swapChain.GetDepthFormat(), unis, false, "basic_tri.vert", "basic_tri.frag");
     }
 
     void PresentPass::Execute(VkCommandBuffer cmd)
     {
         pipeline->Bind(cmd);
+
+        VkViewport viewport{};
+        viewport.x = 0.0f;
+        viewport.y = 0.0f;
+        viewport.width = static_cast<float>(swapChain.GetSwapChainExtent().width);
+        viewport.height = static_cast<float>(swapChain.GetSwapChainExtent().height);
+        viewport.minDepth = 0.0f;
+        viewport.maxDepth = 1.0f;
+        vkCmdSetViewport(cmd, 0, 1, &viewport);
+
+        // Set the dynamic scissor
+        VkRect2D scissor{ {0, 0}, swapChain.GetSwapChainExtent() };
+        vkCmdSetScissor(cmd, 0, 1, &scissor);
+
         vkCmdDraw(cmd, 3, 1, 0, 0);
     }
     
