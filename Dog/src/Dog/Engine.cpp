@@ -73,11 +73,6 @@ namespace Dog {
     {
         // Init some stuff
         //m_Networking->Init();
-        //m_Editor->Init();
-        //m_Renderer->Init();
-
-        //SceneManager::SetNextScene(sceneName);
-        //SceneManager::SwapScenes(); // Init the first scene
 
         WATCH_DIRECTORY(Texture);
 
@@ -94,7 +89,6 @@ namespace Dog {
 
         vkDeviceWaitIdle(ecs.GetResource<RenderingResource>()->device->getDevice());
 
-        //m_Renderer->Exit();
         //m_Networking->Shutdown();
         ecs.Exit();
         
