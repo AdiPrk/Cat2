@@ -9,6 +9,13 @@
 
 #include "Graphics/Window/Window.h"
 
+#include "Graphics/Vulkan/Uniform/Uniform.h"
+#include "Graphics/Vulkan/Uniform/UniformData.h"    
+#include "Graphics/Vulkan/Uniform/Descriptors.h"
+
+#include "Graphics/Vulkan/Model/ModelLibrary.h"
+#include "Graphics/Vulkan/Texture/TextureLibrary.h"
+
 namespace Dog
 {
     RenderingResource::RenderingResource(Window& window)
@@ -18,6 +25,15 @@ namespace Dog
     {
         RecreateSwapChain();
         syncObjects = std::make_unique<Synchronizer>(device->getDevice(), swapChain->ImageCount());
+
+        textureLibrary = std::make_unique<TextureLibrary>(*device);
+        modelLibrary = std::make_unique<ModelLibrary>(*device, *textureLibrary);
+        modelLibrary->AddModel("Assets/models/AlisaMikhailovna.fbx");
+
+        modelLibrary->LoadTextures();
+
+        cameraUniform = std::make_unique<Uniform>(*device, *this, cameraUniformSettings);
+        instanceUniform = std::make_unique<Uniform>(*device, *this, instanceUniformSettings);
 
         renderer = std::make_unique<Renderer>(*this);
     }

@@ -52,8 +52,8 @@ namespace Dog {
 		std::vector<std::unique_ptr<Model>> m_Models;
 		std::unordered_map<std::string, uint32_t> m_ModelMap;
 
-		Device& m_Device;
-		TextureLibrary& m_TextureLibrary;
+		Device& mDevice;
+		TextureLibrary& mTextureLibrary;
 
 		UnifiedMeshes mUnifiedMesh;
 	};

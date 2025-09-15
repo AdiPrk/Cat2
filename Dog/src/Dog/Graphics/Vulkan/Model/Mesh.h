@@ -1,25 +1,18 @@
 #pragma once
 
-//#include "../Buffer.hpp"
-
-namespace Client
-{
-    // Forward References
-    struct RenderingResource;
-}
-
 namespace Dog
 {
     // Forward reference
     class Device;
     class Buffer;
+    struct RenderingResource;
 
     struct Vertex
     {
-        glm::vec3 position{}; //Position of this vertex
-        glm::vec3 color{};    //Color of this vertex
-        glm::vec3 normal{};   //Normal of this vertex
-        glm::vec2 uv{};       //Texture coords of this vertex
+        glm::vec3 position{0.f}; //Position of this vertex
+        glm::vec3 color{1.f};    //Color of this vertex
+        glm::vec3 normal{0.f};   //Normal of this vertex
+        glm::vec2 uv{0.f};       //Texture coords of this vertex
 
         static constexpr int MAX_BONE_INFLUENCE = 4;
 
@@ -40,7 +33,7 @@ namespace Dog
         void CreateIndexBuffers(Device& device);
 
         void Bind(VkCommandBuffer commandBuffer);
-        void Draw(VkCommandBuffer commandBuffer);
+        void Draw(VkCommandBuffer commandBuffer, uint32_t baseIndex = 0);
 
         std::unique_ptr<Buffer> mVertexBuffer;
         uint32_t mVertexCount = 0;
@@ -52,12 +45,13 @@ namespace Dog
         std::vector<Vertex> mVertices{};
         std::vector<uint32_t> mIndices{};
 
-        uint32_t bakedTextureIndex = -1;
-
         // unique index for this mesh
         uint32_t mMeshID = 0;
 
-
+        // Path to textures
+        std::string diffuseTexturePath = "";
+        uint32_t diffuseTextureIndex = -1;
+        
     private:
         static int GetTotalMeshCount() { return uniqueMeshIndex; }
         static int uniqueMeshIndex;

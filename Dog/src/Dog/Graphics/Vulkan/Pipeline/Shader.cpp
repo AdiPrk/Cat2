@@ -133,7 +133,7 @@ namespace Dog
 		// macros
 		static std::vector<std::pair<std::string, std::string>> macros = 
 		{
-			{ "DOG_MAX_INSTANCES", std::to_string(1000) },
+			{ "DOG_MAX_INSTANCES", std::to_string(10000) },
 			{ "DOG_MAX_GLYPHS", std::to_string(95) },
 			{ "DOG_MAX_MODELS", std::to_string(100) },
 			{ "DOG_MAX_TEXTURES", std::to_string(10000) },

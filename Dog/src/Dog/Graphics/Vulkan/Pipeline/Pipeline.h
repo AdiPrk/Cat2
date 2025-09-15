@@ -62,8 +62,8 @@ namespace Dog
 		static const bool RecompileShaders = true;
 
 		// Shader Directories
-		inline static const std::string ShaderDir = "assets/shaders/";
-		inline static const std::string SpvDir = "assets/shaders/spv/";
+		inline static const std::string ShaderDir = "Assets/shaders/";
+		inline static const std::string SpvDir = "Assets/shaders/spv/";
 
 		Pipeline(Device& device, VkFormat colorFormat, VkFormat depthFormat, const std::vector<Uniform*>& uniforms, bool wireframe, const std::string& vertFile, const std::string& fragFile);
 		Pipeline(Device& device, VkFormat colorFormat, VkFormat depthFormat, const std::vector<Uniform*>& uniforms, bool wireframe, const std::string& vertFile, const std::string& fragFile, const std::string& tescFile, const std::string& teseFile);

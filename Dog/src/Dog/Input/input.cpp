@@ -3,8 +3,6 @@
 #include "inputMap.h"
 #include "ultralightKeyMap.h"
 #include "Dog/Logger/logger.h"
-#include "Core/Scene/SceneManager.h"
-#include "Core/Scene/Scene.h"
 #include "imgui_internal.h"
 #include "Engine.h"
 #include "Graphics/OldEditor/Editor.h"

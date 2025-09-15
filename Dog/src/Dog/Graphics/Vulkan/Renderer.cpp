@@ -8,6 +8,12 @@
 
 #include "Pipeline/Pipeline.h"
 #include "RenderGraph.h"
+#include "Uniform/Uniform.h"
+#include "Uniform/ShaderTypes.h"
+#include "Uniform/Descriptors.h"
+
+#include "Model/ModelLibrary.h"
+#include "Model/Model.h"
 
 namespace Dog
 {
@@ -20,22 +26,35 @@ namespace Dog
 
         mRenderGraph = std::make_unique<RenderGraph>();
 
-        std::vector<Uniform*> unis{}; // temp empty
-        mTrianglePipeline = std::make_unique<Pipeline>(
+        std::vector<Uniform*> unis{ 
+            renderingResource.cameraUniform.get(),
+            renderingResource.instanceUniform.get()
+        };
+
+        mPipeline = std::make_unique<Pipeline>(
             *renderingResource.device,
             renderingResource.swapChain->GetImageFormat(),
             renderingResource.swapChain->FindDepthFormat(),
             unis,
             false,
-            "basic_tri.vert",
-            "basic_tri.frag"
+            "basic_model.vert",
+            "basic_model.frag"
         );
     }
 
     Renderer::~Renderer()
     {
         vkDeviceWaitIdle(renderingResource.device->getDevice());
+
         CleanupSceneTexture();
+        CleanupDepthBuffer();
+
+        vkFreeCommandBuffers(
+            renderingResource.device->getDevice(),
+            renderingResource.device->getCommandPool(),
+            static_cast<uint32_t>(mCommandBuffers.size()),
+            mCommandBuffers.data()
+        );
     }
 
     void Renderer::drawFrame()
@@ -84,7 +103,16 @@ namespace Dog
         if (!sceneTextureDescriptorSet)
         {
             CreateSceneTexture();
+            CreateDepthBuffer();
         }
+
+        // get cam uniform and set it
+        CameraUniforms camData{};
+        camData.view = glm::mat4(1.0f);
+        camData.projection = glm::perspective(glm::radians(45.0f), renderingResource.swapChain->GetSwapChainExtent().width / (float)renderingResource.swapChain->GetSwapChainExtent().height, 0.1f, 10.0f);
+        camData.projection[1][1] *= -1; // flip y for vulkan
+        camData.projectionView = camData.projection * camData.view;
+        renderingResource.cameraUniform->SetUniformData(camData, 0, mCurrentFrameIndex);
 
         // 1. Clear graph from previous frame.
         mRenderGraph->clear();
@@ -96,6 +124,14 @@ namespace Dog
             sceneImageView,
             renderingResource.swapChain->GetSwapChainExtent(),
             renderingResource.swapChain->GetImageFormat()
+        );
+
+        RGResourceHandle depthHandle = mRenderGraph->import_backbuffer(
+            "DepthBuffer",
+            mDepthImage,
+            mDepthImageView,
+            renderingResource.swapChain->GetSwapChainExtent(),
+            renderingResource.swapChain->FindDepthFormat()
         );
 
         RGResourceHandle backbufferHandle = mRenderGraph->import_backbuffer(
@@ -112,10 +148,13 @@ namespace Dog
             // Setup: This pass WRITES to the scene texture.
             [&](RGPassBuilder& builder) {
                 builder.writes(sceneColorHandle);
+                builder.writes(depthHandle);
             },
             // Execute: The same triangle drawing logic as before.
             [&](VkCommandBuffer cmd) {
-                mTrianglePipeline->Bind(cmd);
+                mPipeline->Bind(cmd);
+                renderingResource.cameraUniform->Bind(cmd, mPipeline->GetLayout(), mCurrentFrameIndex);
+                renderingResource.instanceUniform->Bind(cmd, mPipeline->GetLayout(), mCurrentFrameIndex);
 
                 VkViewport viewport{};
                 viewport.width = static_cast<float>(renderingResource.swapChain->GetSwapChainExtent().width);
@@ -127,7 +166,27 @@ namespace Dog
                 VkRect2D scissor{ {0, 0}, renderingResource.swapChain->GetSwapChainExtent() };
                 vkCmdSetScissor(cmd, 0, 1, &scissor);
 
-                vkCmdDraw(cmd, 3, 1, 0, 0);
+
+                Model* model = renderingResource.modelLibrary->GetModel(0);
+
+                std::vector<InstanceUniforms> instanceData{};
+                for (auto& mesh : model->mMeshes)
+                {
+                    InstanceUniforms& data = instanceData.emplace_back();
+                    data.model = glm::mat4(1.0f);
+                    data.model = glm::translate(data.model, glm::vec3(0.0f, -0.75f, -2.0f));
+                    data.model = glm::scale(data.model, glm::vec3(0.1f));
+                    data.model = glm::rotate(data.model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+                    data.textureIndex = mesh.diffuseTextureIndex;
+                }
+                renderingResource.instanceUniform->SetUniformData(instanceData, 1, mCurrentFrameIndex);
+
+                uint32_t baseInstance = 0;
+                for (auto& mesh : model->mMeshes)
+                {
+                    mesh.Bind(cmd);
+                    mesh.Draw(cmd, baseInstance++);
+                }
             }
         );
 
@@ -219,7 +278,6 @@ namespace Dog
         //Allocate the command buffers
         if (vkAllocateCommandBuffers(renderingResource.device->getDevice(), &allocInfo, mCommandBuffers.data()) != VK_SUCCESS)
         {
-            //If failed throw error
             DOG_CRITICAL("Failed to allocate command buffers");
         }
     }
@@ -227,12 +285,10 @@ namespace Dog
     void Renderer::CreateSceneTexture()
     {
         VkDevice device = renderingResource.device->getDevice();
-        // Get the VMA allocator instance from your device or resource manager
         VmaAllocator allocator = renderingResource.allocator->GetAllocator();
         VkExtent2D extent = renderingResource.swapChain->GetSwapChainExtent();
         VkFormat format = renderingResource.swapChain->GetImageFormat();
 
-        // 1. Create VkImageCreateInfo
         VkImageCreateInfo imageInfo{};
         imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
         imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -244,25 +300,18 @@ namespace Dog
         imageInfo.arrayLayers = 1;
         imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
         imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-        // This image will be used as a color attachment and sampled in a shader
         imageInfo.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
         imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
-        // 2. Set up VMA allocation info
         VmaAllocationCreateInfo allocInfo{};
-        // VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE tells VMA to place the image in the most optimal
-        // memory, which is usually fast device-local VRAM.
         allocInfo.usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
 
-        // 3. Create the image and allocate its memory with VMA
-        // This single function call replaces vkCreateImage, vkAllocateMemory, and vkBindImageMemory.
         VkResult result = vmaCreateImage(allocator, &imageInfo, &allocInfo, &sceneImage, &sceneImageAllocation, nullptr);
         if (result != VK_SUCCESS)
         {
             DOG_CRITICAL("VMA failed to create scene image");
         }
 
-        // 4. Create the VkImageView
         VkImageViewCreateInfo viewInfo{};
         viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         viewInfo.image = sceneImage;
@@ -279,7 +328,6 @@ namespace Dog
             DOG_CRITICAL("Failed to create scene image view");
         }
 
-        // 5. Create a Sampler
         VkSamplerCreateInfo samplerInfo{};
         samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
         samplerInfo.magFilter = VK_FILTER_LINEAR;
@@ -302,9 +350,6 @@ namespace Dog
             DOG_CRITICAL("Failed to create scene sampler");
         }
 
-        // 6. Create the Descriptor Set for ImGui to use
-        // This call registers the texture with ImGui's Vulkan backend and returns a handle
-        // that can be used with ImGui::Image().
         sceneTextureDescriptorSet = ImGui_ImplVulkan_AddTexture(sceneSampler, sceneImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
     }
 
@@ -313,12 +358,8 @@ namespace Dog
         VkDevice device = renderingResource.device->getDevice();
         VmaAllocator allocator = renderingResource.allocator->GetAllocator();
 
-        // The ImGui descriptor set is allocated from ImGui's own pool, which is
-        // cleaned up when ImGui_ImplVulkan_Shutdown() is called. We don't need to
-        // free it here, but we should null the handle.
         sceneTextureDescriptorSet = VK_NULL_HANDLE;
 
-        // Destroy the Vulkan objects in reverse order of creation
         if (sceneSampler != VK_NULL_HANDLE)
         {
             vkDestroySampler(device, sceneSampler, nullptr);
@@ -331,7 +372,6 @@ namespace Dog
             sceneImageView = VK_NULL_HANDLE;
         }
 
-        // Use vmaDestroyImage to free the memory and destroy the image object
         if (sceneImage != VK_NULL_HANDLE)
         {
             vmaDestroyImage(allocator, sceneImage, sceneImageAllocation);
@@ -344,5 +384,67 @@ namespace Dog
     {
         CleanupSceneTexture();
         CreateSceneTexture();
+    }
+
+    void Renderer::CreateDepthBuffer()
+    {
+        VkDevice device = renderingResource.device->getDevice();
+        VmaAllocator allocator = renderingResource.allocator->GetAllocator();
+        VkExtent2D extent = renderingResource.swapChain->GetSwapChainExtent();
+
+        VkFormat depthFormat = VK_FORMAT_D32_SFLOAT;
+
+        VkImageCreateInfo imageInfo{};
+        imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+        imageInfo.imageType = VK_IMAGE_TYPE_2D;
+        imageInfo.format = depthFormat;
+        imageInfo.extent = { extent.width, extent.height, 1 };
+        imageInfo.mipLevels = 1;
+        imageInfo.arrayLayers = 1;
+        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+        imageInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+        VmaAllocationCreateInfo allocInfo{};
+        allocInfo.usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
+
+        vmaCreateImage(allocator, &imageInfo, &allocInfo, &mDepthImage, &mDepthImageAllocation, nullptr);
+
+        VkImageViewCreateInfo viewInfo{};
+        viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        viewInfo.image = mDepthImage;
+        viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        viewInfo.format = depthFormat;
+        viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+        viewInfo.subresourceRange.baseMipLevel = 0;
+        viewInfo.subresourceRange.levelCount = 1;
+        viewInfo.subresourceRange.baseArrayLayer = 0;
+        viewInfo.subresourceRange.layerCount = 1;
+
+        vkCreateImageView(device, &viewInfo, nullptr, &mDepthImageView);
+    }
+
+    void Renderer::CleanupDepthBuffer()
+    {
+        VkDevice device = renderingResource.device->getDevice();
+        VmaAllocator allocator = renderingResource.allocator->GetAllocator();
+        if (mDepthImageView != VK_NULL_HANDLE)
+        {
+            vkDestroyImageView(device, mDepthImageView, nullptr);
+            mDepthImageView = VK_NULL_HANDLE;
+        }
+        if (mDepthImage != VK_NULL_HANDLE)
+        {
+            vmaDestroyImage(allocator, mDepthImage, mDepthImageAllocation);
+            mDepthImage = VK_NULL_HANDLE;
+            mDepthImageAllocation = VK_NULL_HANDLE;
+        }
+    }
+
+    void Renderer::RecreateDepthBuffer()
+    {
+        CleanupDepthBuffer();
+        CreateDepthBuffer();
     }
 }

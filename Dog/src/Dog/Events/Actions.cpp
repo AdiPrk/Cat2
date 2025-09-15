@@ -1,10 +1,8 @@
 #include <PCH/pch.h>
 #include "Actions.h"
 #include "Engine.h"
-#include "Core/Scene/SceneManager.h"
-#include "Core/Scene/Scene.h"
-#include "Core/Scene/Entity/Components.h"
-#include "Core/Scene/Entity/Entity.h"
+#include "ECS/Entities/Components.h"
+#include "ECS/Entities/Entity.h"
 #include "Networking/Networking.h"
 
 namespace Dog

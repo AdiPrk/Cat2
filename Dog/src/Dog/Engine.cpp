@@ -13,10 +13,8 @@
 
 #include "Graphics/Window/FrameRate.h"
 
-#include "Core/Scene/SceneManager.h"
-#include "Core/Scene/Scene.h"
-#include "Core/Scene/Entity/Entity.h"
-#include "Core/Scene/Entity/Components.h"
+#include "ECS/Entities/Entity.h"
+#include "ECS/Entities/Components.h"
 
 #include "Graphics/OldEditor/Editor.h"
 #include "Assets/FileWatcher/FileWatcher.h"

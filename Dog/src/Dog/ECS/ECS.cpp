@@ -2,6 +2,8 @@
 #include "ECS.h"
 
 #include "Resources/IResource.h"
+#include "Entities/Entity.h"
+#include "Entities/Components.h"
 
 //#include "Scene/SceneManager.h"
 
@@ -9,6 +11,8 @@ namespace Dog
 {
     ECS::ECS()
         : systems()
+        , mEntityMap()
+        , mRegistry()
     {
     }
 
@@ -19,7 +23,7 @@ namespace Dog
     void ECS::Init()
     {
         // Run Init
-        for (auto& resource : m_Resources)
+        for (auto& resource : mResources)
         {
             resource.second->ecs = this;
         }
@@ -62,4 +66,27 @@ namespace Dog
             system->Exit();
         }
     }
+
+    void ECS::AddEntity(const std::string& name)
+    {
+        Entity entity(&mRegistry);
+
+        entity.AddComponent<TagComponent>(name);
+        entity.AddComponent<TransformComponent>();
+
+        mEntityMap[name] = entity;
+    }
+
+    Entity ECS::GetEntity(const std::string& name)
+    {
+        auto it = mEntityMap.find(name);
+        if (it == mEntityMap.end())
+        {
+            DOG_WARN("Entity with name '{0}' not found!", name);
+            return nullptr;
+        }
+
+        return it->second;
+    }
+
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Systems/ISystem.h"
+#include "Entities/Entity.h"
 
 namespace Dog
 {
@@ -38,7 +39,7 @@ namespace Dog
 
             const auto typeId = std::type_index(typeid(T));
 
-            auto [it, inserted] = m_Resources.try_emplace(typeId, std::make_unique<T>(std::forward<Args>(args)...));
+            auto [it, inserted] = mResources.try_emplace(typeId, std::make_unique<T>(std::forward<Args>(args)...));
 
             if (!inserted) {
                 DOG_ERROR("Resource of type '{0}' already exists.", typeid(T).name());
@@ -49,15 +50,21 @@ namespace Dog
         template<typename T>
         T* GetResource() {
             const auto typeId = std::type_index(typeid(T));
-            auto it = m_Resources.find(typeId);
+            auto it = mResources.find(typeId);
 
-            if (it == m_Resources.end()) return nullptr;
+            if (it == mResources.end()) return nullptr;
 
             return dynamic_cast<T*>(it->second.get());
         }
 
+        void AddEntity(const std::string& name);
+        Entity GetEntity(const std::string& name);
+
     private:
         std::vector<std::unique_ptr<ISystem>> systems;
-        std::unordered_map<std::type_index, std::unique_ptr<IResource>> m_Resources;
+        std::unordered_map<std::type_index, std::unique_ptr<IResource>> mResources;
+        
+        entt::registry mRegistry;
+        std::unordered_map<std::string, Entity> mEntityMap;
     };
 }

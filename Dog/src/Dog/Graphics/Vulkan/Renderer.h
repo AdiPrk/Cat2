@@ -28,7 +28,7 @@ namespace Dog
         uint32_t mCurrentFrameIndex;
 
         std::unique_ptr<RenderGraph> mRenderGraph;
-        std::unique_ptr<Pipeline> mTrianglePipeline;
+        std::unique_ptr<Pipeline> mPipeline;
 
     // This stuff should be temporary
     private:
@@ -36,10 +36,18 @@ namespace Dog
         void CleanupSceneTexture();
         void RecreateSceneTexture();
 
+        void CreateDepthBuffer();
+        void CleanupDepthBuffer();
+        void RecreateDepthBuffer();
+
         VkImage sceneImage{ VK_NULL_HANDLE };
-        VmaAllocation sceneImageAllocation{ VK_NULL_HANDLE }; // Changed from VkDeviceMemory
+        VmaAllocation sceneImageAllocation{ VK_NULL_HANDLE };
         VkImageView sceneImageView{ VK_NULL_HANDLE };
         VkSampler sceneSampler{ VK_NULL_HANDLE };
+
+        VkImage mDepthImage;
+        VmaAllocation mDepthImageAllocation;
+        VkImageView mDepthImageView;
 
         VkDescriptorSet sceneTextureDescriptorSet{ VK_NULL_HANDLE };
     };

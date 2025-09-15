@@ -5,6 +5,9 @@
 #include "../Core/Device.h"
 #include "../Model/Mesh.h"
 
+#include "../Uniform/Uniform.h"
+#include "../Uniform/Descriptors.h"
+
 namespace Dog
 {
 	Pipeline::Pipeline(Device& device, VkFormat colorFormat, VkFormat depthFormat, const std::vector<Uniform*>& uniforms, bool wireframe, const std::string& vertFile, const std::string& fragFile)
@@ -70,29 +73,18 @@ namespace Dog
 		pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 
 		//Set uniform binding indexes and make vector of discriptions
-		//std::vector<VkDescriptorSetLayout> uniformsDescriptorSetLayouts;
-		//for (int i = 0; i < uniforms.size(); ++i)
-		//{
-		//	uniforms[i]->SetBinding(i);
-		//	uniformsDescriptorSetLayouts.push_back(uniforms[i]->GetDescriptorLayout()->GetDescriptorSetLayout());
-		//}
+		std::vector<VkDescriptorSetLayout> uniformsDescriptorSetLayouts;
+		for (int i = 0; i < uniforms.size(); ++i)
+		{
+			uniforms[i]->SetBinding(i);
+			uniformsDescriptorSetLayouts.push_back(uniforms[i]->GetDescriptorLayout()->GetDescriptorSetLayout());
+		}
 		//
 		////Give the pipeline info about the uniform buffer
-		//pipelineLayoutCreateInfo.setLayoutCount = static_cast<uint32_t>(uniformsDescriptorSetLayouts.size()); //Set how many layouts are being provided
-		//pipelineLayoutCreateInfo.pSetLayouts = uniformsDescriptorSetLayouts.data();                           //Provide layouts
-        pipelineLayoutCreateInfo.setLayoutCount = 0;
-        pipelineLayoutCreateInfo.pSetLayouts = nullptr;
-
-		//Used to quickly send small amounts of constant data to shaders if needed
-		//if (isHeightmap)
-		//{
-		//	pipelineLayoutCreateInfo.pushConstantRangeCount = 1;
-		//	pipelineLayoutCreateInfo.pPushConstantRanges = &pushConstantRange; //Provide created push constant range def
-		//}
-		//else
-		//{
-			pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
-		//}
+		pipelineLayoutCreateInfo.setLayoutCount = static_cast<uint32_t>(uniformsDescriptorSetLayouts.size()); //Set how many layouts are being provided
+		pipelineLayoutCreateInfo.pSetLayouts = uniformsDescriptorSetLayouts.data();                           //Provide layouts
+        
+		pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
 
 		//Create pipeline
 		if (vkCreatePipelineLayout(mPipelineDevice.getDevice(), &pipelineLayoutCreateInfo, nullptr, &mPipelineLayout) != VK_SUCCESS)
@@ -362,21 +354,21 @@ namespace Dog
 
 		//Make create info for vertex input (data to be drawn input)
 
-		VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo{};
-		vertexInputCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertexInputCreateInfo.vertexBindingDescriptionCount = 0;
-		vertexInputCreateInfo.pVertexBindingDescriptions = nullptr; // Optional
-		vertexInputCreateInfo.vertexAttributeDescriptionCount = 0;
-		vertexInputCreateInfo.pVertexAttributeDescriptions = nullptr; // Optional
-
-		//auto vertBindingDescriptions = Vertex::GetBindingDescriptions();
-		//auto vertAttributeDescriptions = Vertex::GetAttributeDescriptions();
 		//VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo{};
-		//vertexInputCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;                     //Set what will be crated to a vertex input
-		//vertexInputCreateInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(vertAttributeDescriptions.size()); //Counts for attribute desciptions of vertex buffers
-		//vertexInputCreateInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(vertBindingDescriptions.size());     //Counts for binding  desciptions of vertex buffers
-		//vertexInputCreateInfo.pVertexAttributeDescriptions = vertAttributeDescriptions.data();                           //Attribute desciptions of vertex buffers
-		//vertexInputCreateInfo.pVertexBindingDescriptions = vertBindingDescriptions.data();                               //Binding desciptions of vertex buffers
+		//vertexInputCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+		//vertexInputCreateInfo.vertexBindingDescriptionCount = 0;
+		//vertexInputCreateInfo.pVertexBindingDescriptions = nullptr; // Optional
+		//vertexInputCreateInfo.vertexAttributeDescriptionCount = 0;
+		//vertexInputCreateInfo.pVertexAttributeDescriptions = nullptr; // Optional
+
+		auto vertBindingDescriptions = Vertex::GetBindingDescriptions();
+		auto vertAttributeDescriptions = Vertex::GetAttributeDescriptions();
+		VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo{};
+		vertexInputCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;                     //Set what will be crated to a vertex input
+		vertexInputCreateInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(vertAttributeDescriptions.size()); //Counts for attribute desciptions of vertex buffers
+		vertexInputCreateInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(vertBindingDescriptions.size());     //Counts for binding  desciptions of vertex buffers
+		vertexInputCreateInfo.pVertexAttributeDescriptions = vertAttributeDescriptions.data();                           //Attribute desciptions of vertex buffers
+		vertexInputCreateInfo.pVertexBindingDescriptions = vertBindingDescriptions.data();                               //Binding desciptions of vertex buffers
 		
 		//Create pipeline object using everything we have set up
 		VkGraphicsPipelineCreateInfo pipelineCreateInfo{};

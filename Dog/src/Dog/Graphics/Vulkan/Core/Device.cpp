@@ -213,11 +213,14 @@ namespace Dog {
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
         
-        storage16BitFeatures.pNext = &dynamicRenderingFeatures;
+        /*storage16BitFeatures.pNext = &dynamicRenderingFeatures;
         vulkan12Features.pNext = &storage16BitFeatures;
         accelFeature.pNext = &vulkan12Features;
         rtPipelineFeature.pNext = &accelFeature;
-        createInfo.pNext = &rtPipelineFeature;
+        createInfo.pNext = &rtPipelineFeature;*/
+        storage16BitFeatures.pNext = &dynamicRenderingFeatures;
+        vulkan12Features.pNext = &storage16BitFeatures;
+        createInfo.pNext = &vulkan12Features;
 
         createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
         createInfo.pQueueCreateInfos = queueCreateInfos.data();

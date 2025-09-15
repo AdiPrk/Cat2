@@ -2,7 +2,7 @@
 #include "Mesh.h"
 
 #include "../Core/Device.h"
-#include "../Buffers/Buffer.h"
+#include "../Core/Buffer.h"
 
 namespace Dog
 {
@@ -92,7 +92,7 @@ namespace Dog
         vkCmdBindIndexBuffer(commandBuffer, mIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
     }
 
-    void Mesh::Draw(VkCommandBuffer commandBuffer)
+    void Mesh::Draw(VkCommandBuffer commandBuffer, uint32_t baseIndex)
     {
         if (!mHasIndexBuffer)
         {
@@ -100,7 +100,7 @@ namespace Dog
             return;
         }
 
-        vkCmdDrawIndexed(commandBuffer, mIndexCount, 1, 0, 0, 0);
+        vkCmdDrawIndexed(commandBuffer, mIndexCount, 1, 0, 0, baseIndex);
     }
 
     std::vector<VkVertexInputBindingDescription> Vertex::GetBindingDescriptions()
@@ -137,10 +137,10 @@ namespace Dog
         attributeDescriptions.push_back({ 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv) });
 
         //Set attribute description data for bone IDs
-        attributeDescriptions.push_back({ 4, 0, VK_FORMAT_R32G32B32A32_SINT, offsetof(Vertex, boneIDs) });
+        //attributeDescriptions.push_back({ 4, 0, VK_FORMAT_R32G32B32A32_SINT, offsetof(Vertex, boneIDs) });
 
         //Set attribute description data for bone weights
-        attributeDescriptions.push_back({ 5, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Vertex, weights) });
+        //attributeDescriptions.push_back({ 5, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Vertex, weights) });
 
         //Return description
         return attributeDescriptions;

@@ -95,31 +95,38 @@ namespace Dog
             {
                 RGResource& resource = m_resources[handle.index];
 
+                // Check if it's a depth format
+                bool isDepth = (resource.format == VK_FORMAT_D32_SFLOAT);
+
+                VkImageLayout newLayout = isDepth ?
+                    VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL :
+                    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
                 // Transition the backbuffer for rendering
-                if (resource.currentLayout != VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+                if (resource.currentLayout != newLayout)
                 {
                     VkImageMemoryBarrier barrier{};
                     barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
                     barrier.oldLayout = resource.currentLayout;
-                    barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+                    barrier.newLayout = newLayout;
                     barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
                     barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
                     barrier.image = resource.image;
-                    barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+                    barrier.subresourceRange.aspectMask = isDepth ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
                     barrier.subresourceRange.baseMipLevel = 0;
                     barrier.subresourceRange.levelCount = 1;
                     barrier.subresourceRange.baseArrayLayer = 0;
                     barrier.subresourceRange.layerCount = 1;
 
                     barrier.srcAccessMask = 0; // Or determine from previous usage
-                    barrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+                    barrier.dstAccessMask = isDepth ? VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT : VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
                     vkCmdPipelineBarrier(cmd,
                         VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                        isDepth ? VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT : VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                         0, 0, nullptr, 0, nullptr, 1, &barrier);
 
-                    resource.currentLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+                    resource.currentLayout = newLayout;
                 }
             }
 
@@ -128,31 +135,54 @@ namespace Dog
             // A more robust system would handle multiple attachments.
             if (!pass.writeTargets.empty())
             {
-                RGResource& colorTarget = m_resources[pass.writeTargets[0].index];
+                // Find color and depth targets for the pass
+                RGResource* colorTarget = nullptr;
+                RGResource* depthTarget = nullptr;
+                for (const auto& handle : pass.writeTargets) {
+                    RGResource& res = m_resources[handle.index];
+                    if (res.format == VK_FORMAT_D32_SFLOAT) { // Or your chosen format
+                        depthTarget = &res;
+                    }
+                    else {
+                        colorTarget = &res;
+                    }
+                }
 
-                VkRenderingAttachmentInfo colorAttachment{};
-                colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
-                colorAttachment.imageView = colorTarget.imageView;
-                colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-                colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-                colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-                colorAttachment.clearValue.color = { {0.0f, 0.0f, 0.0f, 1.0f} };
+                if (colorTarget) {
 
-                VkRenderingInfo renderingInfo{};
-                renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR;
-                renderingInfo.renderArea = { {0, 0}, colorTarget.extent };
-                renderingInfo.layerCount = 1;
-                renderingInfo.colorAttachmentCount = 1;
-                renderingInfo.pColorAttachments = &colorAttachment;
-                // Note: Depth buffer management would also be added here
-                renderingInfo.pDepthAttachment = nullptr;
-                renderingInfo.pStencilAttachment = nullptr;
+                    VkRenderingAttachmentInfo colorAttachment{};
+                    colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
+                    colorAttachment.imageView = colorTarget->imageView;
+                    colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+                    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+                    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+                    colorAttachment.clearValue.color = { {0.0f, 0.0f, 0.0f, 1.0f} };
 
-                vkCmdBeginRendering(cmd, &renderingInfo);
+                    VkRenderingAttachmentInfo depthAttachment{};
+                    if (depthTarget) {
+                        depthAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
+                        depthAttachment.imageView = depthTarget->imageView;
+                        depthAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+                        depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR; // Clear depth at start of pass
+                        depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+                        depthAttachment.clearValue.depthStencil = { 1.0f, 0 };
+                    }
 
-                pass.executeCallback(cmd);
+                    VkRenderingInfo renderingInfo{};
+                    renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR;
+                    renderingInfo.renderArea = { {0, 0}, colorTarget->extent };
+                    renderingInfo.layerCount = 1;
+                    renderingInfo.colorAttachmentCount = 1;
+                    renderingInfo.pColorAttachments = &colorAttachment;
+                    renderingInfo.pDepthAttachment = depthTarget ? &depthAttachment : nullptr;
+                    renderingInfo.pStencilAttachment = nullptr;
 
-                vkCmdEndRendering(cmd);
+                    vkCmdBeginRendering(cmd, &renderingInfo);
+
+                    pass.executeCallback(cmd);
+
+                    vkCmdEndRendering(cmd);
+                }
             }
         }
 
@@ -160,16 +190,26 @@ namespace Dog
         // After all passes, transition the backbuffer for presenting.
         if (!m_resources.empty())
         {
-            RGResource& backbuffer = m_resources[1]; // Assuming backbuffer is always the first imported resource
-            if (backbuffer.currentLayout != VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
+            RGResource* finalBackbuffer = nullptr;
+            for (auto& resource : m_resources)
+            {
+                // This relies on the name you provided: import_backbuffer("Backbuffer", ...);
+                if (resource.name == "Backbuffer")
+                {
+                    finalBackbuffer = &resource;
+                    break;
+                }
+            }
+
+            if (finalBackbuffer && finalBackbuffer->currentLayout != VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
             {
                 VkImageMemoryBarrier barrier{};
                 barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-                barrier.oldLayout = backbuffer.currentLayout;
+                barrier.oldLayout = finalBackbuffer->currentLayout;
                 barrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
                 barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
                 barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-                barrier.image = backbuffer.image;
+                barrier.image = finalBackbuffer->image;
                 barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
                 barrier.subresourceRange.baseMipLevel = 0;
                 barrier.subresourceRange.levelCount = 1;
@@ -184,7 +224,7 @@ namespace Dog
                     VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
                     0, 0, nullptr, 0, nullptr, 1, &barrier);
 
-                backbuffer.currentLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+                finalBackbuffer->currentLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
             }
         }
     }
