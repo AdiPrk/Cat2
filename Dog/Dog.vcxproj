@@ -84,7 +84,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>zlibstaticd.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;yaml-cppd.lib;glslangd.lib;SPIRVd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-optd.lib;GenericCodeGend.lib;MachineIndependentd.lib;glslang-default-resource-limitsd.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2d.lib;freetyped.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpatd.lib;libpng16d.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibstaticd.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;yaml-cppd.lib;glslangd.lib;SPIRVd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-optd.lib;GenericCodeGend.lib;MachineIndependentd.lib;glslang-default-resource-limitsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
     </Link>
@@ -94,16 +94,14 @@
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>:: Copy Assimp DLLs (same for both Debug and Release)
-xcopy "$(ProjectDir)Dependencies\assimp\poly2tri.dll" "$(OutDir)" /Y
 xcopy "$(ProjectDir)Dependencies\assimp\minizip.dll" "$(OutDir)" /Y
-xcopy "$(ProjectDir)Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
 
 :: Conditional copying for Debug vs Release
-IF "$(ConfigurationName)"=="Debug" (
-    xcopy "$(ProjectDir)Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
-) ELSE (
-    xcopy "$(ProjectDir)Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
-)</Command>
+:: IF "$(ConfigurationName)"=="Debug" (
+::    xcopy "$(ProjectDir)Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
+:: ) ELSE (
+::    xcopy "$(ProjectDir)Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
+:: )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -125,7 +123,7 @@ IF "$(ConfigurationName)"=="Debug" (
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2.lib;freetype.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpat.lib;libpng16.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -138,11 +136,11 @@ xcopy "$(ProjectDir)Dependencies\assimp\minizip.dll" "$(OutDir)" /Y
 xcopy "$(ProjectDir)Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
 
 :: Conditional copying for Debug vs Release
-IF "$(ConfigurationName)"=="Debug" (
-    xcopy "$(ProjectDir)Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
-) ELSE (
-    xcopy "$(ProjectDir)Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
-)</Command>
+::IF "$(ConfigurationName)"=="Debug" (
+::    xcopy "$(ProjectDir)Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
+::) ELSE (
+::    xcopy "$(ProjectDir)Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
+::)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">
@@ -164,7 +162,7 @@ IF "$(ConfigurationName)"=="Debug" (
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;msdf-atlas-gen.lib;msdfgen-core.lib;msdfgen-ext.lib;brotlicommon.lib;brotlidec.lib;brotlienc.lib;bz2.lib;freetype.lib;GlU32.Lib;harfbuzz.lib;harfbuzz-subset.lib;jpeg.lib;libexpat.lib;libpng16.lib;libsharpyuv.lib;libwebp.lib;libwebpdecoder.lib;libwebpdemux.lib;libwebpmux.lib;OpenGL32.Lib;pkgconf.lib;skia.dll.lib;skshaper.dll.lib;tinyxml2.lib;turbojpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -177,11 +175,11 @@ xcopy "$(ProjectDir)Dependencies\assimp\minizip.dll" "$(OutDir)" /Y
 xcopy "$(ProjectDir)Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
 
 :: Conditional copying for Debug vs Release
-IF "$(ConfigurationName)"=="Debug" (
-    xcopy "$(ProjectDir)Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
-) ELSE (
-    xcopy "$(ProjectDir)Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
-)</Command>
+:: IF "$(ConfigurationName)"=="Debug" (
+::   xcopy "$(ProjectDir)Dependencies\msdfgen\lib\debug\dll" "$(OutDir)" /I /S /Y
+:: ) ELSE (
+::    xcopy "$(ProjectDir)Dependencies\msdfgen\lib\release\dll" "$(OutDir)" /I /S /Y
+:: )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -274,7 +272,6 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClCompile Include="src\Dog\Graphics\Vulkan\Model\ModelLibrary.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Pipeline\Pipeline.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Pipeline\Shader.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Renderer.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\RenderGraph.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Texture\Texture.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Texture\TextureLibrary.cpp" />
@@ -349,7 +346,6 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClInclude Include="src\Dog\Graphics\Vulkan\Model\ModelLibrary.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Pipeline\Pipeline.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Pipeline\Shader.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Renderer.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\RenderGraph.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Texture\Texture.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Texture\TextureLibrary.h" />

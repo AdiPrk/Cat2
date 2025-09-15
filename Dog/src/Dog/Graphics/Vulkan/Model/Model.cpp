@@ -44,6 +44,8 @@ namespace Dog
 
         mDirectory = filepath.substr(0, filepath.find_last_of('/'));
         ProcessNode(scene->mRootNode, scene);
+
+        return scene;
     }
 
     void Model::ProcessNode(aiNode* node, const aiScene* scene)

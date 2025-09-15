@@ -6,7 +6,6 @@
 #include "../Resources/WindowResource.h"
 #include "../Resources/EditorResource.h"
 
-#include "Graphics/Vulkan/Renderer.h"
 #include "Graphics/Vulkan/Core/Device.h"
 #include "Graphics/Vulkan/Core/SwapChain.h"
 #include "Graphics/Vulkan/RenderGraph.h"

@@ -39,7 +39,6 @@
     <ClCompile Include="src\Dog\Graphics\Window\FrameRate.cpp" />
     <ClCompile Include="src\Dog\Graphics\Window\Window.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Core\Device.cpp" />
-    <ClCompile Include="src\Dog\Graphics\Vulkan\Renderer.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Pipeline\Shader.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Pipeline\Pipeline.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Model\Mesh.cpp" />
@@ -109,7 +108,6 @@
     <ClInclude Include="src\Dog\Graphics\Window\FrameRate.h" />
     <ClInclude Include="src\Dog\Graphics\Window\Window.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\Device.h" />
-    <ClInclude Include="src\Dog\Graphics\Vulkan\Renderer.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Pipeline\Shader.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Pipeline\Pipeline.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Model\Mesh.h" />

@@ -6,13 +6,10 @@
 #include "Graphics/Vulkan/Core/Device.h"
 #include "Graphics/Vulkan/Core/SwapChain.h"
 #include "Graphics/Vulkan/Model/ModelLibrary.h"
-#include "Graphics/Vulkan/Renderer.h"
 #include "Graphics/Vulkan/Uniform/ShaderTypes.h"
 #include "Graphics/Vulkan/Pipeline/Pipeline.h"
 #include "Graphics/Vulkan/Model/Model.h"
 #include "Graphics/Vulkan/Uniform/Uniform.h"
-#include "Graphics/Vulkan/Uniform/UniformData.h"
-#include "Graphics/Vulkan/Uniform/Descriptors.h"
 #include "Graphics/Vulkan/RenderGraph.h"
 
 #include "../ECS.h"

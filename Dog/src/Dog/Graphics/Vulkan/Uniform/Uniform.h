@@ -29,7 +29,7 @@ namespace Dog
          * brief:  Constructor for the uniform
          *********************************************************************/
         Uniform(Device& device, RenderingResource& renderData, const UniformSettings& settings);
-        ~Uniform() {}
+        ~Uniform();
 
         /*********************************************************************
          * param:  commandBuffer: The command buffer

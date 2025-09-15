@@ -69,4 +69,7 @@ namespace Dog
             nullptr);
     }
 
+    Uniform::~Uniform()
+    {
+    }
 }

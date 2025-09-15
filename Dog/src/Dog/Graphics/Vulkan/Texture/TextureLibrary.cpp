@@ -62,6 +62,7 @@ namespace Dog
         }
 
         DOG_ERROR("Texture index out of range: {0}", index);
+        return *mTextures[0];
     }
 
     void TextureLibrary::CreateTextureSampler()

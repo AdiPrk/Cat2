@@ -3,7 +3,6 @@
 
 #include "Device.h"
 #include "SwapChain.h"
-#include "../Renderer.h"
 #include "ECS/Resources/RenderingResource.h"
 
 namespace Dog

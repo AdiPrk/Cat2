@@ -5,14 +5,12 @@
 #include "Graphics/Vulkan/Core/SwapChain.h"
 #include "Graphics/Vulkan/Core/Synchronization.h"
 #include "Graphics/Vulkan/Pipeline/Pipeline.h"
-#include "Graphics/Vulkan/Renderer.h"
 #include "Graphics/Vulkan/RenderGraph.h"
 
 #include "Graphics/Window/Window.h"
 
 #include "Graphics/Vulkan/Uniform/Uniform.h"
-#include "Graphics/Vulkan/Uniform/UniformData.h"    
-#include "Graphics/Vulkan/Uniform/Descriptors.h"
+#include "Graphics/Vulkan/Uniform/UniformData.h"
 
 #include "Graphics/Vulkan/Model/ModelLibrary.h"
 #include "Graphics/Vulkan/Texture/TextureLibrary.h"
@@ -38,7 +36,6 @@ namespace Dog
 
         CreateCommandBuffers();
         mRenderGraph = std::make_unique<RenderGraph>();
-        renderer = std::make_unique<Renderer>(*this);
     }
 
     RenderingResource::~RenderingResource()

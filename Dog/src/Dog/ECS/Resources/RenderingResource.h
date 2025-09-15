@@ -29,7 +29,6 @@ namespace Dog
         std::unique_ptr<ModelLibrary> modelLibrary;
         std::unique_ptr<TextureLibrary> textureLibrary;
 
-        std::unique_ptr<Renderer> renderer;
         std::unique_ptr<RenderGraph> mRenderGraph;
 
         std::unique_ptr<Uniform> cameraUniform;
