@@ -1,11 +1,3 @@
-/*********************************************************************
- * file:   UniformData.hpp
- * author: aditya.prakash (aditya.prakash@digipen.edu) and evan.gray (evan.gray@digipen.edu)
- * date:   October 10, 2024
- * Copyright � 2024 DigiPen (USA) Corporation. 
- * 
- * brief:  Handles cosntant data about uniforms
- *********************************************************************/
 #pragma once
 
 #include "UniformSettings.h"

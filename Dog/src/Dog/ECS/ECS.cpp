@@ -53,7 +53,7 @@ namespace Dog
 
     void ECS::FrameEnd()
     {
-        for (auto& system : systems)
+        for (auto& system : systems | std::views::reverse)
         {
             system->FrameEnd();
         }

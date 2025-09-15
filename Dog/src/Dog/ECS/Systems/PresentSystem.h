@@ -4,11 +4,11 @@
 
 namespace Dog
 {
-    class EditorSystem : public ISystem
+    class PresentSystem : public ISystem
     {
     public:
-        EditorSystem() : ISystem("EditorSystem") {};
-        ~EditorSystem() {}
+        PresentSystem() : ISystem("PresentSystem") {};
+        ~PresentSystem() {}
 
         void Init();
         void FrameStart();
@@ -16,6 +16,7 @@ namespace Dog
         void FrameEnd();
         void Exit();
 
-        void InitImGui();
+    private:
+        
     };
 }

@@ -261,7 +261,10 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClCompile Include="src\Dog\ECS\Entities\Components.cpp" />
     <ClCompile Include="src\Dog\ECS\Entities\Entity.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\EditorResource.cpp" />
+    <ClCompile Include="src\Dog\ECS\Resources\InputResource.cpp" />
     <ClCompile Include="src\Dog\ECS\Systems\EditorSystem.cpp" />
+    <ClCompile Include="src\Dog\ECS\Systems\InputSystem.cpp" />
+    <ClCompile Include="src\Dog\ECS\Systems\PresentSystem.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Core\Allocator.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Core\Buffer.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Core\SwapChain.cpp" />
@@ -288,7 +291,6 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClCompile Include="src\Dog\Graphics\Vulkan\Core\Device.cpp" />
     <ClCompile Include="src\Dog\Graphics\Window\FrameRate.cpp" />
     <ClCompile Include="src\Dog\Graphics\Window\Window.cpp" />
-    <ClCompile Include="src\Dog\Input\input.cpp" />
     <ClCompile Include="src\Dog\Input\KeyboardController.cpp" />
     <ClCompile Include="src\Dog\Engine.cpp" />
     <ClCompile Include="src\Dog\Logger\Logger.cpp" />
@@ -334,7 +336,10 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClInclude Include="src\Dog\ECS\Entities\Components.h" />
     <ClInclude Include="src\Dog\ECS\Entities\Entity.h" />
     <ClInclude Include="src\Dog\ECS\Resources\EditorResource.h" />
+    <ClInclude Include="src\Dog\ECS\Resources\InputResource.h" />
     <ClInclude Include="src\Dog\ECS\Systems\EditorSystem.h" />
+    <ClInclude Include="src\Dog\ECS\Systems\InputSystem.h" />
+    <ClInclude Include="src\Dog\ECS\Systems\PresentSystem.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\Allocator.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\Buffer.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\SwapChain.h" />
@@ -361,7 +366,6 @@ IF "$(ConfigurationName)"=="Debug" (
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\Device.h" />
     <ClInclude Include="src\Dog\Graphics\Window\FrameRate.h" />
     <ClInclude Include="src\Dog\Graphics\Window\Window.h" />
-    <ClInclude Include="src\Dog\Input\input.h" />
     <ClInclude Include="src\Dog\Input\inputMap.h" />
     <ClInclude Include="src\Dog\Input\KeyboardController.h" />
     <ClInclude Include="src\Dog\Engine.h" />

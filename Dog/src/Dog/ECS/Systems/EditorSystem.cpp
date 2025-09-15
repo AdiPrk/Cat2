@@ -9,6 +9,7 @@
 #include "Graphics/Vulkan/Renderer.h"
 #include "Graphics/Vulkan/Core/Device.h"
 #include "Graphics/Vulkan/Core/SwapChain.h"
+#include "Graphics/Vulkan/RenderGraph.h"
 
 #include "Graphics/Window/Window.h"
 
@@ -16,13 +17,66 @@ namespace Dog
 {
     void EditorSystem::Init()
     {
+		InitImGui();
+
+        auto rr = ecs->GetResource<RenderingResource>();
+		rr->CreateSceneTexture();
+		rr->CreateDepthBuffer();
+    }
+
+    void EditorSystem::FrameStart()
+    {
+    }
+
+    void EditorSystem::Update(float dt)
+    {
+		auto rr = ecs->GetResource<RenderingResource>();
+		if (!rr)
+		{
+			DOG_CRITICAL("No rendering resource in editor system");
+		}
+		
+		rr->mRenderGraph->add_pass(
+			"ImGuiPass",
+			// Setup: This pass READS the scene texture and WRITES to the backbuffer.
+			[&](RGPassBuilder& builder) {
+				builder.reads("SceneColor");
+				builder.writes("BackBuffer");
+			},
+			// Execute: All the ImGui drawing commands.
+			[&](VkCommandBuffer cmd) {
+				// Start the Dear ImGui frame
+                VkDescriptorSet sceneTextureDescriptorSet = ecs->GetResource<RenderingResource>()->sceneTextureDescriptorSet;
+				ImGui_ImplVulkan_NewFrame();
+				ImGui_ImplGlfw_NewFrame();
+				ImGui::NewFrame();
+
+				// Create a window and display the scene texture
+				ImGui::Begin("Viewport");
+				ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+				ImGui::Image(sceneTextureDescriptorSet, viewportSize);
+				ImGui::End();
+
+				// Rendering
+				ImGui::Render();
+				ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), cmd);
+			}
+		);
+    }
+
+    void EditorSystem::FrameEnd()
+    {
+    }
+
+	void EditorSystem::InitImGui()
+	{
 		auto rr = ecs->GetResource<RenderingResource>();
 		auto wr = ecs->GetResource<WindowResource>();
-        auto er = ecs->GetResource<EditorResource>();
+		auto er = ecs->GetResource<EditorResource>();
 
 		Device& device = *rr->device;
-        SwapChain& swapChain = *rr->swapChain;
-        Window& window = *wr->window;
+		SwapChain& swapChain = *rr->swapChain;
+		Window& window = *wr->window;
 
 		VkDescriptorPoolSize pool_sizes[] = { { VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
 			{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
@@ -76,16 +130,16 @@ namespace Dog
 		init_info.Queue = device.getGraphicsQueue();
 		init_info.PipelineCache = VK_NULL_HANDLE;
 		init_info.DescriptorPool = er->descriptorPool;// device.getImGuiDescriptorPool();
-        init_info.UseDynamicRendering = VK_TRUE;
+		init_info.UseDynamicRendering = VK_TRUE;
 		init_info.RenderPass = VK_NULL_HANDLE;
 		init_info.Subpass = 0;
-        
-        VkFormat colorFormat = swapChain.GetImageFormat();
-        init_info.PipelineRenderingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;
+
+		VkFormat colorFormat = swapChain.GetImageFormat();
+		init_info.PipelineRenderingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;
 		init_info.PipelineRenderingCreateInfo.colorAttachmentCount = 1;
-        init_info.PipelineRenderingCreateInfo.pColorAttachmentFormats = &colorFormat;
-        init_info.PipelineRenderingCreateInfo.depthAttachmentFormat = swapChain.GetDepthFormat();
-        init_info.PipelineRenderingCreateInfo.stencilAttachmentFormat = VK_FORMAT_UNDEFINED;
+		init_info.PipelineRenderingCreateInfo.pColorAttachmentFormats = &colorFormat;
+		init_info.PipelineRenderingCreateInfo.depthAttachmentFormat = swapChain.GetDepthFormat();
+		init_info.PipelineRenderingCreateInfo.stencilAttachmentFormat = VK_FORMAT_UNDEFINED;
 
 		init_info.Allocator = nullptr;
 		init_info.MinImageCount = SwapChain::MAX_FRAMES_IN_FLIGHT;
@@ -94,19 +148,7 @@ namespace Dog
 		ImGui_ImplVulkan_Init(&init_info);
 
 		ImGui::StyleColorsDark();
-    }
-
-    void EditorSystem::FrameStart()
-    {
-    }
-
-    void EditorSystem::Update(float)
-    {
-    }
-
-    void EditorSystem::FrameEnd()
-    {
-    }
+	}
 
     void EditorSystem::Exit()
     {
@@ -120,5 +162,8 @@ namespace Dog
 
 		vkDestroyDescriptorSetLayout(device, er->samplerSetLayout, nullptr);
 		vkDestroyDescriptorPool(device, er->descriptorPool, nullptr);
+
+		rr->CleanupSceneTexture();
+        rr->CleanupDepthBuffer();
     }
 }

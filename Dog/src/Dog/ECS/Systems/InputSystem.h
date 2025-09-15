@@ -1,28 +1,28 @@
 #pragma once
 
-#include "inputMap.h"
+#include "ISystem.h"
+
+#include "Input/inputMap.h"
 
 struct GLFWwindow;
 struct GLFWcursor;
 
-namespace Dog {
+namespace Dog
+{
+    class InputSystem : public ISystem
+    {
+    public:
+        InputSystem() : ISystem("InputSystem") {};
+        ~InputSystem() {}
 
-	/**
-	 * The Input class is meant for use in anything that's inside the Scene.
-	 * If the scene is not focused, then the Input class will get locked and not update.
-	 * When the Editor is not active, the Input class will always update.
-	 */
-
-	class Input {
-	public:
-		static void Init(GLFWwindow* window);
-		static void Update();
+        void Init();
+		void FrameStart();
+        void Update(float dt);
 
 		static bool isKeyDown(const Key& key);
 		static bool isKeyTriggered(const Key& key);
-        static bool isKeyReleased(const Key& key);
+		static bool isKeyReleased(const Key& key);
 		static bool isMouseDown(const Mouse& button);
-		static void UpdateMousePosition();
 
 		// screen mouse positions
 		static glm::vec2 getMouseScreenPosition() { return { mouseScreenX, mouseScreenY }; }
@@ -38,10 +38,10 @@ namespace Dog {
 		static float getMouseWorldXDelta() { return mouseWorldX - lastMouseWorldX; }
 		static float getMouseWorldYDelta() { return mouseWorldY - lastMouseWorldY; }
 
-        // scene mouse positions
-        static glm::vec2 getMouseScenePosition() { return { mouseSceneX, mouseSceneY }; }
-        static float getMouseSceneX() { return mouseSceneX; }
-        static float getMouseSceneY() { return mouseSceneY; }
+		// scene mouse positions
+		static glm::vec2 getMouseScenePosition() { return { mouseSceneX, mouseSceneY }; }
+		static float getMouseSceneX() { return mouseSceneX; }
+		static float getMouseSceneY() { return mouseSceneY; }
 
 		// mouse scroll
 		static float getMouseScrollX() { return scrollX; }
@@ -71,6 +71,7 @@ namespace Dog {
 		static MouseStates mouseStates[static_cast<int>(Mouse::LAST)];
 
 	private:
+
 		static GLFWwindow* pwindow;
 
 		static GLFWcursor* standardCursor;
@@ -88,7 +89,7 @@ namespace Dog {
 		static float mouseWorldX;
 		static float mouseWorldY;
 		static float mouseSceneX;
-        static float mouseSceneY;
+		static float mouseSceneY;
 
 		static bool keyInputLocked;
 		static bool mouseInputLocked;
@@ -98,7 +99,5 @@ namespace Dog {
 		static void mouseButtonCallback(GLFWwindow* windowPointer, int mouseButton, int action, int mod);
 		static void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 		static void charCallback(GLFWwindow* window, unsigned int codepoint);
-
-	};
-
+    };
 }

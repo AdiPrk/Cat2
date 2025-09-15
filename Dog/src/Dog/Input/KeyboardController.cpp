@@ -1,18 +1,18 @@
 #include <PCH/pch.h>
 //#include "Graphics/Vulkan/Window/Window.h"
 #include "KeyboardController.h"
-#include "Input/input.h"
 #include "ECS/Entities/Components.h"
+#include "ECS/Systems/InputSystem.h"
 
 namespace Dog {
 
     void KeyboardMovementController::moveInPlaneXZ(
         GLFWwindow* window, float dt, TransformComponent& transform) {
         glm::vec3 rotate{ 0 };
-        if (Input::isKeyDown(Key::RIGHT)) rotate.y += 1.f;
-        if (Input::isKeyDown(Key::LEFT)) rotate.y -= 1.f;
-        if (Input::isKeyDown(Key::UP)) rotate.x += 1.f;
-        if (Input::isKeyDown(Key::DOWN)) rotate.x -= 1.f;
+        if (InputSystem::isKeyDown(Key::RIGHT)) rotate.y += 1.f;
+        if (InputSystem::isKeyDown(Key::LEFT)) rotate.y -= 1.f;
+        if (InputSystem::isKeyDown(Key::UP)) rotate.x += 1.f;
+        if (InputSystem::isKeyDown(Key::DOWN)) rotate.x -= 1.f;
 
         if (glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon()) {
             transform.Rotation += lookSpeed * dt * glm::normalize(rotate);
@@ -29,15 +29,15 @@ namespace Dog {
 
         glm::vec3 moveDir{ 0.f };
 
-        if (Input::isKeyDown(Key::W)) moveDir += forwardDir;
-        if (Input::isKeyDown(Key::S)) moveDir -= forwardDir;
-        if (Input::isKeyDown(Key::D)) moveDir += rightDir;
-        if (Input::isKeyDown(Key::A)) moveDir -= rightDir;
-        if (Input::isKeyDown(Key::E)) moveDir += upDir;
-        if (Input::isKeyDown(Key::Q)) moveDir -= upDir;
+        if (InputSystem::isKeyDown(Key::W)) moveDir += forwardDir;
+        if (InputSystem::isKeyDown(Key::S)) moveDir -= forwardDir;
+        if (InputSystem::isKeyDown(Key::D)) moveDir += rightDir;
+        if (InputSystem::isKeyDown(Key::A)) moveDir -= rightDir;
+        if (InputSystem::isKeyDown(Key::E)) moveDir += upDir;
+        if (InputSystem::isKeyDown(Key::Q)) moveDir -= upDir;
 
         // check shift
-        moveSpeed = (Input::isKeyDown(Key::LEFTSHIFT)) ? 1.f : 4.f;
+        moveSpeed = (InputSystem::isKeyDown(Key::LEFTSHIFT)) ? 1.f : 4.f;
 
         if (glm::dot(moveDir, moveDir) > std::numeric_limits<float>::epsilon()) {
             transform.Translation += moveSpeed * dt * glm::normalize(moveDir);

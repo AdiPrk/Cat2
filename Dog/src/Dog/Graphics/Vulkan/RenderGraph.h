@@ -7,6 +7,7 @@ namespace Dog
     struct RGResourceHandle {
         uint32_t index;
         bool operator==(const RGResourceHandle& other) const { return index == other.index; }
+        void operator=(const uint32_t& idx) { index = idx; }
     };
 
     // Internal representation of a resource's state.
@@ -32,10 +33,10 @@ namespace Dog
         RGPassBuilder(RGPass& pass) : m_pass(pass) {}
 
         // Declare that this pass writes to a resource.
-        void writes(RGResourceHandle handle);
+        void writes(const std::string& handleName);
 
         // Declare that this pass reads from a resource.
-        void reads(RGResourceHandle handle);
+        void reads(const std::string& handleName);
 
 
     private:
@@ -48,8 +49,11 @@ namespace Dog
         std::function<void(RGPassBuilder&)> setupCallback;
         std::function<void(VkCommandBuffer)> executeCallback;
 
-        std::vector<RGResourceHandle> writeTargets;
-        std::vector<RGResourceHandle> readTargets;
+        //std::vector<RGResourceHandle> writeTargets;
+        //std::vector<RGResourceHandle> readTargets;
+
+        std::vector<std::string> writeTargets;
+        std::vector<std::string> readTargets;
     };
 
     // The main orchestrator class
@@ -74,8 +78,11 @@ namespace Dog
         // Clears all passes and resources for the next frame.
         void clear();
 
+        RGResourceHandle get_resource_handle(const std::string& name) const;
+
     private:
         std::vector<RGResource> m_resources;
         std::vector<RGPass> m_passes;
+        std::unordered_map<std::string, RGResourceHandle> m_resourceLookup;
     };
 }

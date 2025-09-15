@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="src\Dog\Engine.cpp" />
     <ClCompile Include="src\Dog\Events\Event.cpp" />
-    <ClCompile Include="src\Dog\Input\input.cpp" />
     <ClCompile Include="src\Dog\Input\KeyboardController.cpp" />
     <ClCompile Include="src\Dog\Logger\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -62,11 +61,13 @@
     <ClCompile Include="src\Dog\Graphics\Vulkan\Texture\TextureLibrary.cpp" />
     <ClCompile Include="src\Dog\ECS\Entities\Components.cpp" />
     <ClCompile Include="src\Dog\ECS\Entities\Entity.cpp" />
+    <ClCompile Include="src\Dog\ECS\Systems\PresentSystem.cpp" />
+    <ClCompile Include="src\Dog\ECS\Systems\InputSystem.cpp" />
+    <ClCompile Include="src\Dog\ECS\Resources\InputResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dog\Engine.h" />
     <ClInclude Include="src\Dog\Events\Event.h" />
-    <ClInclude Include="src\Dog\Input\input.h" />
     <ClInclude Include="src\Dog\Input\inputMap.h" />
     <ClInclude Include="src\Dog\Input\KeyboardController.h" />
     <ClInclude Include="src\Dog\Logger\Logger.h" />
@@ -130,6 +131,9 @@
     <ClInclude Include="src\Dog\Graphics\Vulkan\Texture\TextureLibrary.h" />
     <ClInclude Include="src\Dog\ECS\Entities\Components.h" />
     <ClInclude Include="src\Dog\ECS\Entities\Entity.h" />
+    <ClInclude Include="src\Dog\ECS\Systems\PresentSystem.h" />
+    <ClInclude Include="src\Dog\ECS\Systems\InputSystem.h" />
+    <ClInclude Include="src\Dog\ECS\Resources\InputResource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.inl" />

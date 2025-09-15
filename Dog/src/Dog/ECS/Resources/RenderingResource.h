@@ -10,6 +10,7 @@ namespace Dog
     class Synchronizer;
     class Pipeline;
     class Renderer;
+    class RenderGraph;
     class Allocator;
     class Uniform;
     class ModelLibrary;
@@ -18,6 +19,7 @@ namespace Dog
     struct RenderingResource : public IResource
     {
         RenderingResource(Window& window);
+        ~RenderingResource();
 
         std::unique_ptr<Device> device;
         std::unique_ptr<SwapChain> swapChain;
@@ -28,15 +30,46 @@ namespace Dog
         std::unique_ptr<TextureLibrary> textureLibrary;
 
         std::unique_ptr<Renderer> renderer;
+        std::unique_ptr<RenderGraph> mRenderGraph;
 
         std::unique_ptr<Uniform> cameraUniform;
         std::unique_ptr<Uniform> instanceUniform;
+
+        std::vector<VkCommandBuffer> commandBuffers;
+        uint32_t currentImageIndex = 0;
+        uint32_t currentFrameIndex = 0;
+
+        // Scene textures ----------------
+        VkImage sceneImage{ VK_NULL_HANDLE };
+        VmaAllocation sceneImageAllocation{ VK_NULL_HANDLE };
+        VkImageView sceneImageView{ VK_NULL_HANDLE };
+        VkSampler sceneSampler{ VK_NULL_HANDLE };
+
+        VkImage mDepthImage;
+        VmaAllocation mDepthImageAllocation;
+        VkImageView mDepthImageView;
+
+        VkDescriptorSet sceneTextureDescriptorSet{ VK_NULL_HANDLE };
+        // --------------------------------
 
     private:
         Window& window;
 
     private:
         friend class Renderer;
+        friend class PresentSystem;
         void RecreateSwapChain();
+
+        void CreateCommandBuffers();
+
+        // Scene textures ----------------
+        friend class EditorSystem;
+        void CreateSceneTexture();
+        void CleanupSceneTexture();
+        void RecreateSceneTexture();
+        void CreateDepthBuffer();
+        void CleanupDepthBuffer();
+        void RecreateDepthBuffer();
+        // --------------------------------
     };
 }

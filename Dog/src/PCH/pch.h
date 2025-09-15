@@ -64,6 +64,7 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 #include <typeindex>
 #include <random>
 #include <filesystem>
+#include <ranges>
 
 #include "vk_mem_alloc.h"
 

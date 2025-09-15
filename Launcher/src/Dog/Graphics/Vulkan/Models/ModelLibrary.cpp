@@ -7,8 +7,8 @@
 namespace Dog {
 
 	ModelLibrary::ModelLibrary(Device& device, TextureLibrary& textureLibrary)
-		: m_Device(device)
-		, m_TextureLibrary(textureLibrary)
+		: mDevice(device)
+		, mTextureLibrary(textureLibrary)
 	{
 	}
 
@@ -42,7 +42,7 @@ namespace Dog {
 			uint32_t modelIndex = static_cast<uint32_t>(m_Models.size());
 
 			m_ModelMap[modelPath] = modelIndex;
-			m_Models.push_back(std::make_unique<Model>(m_Device, modelPath, m_TextureLibrary, mUnifiedMesh));
+			m_Models.push_back(std::make_unique<Model>(mDevice, modelPath, mTextureLibrary, mUnifiedMesh));
 			return static_cast<uint32_t>(modelIndex);
 		}
 		else 
