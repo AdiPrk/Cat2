@@ -5,7 +5,7 @@ namespace Dog
     class ISystem
     {
     public:
-        ISystem(const std::string& name) : m_DebugName(name), ecs(nullptr) {}
+        ISystem(const std::string& name) : mDebugName(name), ecs(nullptr) {}
         virtual ~ISystem() = default;
 
         virtual void Init() {};
@@ -14,13 +14,13 @@ namespace Dog
         virtual void FrameEnd() {};
         virtual void Exit() {};
 
-        const std::string& GetDebugName() const { return m_DebugName; }
+        const std::string& GetDebugName() const { return mDebugName; }
 
     protected:
         friend class ECS;
         ECS* ecs;
 
     private:
-        std::string m_DebugName;
+        std::string mDebugName;
     };
 }

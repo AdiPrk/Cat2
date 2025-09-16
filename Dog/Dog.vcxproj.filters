@@ -32,7 +32,6 @@
     <ClCompile Include="src\Dog\ECS\Systems\ISystem.cpp" />
     <ClCompile Include="src\Dog\Utils\Utils.cpp" />
     <ClCompile Include="src\Dog\ECS\ECS.cpp" />
-    <ClCompile Include="src\Dog\ECS\Systems\TestSystem.cpp" />
     <ClCompile Include="src\Dog\ECS\Systems\RenderSystem.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\RenderingResource.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\WindowResource.cpp" />
@@ -96,11 +95,9 @@
     <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
     <ClInclude Include="Dependencies\imgui\ImZoomSlider.h" />
     <ClInclude Include="src\Dog\Events\ActionManager.h" />
-    <ClInclude Include="src\Dog\Input\ultralightKeyMap.h" />
     <ClInclude Include="src\Dog\ECS\Systems\ISystem.h" />
     <ClInclude Include="src\Dog\Utils\Utils.h" />
     <ClInclude Include="src\Dog\ECS\ECS.h" />
-    <ClInclude Include="src\Dog\ECS\Systems\TestSystem.h" />
     <ClInclude Include="src\Dog\ECS\Systems\RenderSystem.h" />
     <ClInclude Include="src\Dog\ECS\Resources\RenderingResource.h" />
     <ClInclude Include="src\Dog\ECS\Resources\WindowResource.h" />

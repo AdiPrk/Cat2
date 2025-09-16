@@ -29,7 +29,7 @@ namespace Dog
         std::unique_ptr<ModelLibrary> modelLibrary;
         std::unique_ptr<TextureLibrary> textureLibrary;
 
-        std::unique_ptr<RenderGraph> mRenderGraph;
+        std::unique_ptr<RenderGraph> renderGraph;
 
         std::unique_ptr<Uniform> cameraUniform;
         std::unique_ptr<Uniform> instanceUniform;
@@ -44,9 +44,9 @@ namespace Dog
         VkImageView sceneImageView{ VK_NULL_HANDLE };
         VkSampler sceneSampler{ VK_NULL_HANDLE };
 
-        VkImage mDepthImage;
-        VmaAllocation mDepthImageAllocation;
-        VkImageView mDepthImageView;
+        VkImage mDepthImage{ VK_NULL_HANDLE };
+        VmaAllocation mDepthImageAllocation{ VK_NULL_HANDLE };
+        VkImageView mDepthImageView{ VK_NULL_HANDLE };
 
         VkDescriptorSet sceneTextureDescriptorSet{ VK_NULL_HANDLE };
         // --------------------------------

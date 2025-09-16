@@ -6,6 +6,5 @@ namespace Dog
     InputResource::InputResource(GLFWwindow* win)
         : window(win)
     {
-
     }
 }

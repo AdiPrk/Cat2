@@ -14,12 +14,10 @@
 
 #include "ECS/Resources/IResource.h"
 
-namespace Dog {
-	// Forward Declarations
-	class Networking;
-	class ActionManager;
-
-	struct EngineSpec {
+namespace Dog 
+{
+	struct EngineSpec
+	{
 		std::string name = "Dog Engine";         // The name of the window.
 		unsigned width = 1280;                   // The width of the window.
 		unsigned height = 720;                   // The height of the window.
@@ -27,8 +25,6 @@ namespace Dog {
         std::string serverAddress = SERVER_IP;   // The address of the server. Defaults to online VPS server.
         uint16_t serverPort = 7777;              // The port of the server.
 	};
-
-	class Editor;
 
 	class Engine {
 	public:
@@ -62,25 +58,15 @@ namespace Dog {
 		int Run(const std::string& sceneName);
 		void Exit();
 
-		// getters
-        Networking& GetNetworking() { return *m_Networking; }
-        ActionManager& GetActionManager() { return *m_ActionManager; }
-
 	private:
-		// Networking
-        std::unique_ptr<Networking> m_Networking;
+		// Engine Specs
+		EngineSpec mSpecs;
 
-		// Actions
-        std::unique_ptr<ActionManager> m_ActionManager;
-
-		// target fps
-		unsigned fps;
-
-		// running
-		bool m_Running = true;
+		// Is the engine running?
+		bool mRunning = true;
 
 		// Entity Component System for the engine
-        ECS ecs; 
+        ECS mEcs; 
 	};
 
 } // namespace Dog

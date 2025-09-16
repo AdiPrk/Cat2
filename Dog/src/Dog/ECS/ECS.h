@@ -30,7 +30,7 @@ namespace Dog
         void AddSystem()
         {
             static_assert(std::is_base_of<ISystem, T>::value, "T must inherit from ISystem");
-            systems.emplace_back(std::make_unique<T>());
+            mSystems.emplace_back(std::make_unique<T>());
         }
 
         template<typename T, typename... Args>
@@ -63,9 +63,11 @@ namespace Dog
         entt::registry& GetRegistry() { return mRegistry; }
 
     private:
-        std::vector<std::unique_ptr<ISystem>> systems;
+        // Systems/Resources
+        std::vector<std::unique_ptr<ISystem>> mSystems;
         std::unordered_map<std::type_index, std::unique_ptr<IResource>> mResources;
         
+        // Entities
         entt::registry mRegistry;
         std::unordered_map<std::string, Entity> mEntityMap;
     };

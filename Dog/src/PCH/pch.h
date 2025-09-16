@@ -1,15 +1,14 @@
 #pragma once
 
 #define _CRT_SECURE_NO_WARNINGS
-
 #define _SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING
 #define _SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN 
 
-constexpr int AI_SBBC_DEFAULT_MAX_BONES = 100;
-constexpr int MAX_BONE_INFLUENCE = 4;
-constexpr int INVALID_TEXTURE_INDEX = 9999;
+// spdlog (include first to avoid APIENTRY conflicts)
+#include "spdlog/spdlog.h"
+#include "spdlog/fmt/ostr.h"
 
 // glfw
 #define GLFW_INCLUDE_VULKAN
@@ -31,10 +30,6 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 #include <glm/gtx/hash.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-// spdlog
-#include "spdlog/spdlog.h"
-#include "spdlog/fmt/ostr.h"
 
 // Shaderlang
 #include "glslang/Public/ShaderLang.h"
@@ -69,6 +64,7 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 
 #include "vk_mem_alloc.h"
 
+#define AI_SBBC_DEFAULT_MAX_BONES 100
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
@@ -82,13 +78,6 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 
 // Enet
 #include "enet/enet.h"
-
-// Ultralight
-//#include <Ultralight/Ultralight.h>
-//#include <AppCore/AppCore.h>
-//#include <AppCore/App.h>
-//#include <AppCore/Window.h>
-//#include <AppCore/Overlay.h>
 
 // My files
 #include "Logger/Logger.h"

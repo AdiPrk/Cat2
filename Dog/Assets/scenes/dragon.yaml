@@ -1,4 +1,4 @@
-Scene: namae
+Scene: dragon
 Entities:
   - Entity: Square1
     TransformComponent:

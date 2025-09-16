@@ -13,7 +13,7 @@ namespace Dog
     {
         if (propogate) {
             std::string packet = Serialize();
-            Engine::Get().GetNetworking().SendAction(packet);
+            //Engine::Get().GetNetworking().SendAction(packet);
         }
     }
 
@@ -41,7 +41,7 @@ namespace Dog
     {
         if (propogate) {
             std::string packet = Serialize();
-            Engine::Get().GetNetworking().SendAction(packet);
+            //Engine::Get().GetNetworking().SendAction(packet);
         }
     }
 
@@ -69,7 +69,7 @@ namespace Dog
     {
         if (propogate) {
             std::string packet = Serialize();
-            Engine::Get().GetNetworking().SendAction(packet);
+            //Engine::Get().GetNetworking().SendAction(packet);
         }
     }
 
@@ -97,7 +97,7 @@ namespace Dog
     {
         if (propogate) {
             std::string packet = Serialize();
-            Engine::Get().GetNetworking().SendAction(packet);
+            //Engine::Get().GetNetworking().SendAction(packet);
         }
     }
 

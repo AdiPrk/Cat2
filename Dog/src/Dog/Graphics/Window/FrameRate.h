@@ -15,9 +15,9 @@ namespace Dog {
         void SetTargetFPS(unsigned int targetFPS);
 
     private:
-        unsigned int targetFPS;
+        unsigned int mTargetFPS;
         std::chrono::time_point<std::chrono::high_resolution_clock> m_lastFrameTime = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> targetFrameDuration;
+        std::chrono::duration<double> mTargetFrameDuration;
     };
 
 } // namespace Dog

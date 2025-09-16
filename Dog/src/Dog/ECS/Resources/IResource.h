@@ -13,6 +13,6 @@ namespace Dog
 
     protected:
         friend class ECS;
-        ECS* ecs = nullptr;
+        ECS* ecs = nullptr; // Reference to ECS
     };
 }

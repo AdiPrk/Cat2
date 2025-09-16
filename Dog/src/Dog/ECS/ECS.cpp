@@ -5,12 +5,10 @@
 #include "Entities/Entity.h"
 #include "Entities/Components.h"
 
-//#include "Scene/SceneManager.h"
-
 namespace Dog
 {
     ECS::ECS()
-        : systems()
+        : mSystems()
         , mEntityMap()
         , mRegistry()
     {
@@ -28,7 +26,7 @@ namespace Dog
             resource.second->ecs = this;
         }
 
-        for (auto& system : systems)
+        for (auto& system : mSystems)
         {
             system->ecs = this;
             system->Init();
@@ -37,7 +35,7 @@ namespace Dog
 
     void ECS::FrameStart()
     {
-        for (auto& system : systems)
+        for (auto& system : mSystems)
         {
             system->FrameStart();
         }
@@ -45,7 +43,7 @@ namespace Dog
 
     void ECS::Update(float dt)
     {
-        for (auto& system : systems)
+        for (auto& system : mSystems)
         {
             system->Update(dt);
         }
@@ -53,7 +51,7 @@ namespace Dog
 
     void ECS::FrameEnd()
     {
-        for (auto& system : systems | std::views::reverse)
+        for (auto& system : mSystems | std::views::reverse)
         {
             system->FrameEnd();
         }
@@ -61,7 +59,7 @@ namespace Dog
 
     void ECS::Exit()
     {
-        for (auto& system : systems)
+        for (auto& system : mSystems | std::views::reverse)
         {
             system->Exit();
         }

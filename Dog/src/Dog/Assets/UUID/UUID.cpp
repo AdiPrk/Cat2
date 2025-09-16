@@ -8,19 +8,19 @@ namespace Dog {
 	static std::uniform_int_distribution<uint64_t> s_UniformDistribution;
 
 	UUID::UUID()
-		: m_UUID(s_UniformDistribution(s_RandomEngine))
+		: mUUID(s_UniformDistribution(s_RandomEngine))
 	{
 
 	}
 
 	UUID::UUID(uint64_t uuid)
-		: m_UUID(uuid)
+		: mUUID(uuid)
 	{
 	}
 
 	UUID::UUID(const std::string& name)
 	{
-		m_UUID = std::hash<std::string>{}(name);
+		mUUID = std::hash<std::string>{}(name);
 	}
 
 }

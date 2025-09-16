@@ -2,7 +2,6 @@
 #include "Engine.h"
 #include "Utils/Utils.h"
 
-
 int main(int argc, char* argv[])
 {
     Dog::ValidateStartingDirectory(argc, argv);
@@ -17,5 +16,5 @@ int main(int argc, char* argv[])
 
     Dog::Engine& Engine = Dog::Engine::Create(specs);
 
-    return Engine.Run("namae");
+    return Engine.Run("dragon");
 }

@@ -15,8 +15,5 @@ namespace Dog
         void Update(float dt);
         void FrameEnd();
         void Exit();
-
-    private:
-        
     };
 }

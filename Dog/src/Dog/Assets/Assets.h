@@ -1,7 +1,8 @@
 #pragma once
 
-namespace Dog {
-
+namespace Dog 
+{
+	// Class now only holds the paths to important folders
     class Assets
     {
     public:

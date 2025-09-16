@@ -10,7 +10,7 @@ namespace Dog
     {
     public:
         RenderSystem() : ISystem("RenderSystem") {};
-        ~RenderSystem() {}
+        ~RenderSystem();
 
         void Init();
         void FrameStart();
@@ -21,15 +21,6 @@ namespace Dog
         void RenderScene(VkCommandBuffer cmd);
 
     private:
-
-        VkImage sceneImage{ VK_NULL_HANDLE };
-        VmaAllocation sceneImageAllocation{ VK_NULL_HANDLE };
-        VkImageView sceneImageView{ VK_NULL_HANDLE };
-        VkSampler sceneSampler{ VK_NULL_HANDLE };
-
-        VkImage mDepthImage;
-        VmaAllocation mDepthImageAllocation;
-        VkImageView mDepthImageView;
 
         std::unique_ptr<Pipeline> mPipeline;
     };

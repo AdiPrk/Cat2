@@ -15,12 +15,12 @@ namespace Dog {
     class FileWatcher {
     public:
         FileWatcher(const std::string& path)
-            : directory(normalize_path(path)), running(true) {
-            for (const auto& entry : std::filesystem::directory_iterator(directory)) {
+            : mDirectory(normalize_path(path)), mRunning(true) {
+            for (const auto& entry : std::filesystem::directory_iterator(mDirectory)) {
                 if (std::filesystem::is_regular_file(entry)) {
                     std::string normalized_path = normalize_path(entry.path().string());
 
-                    paths[normalized_path] = std::filesystem::last_write_time(entry);
+                    mPaths[normalized_path] = std::filesystem::last_write_time(entry);
 
                     PUBLISH_EVENT(OnCreate, normalized_path);
                 }
@@ -34,13 +34,13 @@ namespace Dog {
         }
 
         void start() {
-            watchThread = std::thread([this]() { run(); });
+            mWatchThread = std::thread([this]() { run(); });
         }
 
         void stop() {
-            running = false;
-            if (watchThread.joinable()) {
-                watchThread.join();
+            mRunning = false;
+            if (mWatchThread.joinable()) {
+                mWatchThread.join();
             }
         }
 
@@ -51,21 +51,21 @@ namespace Dog {
         }
 
     private:
-        std::string directory;
-        std::unordered_map<std::string, std::filesystem::file_time_type> paths;
-        std::thread watchThread;
-        bool running;
+        std::string mDirectory;
+        std::unordered_map<std::string, std::filesystem::file_time_type> mPaths;
+        std::thread mWatchThread;
+        bool mRunning;
 
         void run() {
-            while (running) {
+            while (mRunning) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(33)); //~30fps
                 
-                auto it = paths.begin();
-                while (it != paths.end()) {
+                auto it = mPaths.begin();
+                while (it != mPaths.end()) {
                     auto normalized_path = normalize_path(it->first);
                     if (!std::filesystem::exists(normalized_path) || !std::filesystem::is_regular_file(normalized_path)) {
                         PUBLISH_EVENT(OnDelete, normalized_path);
-                        it = paths.erase(it);
+                        it = mPaths.erase(it);
                     }
                     else {
                         auto current_file_last_write_time = std::filesystem::last_write_time(normalized_path);
@@ -77,12 +77,12 @@ namespace Dog {
                     }
                 }
 
-                for (const auto& entry : std::filesystem::directory_iterator(directory)) {
+                for (const auto& entry : std::filesystem::directory_iterator(mDirectory)) {
                     if (std::filesystem::is_regular_file(entry)) {
                         auto path = normalize_path(entry.path().string());
-                        if (paths.find(path) == paths.end()) {
+                        if (mPaths.find(path) == mPaths.end()) {
                             PUBLISH_EVENT(OnCreate, path);
-                            paths[path] = std::filesystem::last_write_time(entry);
+                            mPaths[path] = std::filesystem::last_write_time(entry);
                         }
                     }
                 }

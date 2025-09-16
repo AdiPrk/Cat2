@@ -19,6 +19,10 @@
 
 namespace Dog
 {
+    RenderSystem::~RenderSystem()
+    {
+    }
+
     void RenderSystem::Init()
     {
         {
@@ -78,7 +82,7 @@ namespace Dog
     {
         auto renderingResource = ecs->GetResource<RenderingResource>();
         auto editorResource = ecs->GetResource<EditorResource>();
-        auto& rg = renderingResource->mRenderGraph;
+        auto& rg = renderingResource->renderGraph;
 
         // Set camera uniform!
         CameraUniforms camData{};
@@ -158,8 +162,7 @@ namespace Dog
         uint32_t baseInstance = 0;
         for (auto& entityHandle : entityView)
         {
-            Entity entity(&registry, entityHandle);
-            ModelComponent& mc = entity.GetComponent<ModelComponent>();
+            ModelComponent& mc = registry.get<ModelComponent>(entityHandle);
             model = renderingResource->modelLibrary->GetModel(mc.ModelIndex);
 
             for (auto& mesh : model->mMeshes)

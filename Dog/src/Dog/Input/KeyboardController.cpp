@@ -7,14 +7,16 @@
 namespace Dog {
 
     void KeyboardMovementController::moveInPlaneXZ(
-        GLFWwindow* window, float dt, TransformComponent& transform) {
+        GLFWwindow* window, float dt, TransformComponent& transform)
+    {
         glm::vec3 rotate{ 0 };
         if (InputSystem::isKeyDown(Key::RIGHT)) rotate.y += 1.f;
-        if (InputSystem::isKeyDown(Key::LEFT)) rotate.y -= 1.f;
-        if (InputSystem::isKeyDown(Key::UP)) rotate.x += 1.f;
-        if (InputSystem::isKeyDown(Key::DOWN)) rotate.x -= 1.f;
+        if (InputSystem::isKeyDown(Key::LEFT))  rotate.y -= 1.f;
+        if (InputSystem::isKeyDown(Key::UP))    rotate.x += 1.f;
+        if (InputSystem::isKeyDown(Key::DOWN))  rotate.x -= 1.f;
 
-        if (glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon()) {
+        if (glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon())
+        {
             transform.Rotation += lookSpeed * dt * glm::normalize(rotate);
         }
 
@@ -39,11 +41,10 @@ namespace Dog {
         // check shift
         moveSpeed = (InputSystem::isKeyDown(Key::LEFTSHIFT)) ? 1.f : 4.f;
 
-        if (glm::dot(moveDir, moveDir) > std::numeric_limits<float>::epsilon()) {
+        if (glm::dot(moveDir, moveDir) > std::numeric_limits<float>::epsilon())
+        {
             transform.Translation += moveSpeed * dt * glm::normalize(moveDir);
         }
-
-        // log translation
     }
 
 } // namespace Dog

@@ -22,7 +22,7 @@ namespace Dog
 	void PresentSystem::FrameStart()
 	{
         auto rr = ecs->GetResource<RenderingResource>();
-        auto& rg = rr->mRenderGraph;
+        auto& rg = rr->renderGraph;
 
         // Wait on the current frame's fence (ensures the previous frame's GPU work is done).
         rr->syncObjects->WaitForCommandBuffers();
@@ -109,7 +109,7 @@ namespace Dog
         VkCommandBuffer commandBuffer = rr->commandBuffers[rr->currentFrameIndex];
 
         // Execute the graph
-        rr->mRenderGraph->execute(commandBuffer, rr->device->getDevice());
+        rr->renderGraph->execute(commandBuffer, rr->device->getDevice());
 
         // --- End Graph ---
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {

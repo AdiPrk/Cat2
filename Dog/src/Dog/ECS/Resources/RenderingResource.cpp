@@ -35,7 +35,7 @@ namespace Dog
         instanceUniform = std::make_unique<Uniform>(*device, *this, instanceUniformSettings);
 
         CreateCommandBuffers();
-        mRenderGraph = std::make_unique<RenderGraph>();
+        renderGraph = std::make_unique<RenderGraph>();
     }
 
     RenderingResource::~RenderingResource()

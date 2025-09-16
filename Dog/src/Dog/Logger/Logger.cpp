@@ -5,11 +5,11 @@
 
 namespace Dog {
 
-	std::shared_ptr<spdlog::logger> Logger::s_Logger;
+	std::shared_ptr<spdlog::logger> Logger::sLogger;
 
 	void Logger::Init() {
 		spdlog::set_pattern("%^[%T] %n: %v%$");
 
-		s_Logger = spdlog::stdout_color_mt("DOG");
+		sLogger = spdlog::stdout_color_mt("DOG");
 	}
 }

@@ -79,6 +79,8 @@
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Include;$(ProjectDir)Dependencies\glfw\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\stb_image\stb;$(ProjectDir)Dependencies\tiny_obj_loader;$(ProjectDir)Dependencies\vk_extensions;$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies\glslang\include;$(ProjectDir)Dependencies\spdlog\include;$(ProjectDir)Dependencies\entt\include;$(ProjectDir)Dependencies\yaml-cpp\include;$(ProjectDir)Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -87,6 +89,8 @@
       <AdditionalDependencies>zlibstaticd.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;yaml-cppd.lib;glslangd.lib;SPIRVd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-optd.lib;GenericCodeGend.lib;MachineIndependentd.lib;glslang-default-resource-limitsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
+      <AdditionalOptions>/ignore:4099
+ %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -116,6 +120,8 @@ xcopy "$(ProjectDir)Dependencies\assimp\minizip.dll" "$(OutDir)" /Y
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Include;$(ProjectDir)Dependencies\glfw\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\stb_image\stb;$(ProjectDir)Dependencies\tiny_obj_loader;$(ProjectDir)Dependencies\vk_extensions;$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies\glslang\include;$(ProjectDir)Dependencies\spdlog\include;$(ProjectDir)Dependencies\entt\include;$(ProjectDir)Dependencies\yaml-cpp\include;$(ProjectDir)Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,6 +130,7 @@ xcopy "$(ProjectDir)Dependencies\assimp\minizip.dll" "$(OutDir)" /Y
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -131,9 +138,7 @@ xcopy "$(ProjectDir)Dependencies\assimp\minizip.dll" "$(OutDir)" /Y
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>:: Copy Assimp DLLs (same for both Debug and Release)
-xcopy "$(ProjectDir)Dependencies\assimp\poly2tri.dll" "$(OutDir)" /Y
 xcopy "$(ProjectDir)Dependencies\assimp\minizip.dll" "$(OutDir)" /Y
-xcopy "$(ProjectDir)Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
 
 :: Conditional copying for Debug vs Release
 ::IF "$(ConfigurationName)"=="Debug" (
@@ -155,6 +160,9 @@ xcopy "$(ProjectDir)Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
       <PrecompiledHeaderFile>PCH/pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Include;$(ProjectDir)Dependencies\glfw\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\stb_image\stb;$(ProjectDir)Dependencies\tiny_obj_loader;$(ProjectDir)Dependencies\vk_extensions;$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies\glslang\include;$(ProjectDir)Dependencies\spdlog\include;$(ProjectDir)Dependencies\entt\include;$(ProjectDir)Dependencies\yaml-cpp\include;$(ProjectDir)Dependencies\msdfgen\include;$(SolutionDir)Common\Dependencies\enet\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <ShowIncludes>false</ShowIncludes>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -163,6 +171,8 @@ xcopy "$(ProjectDir)Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4099
+ %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -170,9 +180,7 @@ xcopy "$(ProjectDir)Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>:: Copy Assimp DLLs (same for both Debug and Release)
-xcopy "$(ProjectDir)Dependencies\assimp\poly2tri.dll" "$(OutDir)" /Y
 xcopy "$(ProjectDir)Dependencies\assimp\minizip.dll" "$(OutDir)" /Y
-xcopy "$(ProjectDir)Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
 
 :: Conditional copying for Debug vs Release
 :: IF "$(ConfigurationName)"=="Debug" (
@@ -298,7 +306,6 @@ xcopy "$(ProjectDir)Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
     <ClCompile Include="src\Dog\ECS\Resources\RenderingResource.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\WindowResource.cpp" />
     <ClCompile Include="src\Dog\ECS\Systems\RenderSystem.cpp" />
-    <ClCompile Include="src\Dog\ECS\Systems\TestSystem.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PCH\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -365,7 +372,6 @@ xcopy "$(ProjectDir)Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
     <ClInclude Include="src\Dog\Input\inputMap.h" />
     <ClInclude Include="src\Dog\Input\KeyboardController.h" />
     <ClInclude Include="src\Dog\Engine.h" />
-    <ClInclude Include="src\Dog\Input\ultralightKeyMap.h" />
     <ClInclude Include="src\Dog\Logger\Logger.h" />
     <ClInclude Include="src\Dog\Networking\Networking.h" />
     <ClInclude Include="src\Dog\Networking\PacketHandler.h" />
@@ -375,7 +381,6 @@ xcopy "$(ProjectDir)Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
     <ClInclude Include="src\Dog\ECS\Resources\RenderingResource.h" />
     <ClInclude Include="src\Dog\ECS\Resources\WindowResource.h" />
     <ClInclude Include="src\Dog\ECS\Systems\RenderSystem.h" />
-    <ClInclude Include="src\Dog\ECS\Systems\TestSystem.h" />
     <ClInclude Include="src\PCH\pch.h" />
   </ItemGroup>
   <ItemGroup>
