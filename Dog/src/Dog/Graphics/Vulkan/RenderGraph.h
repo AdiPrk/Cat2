@@ -18,6 +18,7 @@ namespace Dog
         VkImageView imageView{ VK_NULL_HANDLE };
         VkExtent2D extent;
         VkFormat format;
+        bool isBackBuffer;
 
         // State tracking for automatic barriers
         VkImageLayout currentLayout{ VK_IMAGE_LAYOUT_UNDEFINED };
@@ -62,7 +63,8 @@ namespace Dog
         RenderGraph() = default;
 
         // Imports an existing, externally managed image (like the swapchain) into the graph.
-        RGResourceHandle import_backbuffer(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format);
+        RGResourceHandle import_texture(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format, bool backBuffer = false);
+        RGResourceHandle import_backBuffer(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format);
 
         // Create a transient texture owned by the graph
         RGResourceHandle create_texture(const char* name, VkExtent2D extent, VkFormat format);

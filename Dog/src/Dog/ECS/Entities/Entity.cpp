@@ -16,6 +16,12 @@ namespace Dog
     {
     }
 
+    Entity::Entity(entt::registry* registry, entt::entity handle)
+        : entities(registry)
+        , handle(handle)
+    {
+    }
+
     Entity::Entity(const Entity& other)
     {
         handle = other.handle;

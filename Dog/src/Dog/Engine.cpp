@@ -38,42 +38,39 @@ namespace Dog {
 
     Engine::Engine(const EngineSpec& specs)
         : fps(specs.fps)
-        //, m_Window(specs.width, specs.height, specs.name)
-        //, m_Renderer(std::make_unique<Renderer>(m_Window, device))
-        //, textureLibrary(device)
-        //, modelLibrary(device, textureLibrary)
         , ecs()
     {
         Logger::Init();
 
+        // Systems -------------------------
         ecs.AddSystem<TestSystem>();
         ecs.AddSystem<InputSystem>();
         ecs.AddSystem<PresentSystem>();
         ecs.AddSystem<RenderSystem>();
         ecs.AddSystem<EditorSystem>();
+        // ---------------------------------
 
+        // Resources -----------------------
         ecs.CreateResource<WindowResource>(specs.width, specs.height, specs.name);
-        ecs.CreateResource<InputResource>(ecs.GetResource<WindowResource>()->window->getGLFWwindow());
-        ecs.CreateResource<RenderingResource>(*ecs.GetResource<WindowResource>()->window);
-        ecs.CreateResource<EditorResource>();
 
+        auto wr = ecs.GetResource<WindowResource>();
+        ecs.CreateResource<InputResource>(wr->window->getGLFWwindow());
+        ecs.CreateResource<RenderingResource>(*wr->window);
+
+        auto rr = ecs.GetResource<RenderingResource>();
+        ecs.CreateResource<EditorResource>(*rr->device, *rr->swapChain, *wr->window);
+        // ---------------------------------
+
+        // Initialize ECS
         ecs.Init();
-
-        //m_ActionManager = std::make_unique<ActionManager>();
-        //m_Editor = std::make_unique<Editor>(device);
-        //m_Networking = std::make_unique<Networking>(specs.serverAddress, specs.serverPort);
     }
 
     Engine::~Engine() 
     {
-        //m_Editor->Exit();
     }
 
     int Engine::Run(const std::string& sceneName) 
     {
-        // Init some stuff
-        //m_Networking->Init();
-
         WATCH_DIRECTORY(Texture);
 
         FrameRateController frameRateController(fps);
@@ -88,10 +85,8 @@ namespace Dog {
         }
 
         vkDeviceWaitIdle(ecs.GetResource<RenderingResource>()->device->getDevice());
+        ecs.Exit();        
 
-        //m_Networking->Shutdown();
-        ecs.Exit();
-        
         return EXIT_SUCCESS;
     }
 

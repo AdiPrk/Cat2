@@ -6,6 +6,7 @@ namespace Dog {
     public:
         Entity();
         Entity(entt::registry* registry);
+        Entity(entt::registry* registry, entt::entity handle);
         Entity(const Entity& other);
         void operator=(const Entity& other);
         ~Entity();

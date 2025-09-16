@@ -1,6 +1,7 @@
 #include <PCH/pch.h>
 #include "EditorSystem.h"
 #include "../ECS.h"
+#include "../Entities/Components.h"
 
 #include "../Resources/RenderingResource.h"
 #include "../Resources/WindowResource.h"
@@ -33,33 +34,16 @@ namespace Dog
 		if (!rr)
 		{
 			DOG_CRITICAL("No rendering resource in editor system");
+			return;
 		}
 		
 		rr->mRenderGraph->add_pass(
 			"ImGuiPass",
-			// Setup: This pass READS the scene texture and WRITES to the backbuffer.
 			[&](RGPassBuilder& builder) {
 				builder.reads("SceneColor");
 				builder.writes("BackBuffer");
 			},
-			// Execute: All the ImGui drawing commands.
-			[&](VkCommandBuffer cmd) {
-				// Start the Dear ImGui frame
-                VkDescriptorSet sceneTextureDescriptorSet = ecs->GetResource<RenderingResource>()->sceneTextureDescriptorSet;
-				ImGui_ImplVulkan_NewFrame();
-				ImGui_ImplGlfw_NewFrame();
-				ImGui::NewFrame();
-
-				// Create a window and display the scene texture
-				ImGui::Begin("Viewport");
-				ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-				ImGui::Image(sceneTextureDescriptorSet, viewportSize);
-				ImGui::End();
-
-				// Rendering
-				ImGui::Render();
-				ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), cmd);
-			}
+			std::bind(&EditorSystem::RenderImGui, this, std::placeholders::_1)
 		);
     }
 
@@ -69,84 +53,7 @@ namespace Dog
 
 	void EditorSystem::InitImGui()
 	{
-		auto rr = ecs->GetResource<RenderingResource>();
-		auto wr = ecs->GetResource<WindowResource>();
-		auto er = ecs->GetResource<EditorResource>();
-
-		Device& device = *rr->device;
-		SwapChain& swapChain = *rr->swapChain;
-		Window& window = *wr->window;
-
-		VkDescriptorPoolSize pool_sizes[] = { { VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
-			{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
-			{ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
-			{ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 },
-			{ VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 },
-			{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 },
-			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 },
-			{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 },
-			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 },
-			{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
-			{ VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 } };
-		VkDescriptorPoolCreateInfo pool_info = {};
-		pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-		pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-		pool_info.maxSets = 1000; //TextureLibrary::MAX_TEXTURE_COUNT;
-		pool_info.poolSizeCount = (uint32_t)IM_ARRAYSIZE(pool_sizes);
-		pool_info.pPoolSizes = pool_sizes;
-		vkCreateDescriptorPool(device, &pool_info, VK_NULL_HANDLE, &er->descriptorPool);
-
-		VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-		samplerLayoutBinding.binding = 0;
-		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		samplerLayoutBinding.descriptorCount = 1;
-		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-		samplerLayoutBinding.pImmutableSamplers = nullptr;  // Use your own sampler
-
-		VkDescriptorSetLayoutCreateInfo layoutInfo{};
-		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		layoutInfo.bindingCount = 1;
-		layoutInfo.pBindings = &samplerLayoutBinding;
-
-		if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &er->samplerSetLayout) != VK_SUCCESS) {
-			throw std::runtime_error("Failed to create descriptor set layout!");
-		}
-
-		// init imgui
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO();
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable keyboard controls
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;      // Enable docking
-		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;    // Enable multi-viewport / platform windows
-
-		ImGui_ImplGlfw_InitForVulkan(window.getGLFWwindow(), true);
-		ImGui_ImplVulkan_InitInfo init_info = {};
-		init_info.Instance = device.getInstance();
-		init_info.PhysicalDevice = device.getPhysicalDevice();
-		init_info.Device = device;
-		init_info.QueueFamily = device.GetGraphicsFamily();
-		init_info.Queue = device.getGraphicsQueue();
-		init_info.PipelineCache = VK_NULL_HANDLE;
-		init_info.DescriptorPool = er->descriptorPool;// device.getImGuiDescriptorPool();
-		init_info.UseDynamicRendering = VK_TRUE;
-		init_info.RenderPass = VK_NULL_HANDLE;
-		init_info.Subpass = 0;
-
-		VkFormat colorFormat = swapChain.GetImageFormat();
-		init_info.PipelineRenderingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;
-		init_info.PipelineRenderingCreateInfo.colorAttachmentCount = 1;
-		init_info.PipelineRenderingCreateInfo.pColorAttachmentFormats = &colorFormat;
-		init_info.PipelineRenderingCreateInfo.depthAttachmentFormat = swapChain.GetDepthFormat();
-		init_info.PipelineRenderingCreateInfo.stencilAttachmentFormat = VK_FORMAT_UNDEFINED;
-
-		init_info.Allocator = nullptr;
-		init_info.MinImageCount = SwapChain::MAX_FRAMES_IN_FLIGHT;
-		init_info.ImageCount = static_cast<uint32_t>(swapChain.ImageCount());
-		init_info.CheckVkResultFn = nullptr;
-		ImGui_ImplVulkan_Init(&init_info);
-
-		ImGui::StyleColorsDark();
+		
 	}
 
     void EditorSystem::Exit()
@@ -165,4 +72,96 @@ namespace Dog
 		rr->CleanupSceneTexture();
         rr->CleanupDepthBuffer();
     }
+
+	void EditorSystem::RenderImGui(VkCommandBuffer cmd)
+	{
+		// Start the Dear ImGui frame
+		ImGui_ImplVulkan_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+        ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+		RenderSceneWindow();
+		RenderEntitiesWindow(); 
+		RenderInspectorWindow();
+
+		// Rendering
+		ImGui::Render();
+		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), cmd);
+	}
+
+	void EditorSystem::RenderSceneWindow()
+	{
+		// Create a window and display the scene texture
+		VkDescriptorSet sceneTextureDescriptorSet = ecs->GetResource<RenderingResource>()->sceneTextureDescriptorSet;
+
+		ImGui::Begin("Viewport");
+		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+		ImGui::Image(sceneTextureDescriptorSet, viewportSize);
+		ImGui::End();
+
+		auto editorResource = ecs->GetResource<EditorResource>();
+		editorResource->sceneWindowWidth = viewportSize.x;
+		editorResource->sceneWindowHeight = viewportSize.y;
+	}
+
+	void EditorSystem::RenderEntitiesWindow()
+	{
+		ImGui::Begin("Entities##window", nullptr, ImGuiWindowFlags_MenuBar);
+
+		// Iterate through all entities with a tag, and without a parent
+
+		entt::registry& registry = ecs->GetRegistry();
+
+		auto view = registry.view<TagComponent>();
+		for (auto& entityHandle : view) 
+		{
+			Entity entity(&registry, entityHandle);
+			TagComponent& tag = entity.GetComponent<TagComponent>();
+
+			ImGuiTreeNodeFlags leafFlags = ImGuiTreeNodeFlags_Leaf;
+
+			bool opened = false;
+			opened = ImGui::TreeNodeEx((void*)(uint64_t)entityHandle, leafFlags, tag.Tag.c_str());
+
+			if (ImGui::IsItemClicked()) {
+				DOG_INFO("Entity {0} Selected!", tag.Tag.c_str());
+                ecs->GetResource<EditorResource>()->selectedEntity = entity;
+			}
+
+			// end treenodex
+			if (opened) {
+				ImGui::TreePop();
+			}
+		}
+
+		ImGui::End(); // End of Entities
+	}
+
+	void EditorSystem::RenderInspectorWindow()
+    {
+        Entity selectedEnt = ecs->GetResource<EditorResource>()->selectedEntity;
+		if (!selectedEnt)
+		{
+			return;
+		}
+
+        ImGui::Begin("Inspector");
+
+        if (selectedEnt.HasComponent<TagComponent>())
+        {
+            TagComponent& tag = selectedEnt.GetComponent<TagComponent>();
+			ImGui::InputText("Name##TagProp", &tag.Tag);
+        }
+
+		if (selectedEnt.HasComponent<TransformComponent>())
+		{
+			TransformComponent& transform = selectedEnt.GetComponent<TransformComponent>();
+            ImGui::DragFloat3("Translation##TransformProp", glm::value_ptr(transform.Translation), 0.1f);
+            ImGui::DragFloat3("Rotation##TransformProp", glm::value_ptr(transform.Rotation), 0.1f);
+            ImGui::DragFloat3("Scale##TransformProp", glm::value_ptr(transform.Scale), 0.1f);
+		}
+
+        ImGui::End(); // End of Inspector
+	}
 }

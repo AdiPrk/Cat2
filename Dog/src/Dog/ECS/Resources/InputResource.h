@@ -8,7 +8,7 @@ namespace Dog
 {
     struct InputResource : public IResource
     {
-        InputResource(GLFWwindow* win) : window(win) {}
+        InputResource(GLFWwindow* win);
 
         GLFWwindow* window;
     };

@@ -67,7 +67,7 @@ namespace Dog
         rg->clear();
 
         // Import Textures into the graph
-        RGResourceHandle sceneColorHandle = rg->import_backbuffer(
+        rg->import_texture(
             "SceneColor",
             rr->sceneImage,
             rr->sceneImageView,
@@ -75,7 +75,7 @@ namespace Dog
             rr->swapChain->GetImageFormat()
         );
 
-        RGResourceHandle depthHandle = rg->import_backbuffer(
+        rg->import_texture(
             "SceneDepth",
             rr->mDepthImage,
             rr->mDepthImageView,
@@ -83,7 +83,7 @@ namespace Dog
             rr->swapChain->FindDepthFormat()
         );
 
-        RGResourceHandle backbufferHandle = rg->import_backbuffer(
+        rg->import_backBuffer(
             "BackBuffer",
             rr->swapChain->GetImage(),
             rr->swapChain->GetImageView(),

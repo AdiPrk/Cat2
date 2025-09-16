@@ -13,19 +13,25 @@ namespace Dog
         m_pass.readTargets.push_back(handleName);
     }
 
-    RGResourceHandle RenderGraph::import_backbuffer(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format)
+    RGResourceHandle RenderGraph::import_texture(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format, bool backBuffer)
     {
-        RGResource backbuffer_resource;
-        backbuffer_resource.name = name;
-        backbuffer_resource.image = image;
-        backbuffer_resource.imageView = view;
-        backbuffer_resource.extent = extent;
-        backbuffer_resource.format = format;
-        backbuffer_resource.currentLayout = VK_IMAGE_LAYOUT_UNDEFINED; // Swapchain images start as undefined.
+        RGResource resource;
+        resource.name = name;
+        resource.image = image;
+        resource.imageView = view;
+        resource.extent = extent;
+        resource.format = format;
+        resource.currentLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        resource.isBackBuffer = backBuffer;
 
-        m_resources.push_back(backbuffer_resource);
+        m_resources.push_back(resource);
         m_resourceLookup[name] = static_cast<uint32_t>(m_resources.size() - 1);
         return { static_cast<uint32_t>(m_resources.size() - 1) };
+    }
+
+    RGResourceHandle RenderGraph::import_backBuffer(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format)
+    {
+        return import_texture(name, image, view, extent, format, true);
     }
 
     RGResourceHandle RenderGraph::create_texture(const char* name, VkExtent2D extent, VkFormat format)
@@ -197,7 +203,7 @@ namespace Dog
             RGResource* finalBackbuffer = nullptr;
             for (auto& resource : m_resources)
             {
-                if (resource.name == "BackBuffer")
+                if (resource.isBackBuffer)
                 {
                     finalBackbuffer = &resource;
                     break;

@@ -63,30 +63,15 @@ namespace Dog {
 		void Exit();
 
 		// getters
-		//Window& GetWindow() { return m_Window; }
-		//Device& GetDevice() { return device; }
-		//Renderer& GetRenderer() { return *m_Renderer; }
-		//TextureLibrary& GetTextureLibrary() { return textureLibrary; }
-		//ModelLibrary& GetModelLibrary() { return modelLibrary; }
-		//Editor& GetEditor() { return *m_Editor; }
         Networking& GetNetworking() { return *m_Networking; }
         ActionManager& GetActionManager() { return *m_ActionManager; }
 
 	private:
-		//Window m_Window; // { WIDTH, HEIGHT, "Woof" };
-		//std::unique_ptr<Renderer> m_Renderer;
-
-		//TextureLibrary textureLibrary;
-		//ModelLibrary modelLibrary;
-
 		// Networking
         std::unique_ptr<Networking> m_Networking;
 
 		// Actions
         std::unique_ptr<ActionManager> m_ActionManager;
-
-		// Editor
-		//std::unique_ptr<Editor> m_Editor;
 
 		// target fps
 		unsigned fps;

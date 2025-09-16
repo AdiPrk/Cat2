@@ -8,8 +8,6 @@
 
 namespace Dog {
 
-#define IND(x) static_cast<int>(x)
-
 	InputSystem::KeyStates InputSystem::keyStates[static_cast<int>(Key::LAST)];
 	InputSystem::MouseStates InputSystem::mouseStates[static_cast<int>(Mouse::LAST)];
 
@@ -44,7 +42,7 @@ namespace Dog {
 		glfwSetCharCallback(InputSystem::pwindow, charCallback);
 
 		InputSystem::standardCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
-		glfwSetCursor(InputSystem::pwindow, standardCursor);
+		glfwSetCursor(InputSystem::pwindow, InputSystem::standardCursor);
 	}
 
 	struct ViewportInfo {
@@ -56,12 +54,12 @@ namespace Dog {
 
 	void InputSystem::FrameStart()
 	{
-		lastScrollX = scrollX;
-		lastScrollY = scrollY;
+		InputSystem::lastScrollX = InputSystem::scrollX;
+		InputSystem::lastScrollY = InputSystem::scrollY;
 
 		for (int i = 0; i < static_cast<int>(Key::LAST); i++)
 		{
-			keyStates[i].prevKeyDown = keyStates[i].keyDown;
+			InputSystem::keyStates[i].prevKeyDown = InputSystem::keyStates[i].keyDown;
 		}
 
 		glfwPollEvents();
@@ -73,22 +71,22 @@ namespace Dog {
 
 	bool InputSystem::isKeyDown(const Key& key)
 	{
-		return keyStates[IND(key)].keyDown;
+		return keyStates[static_cast<int>(key)].keyDown;
 	}
 
 	bool InputSystem::isKeyTriggered(const Key& key)
 	{
-		return keyStates[IND(key)].keyDown && !keyStates[IND(key)].prevKeyDown;
+		return keyStates[static_cast<int>(key)].keyDown && !keyStates[static_cast<int>(key)].prevKeyDown;
 	}
 
 	bool InputSystem::isKeyReleased(const Key& key)
 	{
-		return !keyStates[IND(key)].keyDown && keyStates[IND(key)].prevKeyDown;
+		return !keyStates[static_cast<int>(key)].keyDown && keyStates[static_cast<int>(key)].prevKeyDown;
 	}
 
 	bool InputSystem::isMouseDown(const Mouse& button)
 	{
-		return mouseStates[IND(button)].mouseDown;
+		return mouseStates[static_cast<int>(button)].mouseDown;
 	}
 
 	void InputSystem::SetKeyInputLocked(bool locked)
@@ -103,7 +101,7 @@ namespace Dog {
 
 	void InputSystem::keyPressCallback(GLFWwindow* windowPointer, int key, int scanCode, int action, int mod)
 	{
-		// ImGui_ImplGlfw_KeyCallback(windowPointer, key, scanCode, action, mod);
+		ImGui_ImplGlfw_KeyCallback(windowPointer, key, scanCode, action, mod);
 
 		// check if imgui is capturing the keyboard
 		if (keyInputLocked) {
@@ -134,7 +132,7 @@ namespace Dog {
 
 	void InputSystem::mouseButtonCallback(GLFWwindow* windowPointer, int mouseButton, int action, int mod)
 	{
-		// ImGui_ImplGlfw_MouseButtonCallback(windowPointer, mouseButton, action, mod);
+		ImGui_ImplGlfw_MouseButtonCallback(windowPointer, mouseButton, action, mod);
 
 		// check if imgui is capturing the mouse
 		if (mouseButton < 0 || mouseButton > static_cast<int>(Mouse::LAST))
@@ -158,7 +156,7 @@ namespace Dog {
 
 	void InputSystem::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 	{
-		// ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);
+		ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);
 
 		if (mouseInputLocked) {
 #if DO_INPUT_LOGGING
@@ -176,9 +174,8 @@ namespace Dog {
 
 	void InputSystem::charCallback(GLFWwindow* window, unsigned int codepoint)
 	{
-		return;
+		ImGui_ImplGlfw_CharCallback(window, codepoint);
 
-		// ImGui_ImplGlfw_CharCallback(window, codepoint);
 		if (codepoint < 0x20 || codepoint > 0x7E) {
 			// Ignore non-printable characters
 			return;

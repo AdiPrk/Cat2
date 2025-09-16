@@ -2,6 +2,7 @@
 #include "RenderSystem.h"
 
 #include "../Resources/renderingResource.h"
+#include "../Resources/EditorResource.h"
 
 #include "Graphics/Vulkan/Core/Device.h"
 #include "Graphics/Vulkan/Core/SwapChain.h"
@@ -20,13 +21,35 @@ namespace Dog
 {
     void RenderSystem::Init()
     {
-        ecs->AddEntity("Hii");
-
-        Entity ent = ecs->GetEntity("Hii");
-        if (ent)
         {
-            ModelComponent& mc = ent.AddComponent<ModelComponent>();
-            mc.ModelIndex = 0;
+            ecs->AddEntity("Hii");
+
+            Entity ent = ecs->GetEntity("Hii");
+            if (ent)
+            {
+                ModelComponent& mc = ent.AddComponent<ModelComponent>();
+                mc.ModelIndex = 0;
+
+                TransformComponent& tc = ent.GetComponent<TransformComponent>();
+                tc.Translation = glm::vec3(-0.5f, -0.6f, -2.0f);
+                tc.Rotation.x = -1.57f;
+                tc.Scale = glm::vec3(0.08f);
+            }
+        }
+        {
+            ecs->AddEntity("Hii2");
+
+            Entity ent = ecs->GetEntity("Hii2");
+            if (ent)
+            {
+                ModelComponent& mc = ent.AddComponent<ModelComponent>();
+                mc.ModelIndex = 0;
+
+                TransformComponent& tc = ent.GetComponent<TransformComponent>();
+                tc.Translation = glm::vec3(0.5f, -0.6f, -2.0f);
+                tc.Rotation.x = -1.57f;
+                tc.Scale = glm::vec3(0.08f);
+            }
         }
 
         auto renderingResource = ecs->GetResource<RenderingResource>();
@@ -54,12 +77,13 @@ namespace Dog
     void RenderSystem::Update(float)
     {
         auto renderingResource = ecs->GetResource<RenderingResource>();
+        auto editorResource = ecs->GetResource<EditorResource>();
         auto& rg = renderingResource->mRenderGraph;
 
         // Set camera uniform!
         CameraUniforms camData{};
         camData.view = glm::mat4(1.0f);
-        camData.projection = glm::perspective(glm::radians(45.0f), renderingResource->swapChain->GetSwapChainExtent().width / (float)renderingResource->swapChain->GetSwapChainExtent().height, 0.1f, 10.0f);
+        camData.projection = glm::perspective(glm::radians(45.0f), editorResource->sceneWindowWidth / editorResource->sceneWindowHeight, 0.1f, 10.0f);
         camData.projection[1][1] *= -1;
         camData.projectionView = camData.projection * camData.view;
         renderingResource->cameraUniform->SetUniformData(camData, 0, renderingResource->currentFrameIndex);
@@ -67,12 +91,10 @@ namespace Dog
         // Add the scene render pass
         rg->add_pass(
             "ScenePass",
-            // Setup: This pass WRITES to the scene texture.
             [&](RGPassBuilder& builder) {
                 builder.writes("SceneColor");
                 builder.writes("SceneDepth");
             },
-            // Execute:
             std::bind(&RenderSystem::RenderScene, this, std::placeholders::_1)
         );
     }
@@ -104,26 +126,47 @@ namespace Dog
         VkRect2D scissor{ {0, 0}, renderingResource->swapChain->GetSwapChainExtent() };
         vkCmdSetScissor(cmd, 0, 1, &scissor);
 
-
         Model* model = renderingResource->modelLibrary->GetModel(0);
 
+        // loop over entties with model and transform component
         std::vector<InstanceUniforms> instanceData{};
-        for (auto& mesh : model->mMeshes)
+
+        auto& registry = ecs->GetRegistry();
+        auto entityView = registry.view<ModelComponent, TransformComponent>();
+
+        for (auto& entityHandle : entityView)
         {
-            InstanceUniforms& data = instanceData.emplace_back();
-            data.model = glm::mat4(1.0f);
-            data.model = glm::translate(data.model, glm::vec3(0.0f, -0.75f, -2.0f));
-            data.model = glm::scale(data.model, glm::vec3(0.1f));
-            data.model = glm::rotate(data.model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-            data.textureIndex = mesh.diffuseTextureIndex;
+            Entity entity(&registry, entityHandle);
+            ModelComponent& mc = entity.GetComponent<ModelComponent>();
+            TransformComponent& tc = entity.GetComponent<TransformComponent>();
+            model = renderingResource->modelLibrary->GetModel(mc.ModelIndex);
+            
+            for (auto& mesh : model->mMeshes)
+            {
+                InstanceUniforms& data = instanceData.emplace_back();
+                data.model = tc.GetTransform();
+                //data.model = glm::mat4(1.0f);
+                //data.model = glm::translate(data.model, glm::vec3(0.0f, -0.75f, -2.0f));
+                //data.model = glm::scale(data.model, glm::vec3(0.1f));
+                //data.model = glm::rotate(data.model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+                data.textureIndex = mesh.diffuseTextureIndex;
+            }
         }
+        
         renderingResource->instanceUniform->SetUniformData(instanceData, 1, renderingResource->currentFrameIndex);
 
         uint32_t baseInstance = 0;
-        for (auto& mesh : model->mMeshes)
+        for (auto& entityHandle : entityView)
         {
-            mesh.Bind(cmd);
-            mesh.Draw(cmd, baseInstance++);
+            Entity entity(&registry, entityHandle);
+            ModelComponent& mc = entity.GetComponent<ModelComponent>();
+            model = renderingResource->modelLibrary->GetModel(mc.ModelIndex);
+
+            for (auto& mesh : model->mMeshes)
+            {
+                mesh.Bind(cmd);
+                mesh.Draw(cmd, baseInstance++);
+            }
         }
     }
 }

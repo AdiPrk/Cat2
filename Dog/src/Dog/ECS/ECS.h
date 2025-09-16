@@ -60,6 +60,8 @@ namespace Dog
         void AddEntity(const std::string& name);
         Entity GetEntity(const std::string& name);
 
+        entt::registry& GetRegistry() { return mRegistry; }
+
     private:
         std::vector<std::unique_ptr<ISystem>> systems;
         std::unordered_map<std::type_index, std::unique_ptr<IResource>> mResources;
