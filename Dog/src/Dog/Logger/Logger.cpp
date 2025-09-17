@@ -7,7 +7,8 @@ namespace Dog {
 
 	std::shared_ptr<spdlog::logger> Logger::sLogger;
 
-	void Logger::Init() {
+	void Logger::Init()
+	{
 		spdlog::set_pattern("%^[%T] %n: %v%$");
 
 		sLogger = spdlog::stdout_color_mt("DOG");

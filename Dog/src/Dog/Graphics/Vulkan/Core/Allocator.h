@@ -9,7 +9,7 @@ namespace Dog
 		Allocator(Device& device);
 		~Allocator();
 
-		VmaAllocator GetAllocator() { return allocator; }
+		VmaAllocator GetAllocator() { return mAllocator; }
 
 		/*********************************************************************
 		* param:  size: Size of the buffer to create
@@ -44,7 +44,7 @@ namespace Dog
 		void CreateImageWithInfo(const VkImageCreateInfo& imageInfo, VmaMemoryUsage memoryUsage, VkImage& image, VmaAllocation& imageAllocation);
 
 	private:
-		VmaAllocator allocator;
+		VmaAllocator mAllocator;
 	};
 
 }

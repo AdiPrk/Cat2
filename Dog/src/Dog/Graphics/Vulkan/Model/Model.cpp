@@ -42,6 +42,17 @@ namespace Dog
             return nullptr;
         }
 
+        // check how many animations are in this
+        if (scene->HasAnimations())
+        {
+            DOG_INFO("Model has {0} animations", scene->mNumAnimations);
+            for (unsigned int i = 0; i < scene->mNumAnimations; i++)
+            {
+                aiAnimation* animation = scene->mAnimations[i];
+                DOG_INFO("Animation {0} has duration {1} ticks at {2} ticks per second", i, animation->mDuration, animation->mTicksPerSecond);
+            }
+        }
+
         mDirectory = filepath.substr(0, filepath.find_last_of('/'));
         ProcessNode(scene->mRootNode, scene);
 

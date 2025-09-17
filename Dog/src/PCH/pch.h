@@ -72,19 +72,11 @@
 // EnTT
 #include "entt/entt.hpp"
 
-// Yaml
-#define YAML_CPP_STATIC_DEFINE
-#include "yaml-cpp/yaml.h"
-
 // Enet
 #include "enet/enet.h"
 
 // My files
 #include "Logger/Logger.h"
-#include "Assets/Assets.h"
-#include "Events/Event.h"
-//#include "Graphics/Vulkan/Models/assimpGlmHelper.h"
-#include "Assets/UUID/UUID.h"
 
 // Shared files
 #include "../../Common/src/Core.h"

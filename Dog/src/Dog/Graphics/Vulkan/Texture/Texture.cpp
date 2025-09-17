@@ -8,9 +8,10 @@
 
 namespace Dog
 {
-	Texture::Texture(Device& device, const std::string& path)
+	Texture::Texture(Device& device, const std::string& path, VkFormat imageFormat)
 		: mDevice(device)
 		, mPath(path)
+        , mImageFormat(imageFormat)
 	{
 		if (!std::filesystem::exists(path))
 		{
@@ -22,9 +23,10 @@ namespace Dog
 		CreateTextureImageView();
 	}
 
-	Texture::Texture(Device& device, const std::string& name, const unsigned char* textureData, uint32_t textureSize)
+	Texture::Texture(Device& device, const std::string& name, const unsigned char* textureData, uint32_t textureSize, VkFormat imageFormat)
 		: mDevice(device)
 		, mPath(name)
+        , mImageFormat(imageFormat)
 	{
 		LoadPixelsFromMemory(textureData, static_cast<int>(textureSize));
 		CreateTextureImage();
@@ -50,7 +52,7 @@ namespace Dog
 	void Texture::CreateTextureImage()
 	{
 		// Mip levels is the number of times the image can be halved in size
-		mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(mTexWidth, mTexHeight)))) + 1;
+		mMipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(mTexWidth, mTexHeight)))) + 1;
 
 		// Create a staging buffer to load texture data
 		VkBuffer stagingBuffer;
@@ -73,13 +75,13 @@ namespace Dog
 		stbi_image_free(mPixels);
 
 		//Set the usage flags for the image
-		VkImageUsageFlags usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT;
+		VkImageUsageFlags usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 
 		// Create the Vulkan image
-		CreateImage(mTexWidth, mTexHeight, mipLevels, ImageFormat, VK_IMAGE_TILING_OPTIMAL, usage, VMA_MEMORY_USAGE_GPU_ONLY);
+		CreateImage(mTexWidth, mTexHeight, mImageFormat, VK_IMAGE_TILING_OPTIMAL, usage, VMA_MEMORY_USAGE_GPU_ONLY);
 
 		// Transition the image to a transfer destination layout
-		TransitionImageLayout(mDevice, mTextureImage, ImageFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
+		TransitionImageLayout(mDevice, mTextureImage, mImageFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mMipLevels);
 
 		// Copy the staging buffer to the image
 		CopyBufferToImage(stagingBuffer, mTextureImage, static_cast<uint32_t>(mTexWidth), static_cast<uint32_t>(mTexHeight), 1);
@@ -191,7 +193,7 @@ namespace Dog
 		mImageSize = mTexWidth * mTexHeight * 4;
 	}
 
-	void Texture::CreateImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VmaMemoryUsage memoryUsage)
+	void Texture::CreateImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VmaMemoryUsage memoryUsage)
 	{
 		// The parameters for the image creation
 		VkImageCreateInfo imageInfo{};
@@ -200,7 +202,7 @@ namespace Dog
 		imageInfo.extent.width = width;       // Width of the image
 		imageInfo.extent.height = height;     // Height of the image
 		imageInfo.extent.depth = 1;           // Depth of the image (how many texels on the z axis, which is 1 for 2D)
-		imageInfo.mipLevels = mipLevels;      // Number of mip levels
+		imageInfo.mipLevels = mMipLevels;      // Number of mip levels
 		imageInfo.arrayLayers = 1;	          // Number of layers in image array (?)
 		imageInfo.format = format;            // Format of the image data
 		imageInfo.tiling = tiling;            // How texels are laid out in memory
@@ -253,7 +255,7 @@ namespace Dog
 	{
 		// Check if image format supports linear blitting
 		VkFormatProperties formatProperties;
-		vkGetPhysicalDeviceFormatProperties(mDevice.getPhysicalDevice(), ImageFormat, &formatProperties);
+		vkGetPhysicalDeviceFormatProperties(mDevice.getPhysicalDevice(), mImageFormat, &formatProperties);
 
 		if (!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT))
 		{
@@ -275,7 +277,7 @@ namespace Dog
 		int32_t mipWidth = mTexWidth;
 		int32_t mipHeight = mTexHeight;
 
-		for (uint32_t i = 1; i < mipLevels; i++) {
+		for (uint32_t i = 1; i < mMipLevels; i++) {
 			barrier.subresourceRange.baseMipLevel = i - 1;
 			barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 			barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
@@ -323,7 +325,7 @@ namespace Dog
 			if (mipHeight > 1) mipHeight /= 2;
 		}
 
-		barrier.subresourceRange.baseMipLevel = mipLevels - 1;
+		barrier.subresourceRange.baseMipLevel = mMipLevels - 1;
 		barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 		barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
@@ -339,10 +341,10 @@ namespace Dog
 	}
 
 	void Texture::CreateTextureImageView() {
-		mTextureImageView = CreateImageView(mTextureImage, ImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels);
+		mTextureImageView = CreateImageView(mTextureImage, mImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 
-	VkImageView Texture::CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels)
+	VkImageView Texture::CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
 	{
 		VkImageViewCreateInfo viewInfo{};
 		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -351,7 +353,7 @@ namespace Dog
 		viewInfo.format = format;
 		viewInfo.subresourceRange.aspectMask = aspectFlags;
 		viewInfo.subresourceRange.baseMipLevel = 0;
-		viewInfo.subresourceRange.levelCount = mipLevels;
+		viewInfo.subresourceRange.levelCount = mMipLevels;
 		viewInfo.subresourceRange.baseArrayLayer = 0;
 		viewInfo.subresourceRange.layerCount = 1;
 

@@ -3,7 +3,7 @@
 #include "Utils/Utils.h"
 
 int main(int argc, char* argv[])
-{
+{   
     Dog::ValidateStartingDirectory(argc, argv);
 
     Dog::EngineSpec specs;

@@ -33,7 +33,7 @@ namespace Dog
         void CreateSyncObjects();
 
         VkDevice mDevice;
-        size_t swapChainImageCount;
+        size_t mSwapChainImageCount;
 
         std::vector<VkSemaphore> mImageAvailableSemaphores;  // Signaled when images are ready to be used
         std::vector<VkSemaphore> mRenderFinishedSemaphores;  // Signaled when command buffers are finished being submitted

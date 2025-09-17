@@ -11,7 +11,7 @@
 namespace Dog
 {
 	Pipeline::Pipeline(Device& device, VkFormat colorFormat, VkFormat depthFormat, const std::vector<Uniform*>& uniforms, bool wireframe, const std::string& vertFile, const std::string& fragFile)
-		: mPipelineDevice(device)
+		: device(device)
 		, isWireframe(wireframe)
 		, mVertPath(ShaderDir + vertFile)
 		, mFragPath(ShaderDir + fragFile)
@@ -26,7 +26,7 @@ namespace Dog
 	}
 
 	Pipeline::Pipeline(Device& device, VkFormat colorFormat, VkFormat depthFormat, const std::vector<Uniform*>& uniforms, bool wireframe, const std::string& vertFile, const std::string& fragFile, const std::string& tescFile, const std::string& teseFile)
-		: mPipelineDevice(device)
+		: device(device)
 		, isWireframe(wireframe)
 		, mVertPath(ShaderDir + vertFile)
 		, mFragPath(ShaderDir + fragFile)
@@ -45,14 +45,14 @@ namespace Dog
 	Pipeline::~Pipeline()
 	{
 		//Destroy shaders
-		vkDestroyShaderModule(mPipelineDevice.getDevice(), mVertShaderModule, nullptr);
-		vkDestroyShaderModule(mPipelineDevice.getDevice(), mFragShaderModule, nullptr);
+		vkDestroyShaderModule(device.getDevice(), mVertShaderModule, nullptr);
+		vkDestroyShaderModule(device.getDevice(), mFragShaderModule, nullptr);
 
 		//Destroy pipeline
-		vkDestroyPipeline(mPipelineDevice.getDevice(), mGraphicsPipeline, nullptr);
+		vkDestroyPipeline(device.getDevice(), mGraphicsPipeline, nullptr);
 
 		//Destroy created layout
-		vkDestroyPipelineLayout(mPipelineDevice.getDevice(), mPipelineLayout, nullptr);
+		vkDestroyPipelineLayout(device.getDevice(), mPipelineLayout, nullptr);
 	}
 
 	void Pipeline::Bind(VkCommandBuffer commandBuffer)
@@ -87,7 +87,7 @@ namespace Dog
 		pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
 
 		//Create pipeline
-		if (vkCreatePipelineLayout(mPipelineDevice.getDevice(), &pipelineLayoutCreateInfo, nullptr, &mPipelineLayout) != VK_SUCCESS)
+		if (vkCreatePipelineLayout(device.getDevice(), &pipelineLayoutCreateInfo, nullptr, &mPipelineLayout) != VK_SUCCESS)
 		{
 			//If failed throw error
             DOG_CRITICAL("Failed to create pipeline layout");
@@ -110,7 +110,7 @@ namespace Dog
 		pipelineConfig.rasterizationCreateInfo.polygonMode = isWireframe ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
 
 		//Set topology
-		pipelineConfig.inputAssemblyCreateInfo.topology = isWireframe ? VK_PRIMITIVE_TOPOLOGY_LINE_LIST : VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		pipelineConfig.inputAssemblyCreateInfo.topology = isWireframe ? VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST : VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
 		//Set renderpass
 		pipelineConfig.renderPass = VK_NULL_HANDLE; //renderPass;
@@ -297,8 +297,8 @@ namespace Dog
 				fragSPVFile.read(reinterpret_cast<char*>(fragShaderSPV.data()), fragSPVFileSize);
 				fragSPVFile.close();
 
-				Shader::CreateShaderModule(mPipelineDevice, vertShaderSPV, &mVertShaderModule);
-				Shader::CreateShaderModule(mPipelineDevice, fragShaderSPV, &mFragShaderModule);
+				Shader::CreateShaderModule(device, vertShaderSPV, &mVertShaderModule);
+				Shader::CreateShaderModule(device, fragShaderSPV, &mFragShaderModule);
 
                 DOG_WARN("Used .spv for shaders - No Recompilation");
 			}
@@ -326,8 +326,8 @@ namespace Dog
 			fragSPVFile.write(reinterpret_cast<const char*>(fragShaderSPV.data()), fragShaderSPV.size() * sizeof(uint32_t));
 			fragSPVFile.close();
 
-			Shader::CreateShaderModule(mPipelineDevice, vertShaderSPV, &mVertShaderModule);
-			Shader::CreateShaderModule(mPipelineDevice, fragShaderSPV, &mFragShaderModule);
+			Shader::CreateShaderModule(device, vertShaderSPV, &mVertShaderModule);
+			Shader::CreateShaderModule(device, fragShaderSPV, &mFragShaderModule);
 
 			DOG_INFO("Recompiling vert/frag shaders");
 		}
@@ -398,7 +398,9 @@ namespace Dog
 		VkPipelineRenderingCreateInfoKHR pipeline_create{ VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO };
 		pipeline_create.pNext = VK_NULL_HANDLE;
 		pipeline_create.colorAttachmentCount = 1;
-        pipeline_create.pColorAttachmentFormats = &configInfo.colorFormat;
+
+		VkFormat uNormalFormat = device.GetLinearFormat();
+		pipeline_create.pColorAttachmentFormats = &uNormalFormat;// &configInfo.colorFormat;
         pipeline_create.depthAttachmentFormat = configInfo.depthFormat;
         pipeline_create.stencilAttachmentFormat = VK_FORMAT_UNDEFINED;
 
@@ -414,7 +416,7 @@ namespace Dog
         pipelineCreateInfo.pNext = &pipeline_create; // Link the dynamic rendering info to the pipeline create info
 
 		//Create the pipeline          not using pipeline cashe vvvvvvvvvv     no allocation callbacks vvvvv
-		if (vkCreateGraphicsPipelines(mPipelineDevice.getDevice(), VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &mGraphicsPipeline) != VK_SUCCESS)
+		if (vkCreateGraphicsPipelines(device.getDevice(), VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &mGraphicsPipeline) != VK_SUCCESS)
 		{
             DOG_ERROR("Failed to create graphics pipeline");
 		}

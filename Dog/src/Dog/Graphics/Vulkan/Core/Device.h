@@ -80,6 +80,10 @@ namespace Dog {
 
         VkPhysicalDeviceProperties properties;
 
+        void SetFormats(VkFormat srgbFormat, VkFormat linearFormat) { mSrgbFormat = srgbFormat; mLinearFormat = linearFormat; }
+        VkFormat GetSrgbFormat() const { return mSrgbFormat; }
+        VkFormat GetLinearFormat() const { return mLinearFormat; }
+
     private:
         void createInstance();
         void setupDebugMessenger();
@@ -114,6 +118,9 @@ namespace Dog {
         uint32_t presentFamily_ = 0;
 
         std::unique_ptr<Allocator> allocator;
+
+        VkFormat mSrgbFormat;
+        VkFormat mLinearFormat;
 
         const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
         const std::vector<const char*> deviceExtensions = {

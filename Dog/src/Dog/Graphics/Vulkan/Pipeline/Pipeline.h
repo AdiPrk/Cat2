@@ -87,7 +87,7 @@ namespace Dog
 
 		void CreateGraphicsPipeline(const PipelineConfigInfo& configInfo);
 		
-		Device& mPipelineDevice;				     
+		Device& device;				     
 		VkPipeline mGraphicsPipeline;		         
 		VkShaderModule mVertShaderModule;            
 		VkShaderModule mFragShaderModule;            

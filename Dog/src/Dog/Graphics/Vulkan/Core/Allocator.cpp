@@ -11,12 +11,12 @@ namespace Dog {
         allocatorInfo.physicalDevice = device.getPhysicalDevice();
         allocatorInfo.device = device.getDevice();
         allocatorInfo.instance = device.getInstance();
-        vmaCreateAllocator(&allocatorInfo, &allocator);
+        vmaCreateAllocator(&allocatorInfo, &mAllocator);
     }
 
     Allocator::~Allocator()
     {
-        vmaDestroyAllocator(allocator);
+        vmaDestroyAllocator(mAllocator);
     }
 
     void Allocator::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage, VkBuffer& buffer, VmaAllocation& bufferAllocation)
@@ -33,7 +33,7 @@ namespace Dog {
         allocInfo.usage = memoryUsage;
 
         // Create the buffer and allocate memory using VMA
-        if (vmaCreateBuffer(allocator, &bufferInfo, &allocInfo, &buffer, &bufferAllocation, nullptr) != VK_SUCCESS)
+        if (vmaCreateBuffer(mAllocator, &bufferInfo, &allocInfo, &buffer, &bufferAllocation, nullptr) != VK_SUCCESS)
         {
             DOG_CRITICAL("failed to create buffer using VMA!");
         }
@@ -41,7 +41,7 @@ namespace Dog {
 
     void Allocator::DestroyBuffer(VkBuffer buffer, VmaAllocation bufferAllocation)
     {
-        vmaDestroyBuffer(allocator, buffer, bufferAllocation);
+        vmaDestroyBuffer(mAllocator, buffer, bufferAllocation);
     }
 
     void Allocator::CreateImageWithInfo(
@@ -55,7 +55,7 @@ namespace Dog {
         allocInfo.usage = memoryUsage;
 
         // Create the image and allocate memory using VMA
-        if (vmaCreateImage(allocator, &imageInfo, &allocInfo, &image, &imageAllocation, nullptr) != VK_SUCCESS)
+        if (vmaCreateImage(mAllocator, &imageInfo, &allocInfo, &image, &imageAllocation, nullptr) != VK_SUCCESS)
         {
             DOG_CRITICAL("failed to create image with VMA!");
         }

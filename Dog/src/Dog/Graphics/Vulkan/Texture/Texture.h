@@ -8,8 +8,8 @@ namespace Dog
 	{
 	public:
 
-		Texture(Device& device, const std::string& path);
-		Texture(Device& device, const std::string& name, const unsigned char* textureData, uint32_t textureSize);
+		Texture(Device& device, const std::string& path, VkFormat imageFormat = VK_FORMAT_R8G8B8A8_SRGB);
+		Texture(Device& device, const std::string& name, const unsigned char* textureData, uint32_t textureSize, VkFormat imageFormat = VK_FORMAT_R8G8B8A8_SRGB);
 
 		~Texture();
 
@@ -25,7 +25,7 @@ namespace Dog
 
 		void CreateTextureImage();
 
-		void CreateImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VmaMemoryUsage memoryUsage);
+		void CreateImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VmaMemoryUsage memoryUsage);
 
 		void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
 
@@ -33,7 +33,7 @@ namespace Dog
 
 		void CreateTextureImageView();
 
-		VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels);
+		VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 
 		Device& mDevice;
 		std::string mPath;
@@ -42,11 +42,11 @@ namespace Dog
 		VmaAllocation mTextureImageAllocation;
 		VkImageView mTextureImageView;
 
-		uint32_t mipLevels;
+		uint32_t mMipLevels;
 		int mTexWidth, mTexHeight, mTexChannels;
 		VkDeviceSize mImageSize;
 		unsigned char* mPixels;
 
-		static const VkFormat ImageFormat = VK_FORMAT_R8G8B8A8_UNORM;
+		VkFormat mImageFormat;
 	};
 }

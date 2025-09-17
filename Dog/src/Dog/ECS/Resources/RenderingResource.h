@@ -70,5 +70,7 @@ namespace Dog
         void CleanupDepthBuffer();
         void RecreateDepthBuffer();
         // --------------------------------
+
+        VkFormat ToLinearFormat(VkFormat format);
     };
 }

@@ -9,7 +9,7 @@ namespace Dog
 {
     Synchronizer::Synchronizer(VkDevice device, size_t swapChainImageCount)
         : mDevice(device)
-        , swapChainImageCount{ swapChainImageCount }
+        , mSwapChainImageCount{ swapChainImageCount }
     {
         CreateSyncObjects();
     }
@@ -23,7 +23,7 @@ namespace Dog
             vkDestroyFence(mDevice, mCommandBuffInFlightFences[i], nullptr);
         }
 
-        for (size_t i = 0; i < swapChainImageCount; i++)
+        for (size_t i = 0; i < mSwapChainImageCount; i++)
         {
             vkDestroySemaphore(mDevice, mRenderFinishedSemaphores[i], nullptr);
         }
@@ -32,10 +32,10 @@ namespace Dog
     void Synchronizer::CreateSyncObjects()
     {
         mImageAvailableSemaphores.resize(SwapChain::MAX_FRAMES_IN_FLIGHT);
-        mRenderFinishedSemaphores.resize(swapChainImageCount);
+        mRenderFinishedSemaphores.resize(mSwapChainImageCount);
         mComputeFinishedSemaphores.resize(SwapChain::MAX_FRAMES_IN_FLIGHT);
         mCommandBuffInFlightFences.resize(SwapChain::MAX_FRAMES_IN_FLIGHT);
-        mImagesInFlightFences.resize(swapChainImageCount, VK_NULL_HANDLE);
+        mImagesInFlightFences.resize(mSwapChainImageCount, VK_NULL_HANDLE);
 
         //Create info for semaphores, just set type to semaphore
         VkSemaphoreCreateInfo semaphoreInfo = {};
@@ -58,7 +58,7 @@ namespace Dog
             }
         }
 
-        for (uint32_t i = 0; i < swapChainImageCount; i++) {
+        for (uint32_t i = 0; i < mSwapChainImageCount; i++) {
             if (vkCreateSemaphore(mDevice, &semaphoreInfo, nullptr, &mRenderFinishedSemaphores[i]) != VK_SUCCESS)
             {
                 DOG_CRITICAL("Failed to create synchronization objects for a frame");
@@ -80,7 +80,7 @@ namespace Dog
     void Synchronizer::ClearImageFences()
     {
         mImagesInFlightFences.clear();
-        mImagesInFlightFences.resize(swapChainImageCount, VK_NULL_HANDLE);
+        mImagesInFlightFences.resize(mSwapChainImageCount, VK_NULL_HANDLE);
     }
 
     void Synchronizer::NextFrame()

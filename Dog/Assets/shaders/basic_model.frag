@@ -20,5 +20,9 @@ void main()
 	else
 	{
 		outColor = texture(uTextures[textureIndex], fragTexCoord);
+		if (outColor.a < 0.1)
+		{
+			discard;
+		}
 	}
 }

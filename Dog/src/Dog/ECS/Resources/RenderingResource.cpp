@@ -23,11 +23,17 @@ namespace Dog
         , allocator(std::make_unique<Allocator>(*device))
     {
         RecreateSwapChain();
+
+        VkFormat srgbFormat = swapChain->GetImageFormat();
+        VkFormat linearFormat = ToLinearFormat(srgbFormat);
+        device->SetFormats(linearFormat, srgbFormat);
+
         syncObjects = std::make_unique<Synchronizer>(device->getDevice(), swapChain->ImageCount());
 
         textureLibrary = std::make_unique<TextureLibrary>(*device);
         modelLibrary = std::make_unique<ModelLibrary>(*device, *textureLibrary);
-        modelLibrary->AddModel("Assets/models/AlisaMikhailovna.fbx");
+        modelLibrary->AddModel("Assets/models/okayu.pmx");
+        //modelLibrary->AddModel("Assets/models/AlisaMikhailovna.fbx");
 
         modelLibrary->LoadTextures();
 
@@ -89,15 +95,16 @@ namespace Dog
         }
     }
 
+    
+
     void RenderingResource::CreateSceneTexture()
     {
         VkExtent2D extent = swapChain->GetSwapChainExtent();
-        VkFormat format = swapChain->GetImageFormat();
 
         VkImageCreateInfo imageInfo{};
         imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
         imageInfo.imageType = VK_IMAGE_TYPE_2D;
-        imageInfo.format = format;
+        imageInfo.format = device->GetLinearFormat();
         imageInfo.extent.width = extent.width;
         imageInfo.extent.height = extent.height;
         imageInfo.extent.depth = 1;
@@ -107,6 +114,7 @@ namespace Dog
         imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
         imageInfo.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
         imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        imageInfo.flags = VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT;
 
         VmaAllocationCreateInfo allocInfo{};
         allocInfo.usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
@@ -117,18 +125,18 @@ namespace Dog
             DOG_CRITICAL("VMA failed to create scene image");
         }
 
-        VkImageViewCreateInfo viewInfo{};
-        viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        viewInfo.image = sceneImage;
-        viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-        viewInfo.format = format;
-        viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        viewInfo.subresourceRange.baseMipLevel = 0;
-        viewInfo.subresourceRange.levelCount = 1;
-        viewInfo.subresourceRange.baseArrayLayer = 0;
-        viewInfo.subresourceRange.layerCount = 1;
+        VkImageViewCreateInfo sampledViewInfo{};
+        sampledViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        sampledViewInfo.image = sceneImage;
+        sampledViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        sampledViewInfo.format = device->GetLinearFormat();
+        sampledViewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        sampledViewInfo.subresourceRange.baseMipLevel = 0;
+        sampledViewInfo.subresourceRange.levelCount = 1;
+        sampledViewInfo.subresourceRange.baseArrayLayer = 0;
+        sampledViewInfo.subresourceRange.layerCount = 1;
 
-        if (vkCreateImageView(device->getDevice(), &viewInfo, nullptr, &sceneImageView) != VK_SUCCESS)
+        if (vkCreateImageView(device->getDevice(), &sampledViewInfo, nullptr, &sceneImageView) != VK_SUCCESS)
         {
             DOG_CRITICAL("Failed to create scene image view");
         }
@@ -244,5 +252,18 @@ namespace Dog
     {
         CleanupDepthBuffer();
         CreateDepthBuffer();
+    }
+
+    VkFormat RenderingResource::ToLinearFormat(VkFormat format)
+    {
+        if (format == VK_FORMAT_R8G8B8A8_SRGB) {
+            return VK_FORMAT_R8G8B8A8_UNORM;
+        }
+        if (format == VK_FORMAT_B8G8R8A8_SRGB) {
+            return VK_FORMAT_B8G8R8A8_UNORM;
+        }
+
+        DOG_CRITICAL("Unsupported format for sRGB conversion");
+        return format;
     }
 }

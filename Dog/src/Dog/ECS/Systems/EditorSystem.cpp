@@ -6,6 +6,7 @@
 #include "../Resources/RenderingResource.h"
 #include "../Resources/WindowResource.h"
 #include "../Resources/EditorResource.h"
+#include "../Resources/SerializationResource.h"
 
 #include "Graphics/Vulkan/Core/Device.h"
 #include "Graphics/Vulkan/Core/SwapChain.h"
@@ -80,6 +81,20 @@ namespace Dog
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
+		if (ImGui::BeginMainMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Save"))
+				{
+					// Trigger the save action here
+					ecs->GetResource<SerializationResource>()->Serialize("assets/scenes/scene.json");
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
+		}
+
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 		RenderSceneWindow();
 		RenderEntitiesWindow(); 
@@ -97,7 +112,7 @@ namespace Dog
 
 		ImGui::Begin("Viewport");
 		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-		ImGui::Image(sceneTextureDescriptorSet, viewportSize);
+		ImGui::Image(reinterpret_cast<void*>(sceneTextureDescriptorSet), viewportSize);
 		ImGui::End();
 
 		auto editorResource = ecs->GetResource<EditorResource>();

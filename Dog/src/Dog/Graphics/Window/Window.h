@@ -1,7 +1,7 @@
 #pragma once
 
-namespace Dog {
-
+namespace Dog 
+{
 	class Window {
 	public:
 		Window(int w, int h, std::string name);

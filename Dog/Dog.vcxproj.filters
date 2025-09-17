@@ -2,18 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\Dog\Engine.cpp" />
-    <ClCompile Include="src\Dog\Events\Event.cpp" />
-    <ClCompile Include="src\Dog\Input\KeyboardController.cpp" />
     <ClCompile Include="src\Dog\Logger\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PCH\pch.cpp" />
-    <ClCompile Include="src\Dog\Assets\UUID\UUID.cpp" />
-    <ClCompile Include="src\Dog\Assets\FileWatcher\FileWatcher.cpp" />
-    <ClCompile Include="src\Dog\Assets\Assets.cpp" />
-    <ClCompile Include="src\Dog\Networking\Networking.cpp" />
-    <ClCompile Include="src\Dog\Networking\PacketHandler.cpp" />
-    <ClCompile Include="src\Dog\Networking\PlayerManager.cpp" />
-    <ClCompile Include="src\Dog\Events\Actions.cpp" />
     <ClCompile Include="Dependencies\imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="Dependencies\imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Dependencies\imgui\backends\imgui_impl_vulkan.cpp" />
@@ -28,7 +19,6 @@
     <ClCompile Include="Dependencies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Dependencies\imgui\ImGuizmo.cpp" />
     <ClCompile Include="Dependencies\imgui\ImSequencer.cpp" />
-    <ClCompile Include="src\Dog\Events\ActionManager.cpp" />
     <ClCompile Include="src\Dog\ECS\Systems\ISystem.cpp" />
     <ClCompile Include="src\Dog\Utils\Utils.cpp" />
     <ClCompile Include="src\Dog\ECS\ECS.cpp" />
@@ -62,21 +52,15 @@
     <ClCompile Include="src\Dog\ECS\Systems\PresentSystem.cpp" />
     <ClCompile Include="src\Dog\ECS\Systems\InputSystem.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\InputResource.cpp" />
+    <ClCompile Include="src\Dog\ECS\Systems\CameraSystem.cpp" />
+    <ClCompile Include="src\Dog\ECS\Resources\SerializationResource.cpp" />
+    <ClCompile Include="src\Dog\Utils\SerializationOperators.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dog\Engine.h" />
-    <ClInclude Include="src\Dog\Events\Event.h" />
     <ClInclude Include="src\Dog\Input\inputMap.h" />
-    <ClInclude Include="src\Dog\Input\KeyboardController.h" />
     <ClInclude Include="src\Dog\Logger\Logger.h" />
     <ClInclude Include="src\PCH\pch.h" />
-    <ClInclude Include="src\Dog\Assets\UUID\UUID.h" />
-    <ClInclude Include="src\Dog\Assets\FileWatcher\FileWatcher.h" />
-    <ClInclude Include="src\Dog\Assets\Assets.h" />
-    <ClInclude Include="src\Dog\Networking\Networking.h" />
-    <ClInclude Include="src\Dog\Networking\PacketHandler.h" />
-    <ClInclude Include="src\Dog\Networking\PlayerManager.h" />
-    <ClInclude Include="src\Dog\Events\Actions.h" />
     <ClInclude Include="Dependencies\imgui\backends\imgui_impl_glfw.h" />
     <ClInclude Include="Dependencies\imgui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="Dependencies\imgui\backends\imgui_impl_opengl3_loader.h" />
@@ -94,7 +78,6 @@
     <ClInclude Include="Dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
     <ClInclude Include="Dependencies\imgui\ImZoomSlider.h" />
-    <ClInclude Include="src\Dog\Events\ActionManager.h" />
     <ClInclude Include="src\Dog\ECS\Systems\ISystem.h" />
     <ClInclude Include="src\Dog\Utils\Utils.h" />
     <ClInclude Include="src\Dog\ECS\ECS.h" />
@@ -129,8 +112,13 @@
     <ClInclude Include="src\Dog\ECS\Systems\PresentSystem.h" />
     <ClInclude Include="src\Dog\ECS\Systems\InputSystem.h" />
     <ClInclude Include="src\Dog\ECS\Resources\InputResource.h" />
+    <ClInclude Include="src\Dog\ECS\Systems\CameraSystem.h" />
+    <ClInclude Include="Dependencies\nlohmann\json.hpp" />
+    <ClInclude Include="src\Dog\ECS\Resources\SerializationResource.h" />
+    <ClInclude Include="src\Dog\Utils\SerializationOperators.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.inl" />
+    <None Include="..\..\..\Users\adity\Downloads\キライ・キライ・ジガヒダイ！\キライ・キライ・ジガヒダイ！\testanim.vmd" />
   </ItemGroup>
 </Project>

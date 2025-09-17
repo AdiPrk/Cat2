@@ -1,6 +1,7 @@
 #include <PCH/pch.h>
-#include "components.h"
+#include "Components.h"
 #include "Engine.h"
+
 #include "Graphics/Window/Window.h"
 #include "Graphics/Vulkan/Texture/Texture.h"
 #include "Graphics/Vulkan/Model/ModelLibrary.h"
@@ -63,11 +64,6 @@ namespace Dog {
 				invScale.z * (c1 * c2),
 			},
 		};
-	}
-
-	ModelComponent::ModelComponent()
-		: ModelIndex(ModelLibrary::INVALID_MODEL_INDEX)
-	{
 	}
 
 } // namespace Dog

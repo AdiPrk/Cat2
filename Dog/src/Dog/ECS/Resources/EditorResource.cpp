@@ -85,7 +85,7 @@ namespace Dog
 		init_info.CheckVkResultFn = nullptr;
 		ImGui_ImplVulkan_Init(&init_info);
 
-		ImGui::StyleColorsDark();
+		//ImGui::StyleColorsDark();
     }
 }
 

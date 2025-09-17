@@ -191,6 +191,11 @@ namespace Dog {
         storage16BitFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES;
         storage16BitFeatures.storageBuffer16BitAccess = VK_TRUE;  // Allow uint16_t in SSBOs
 
+        VkPhysicalDeviceVulkan13Features vulkan13Features = {};
+        vulkan13Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
+        vulkan13Features.shaderDemoteToHelperInvocation = VK_TRUE;
+        vulkan13Features.dynamicRendering = VK_TRUE;
+
         VkPhysicalDeviceVulkan12Features vulkan12Features = {};
         vulkan12Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
         vulkan12Features.drawIndirectCount = VK_TRUE;
@@ -218,8 +223,9 @@ namespace Dog {
         accelFeature.pNext = &vulkan12Features;
         rtPipelineFeature.pNext = &accelFeature;
         createInfo.pNext = &rtPipelineFeature;*/
-        storage16BitFeatures.pNext = &dynamicRenderingFeatures;
-        vulkan12Features.pNext = &storage16BitFeatures;
+        //storage16BitFeatures.pNext = &dynamicRenderingFeatures;
+        vulkan13Features.pNext = &storage16BitFeatures;
+        vulkan12Features.pNext = &vulkan13Features;
         createInfo.pNext = &vulkan12Features;
 
         createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());

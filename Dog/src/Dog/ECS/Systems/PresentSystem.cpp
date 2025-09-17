@@ -66,7 +66,7 @@ namespace Dog
         // Start a new render graph!
         rg->clear();
 
-        // Import Textures into the graph
+        // --- NEW: Import the SRGB view for sampling FROM ---
         rg->import_texture(
             "SceneColor",
             rr->sceneImage,
