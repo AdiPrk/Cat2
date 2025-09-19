@@ -86,7 +86,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;yaml-cppd.lib;glslangd.lib;SPIRVd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-optd.lib;GenericCodeGend.lib;MachineIndependentd.lib;glslang-default-resource-limitsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;glslangd.lib;SPIRVd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-optd.lib;GenericCodeGend.lib;MachineIndependentd.lib;glslang-default-resource-limitsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <AdditionalOptions>/ignore:4099
@@ -133,7 +133,7 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlibd1.dll" "$(OutDir)" /Y
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
@@ -176,7 +176,7 @@ xcopy "$(ProjectDir)Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\glslang\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibstatic.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;glslang.lib;SPIRV.lib;SPIRV-Tools.lib;GenericCodeGen.lib;SPIRV-Tools-opt.lib;MachineIndependent.lib;glslang-default-resource-limits.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4099
  %(AdditionalOptions)</AdditionalOptions>
     </Link>
@@ -367,7 +367,6 @@ xcopy "$(ProjectDir)Dependencies\assimp\pugixml.dll" "$(OutDir)" /Y
     <ClInclude Include="src\PCH\pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\Users\adity\OneDrive\Desktop\Code\models\jack_samba.glb" />
     <None Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

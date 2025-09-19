@@ -111,6 +111,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.inl" />
-    <None Include="..\..\..\Users\adity\OneDrive\Desktop\Code\models\jack_samba.glb" />
   </ItemGroup>
 </Project>
