@@ -31,7 +31,7 @@ namespace Dog
         VkFormat linearFormat = ToLinearFormat(srgbFormat);
         device->SetFormats(linearFormat, srgbFormat);
 
-        syncObjects = std::make_unique<Synchronizer>(device->getDevice(), swapChain->ImageCount());
+        syncObjects = std::make_unique<Synchronizer>(device->GetDevice(), swapChain->ImageCount());
 
         textureLibrary = std::make_unique<TextureLibrary>(*device);
 
@@ -57,8 +57,8 @@ namespace Dog
     RenderingResource::~RenderingResource()
     {
         vkFreeCommandBuffers(
-            device->getDevice(),
-            device->getCommandPool(),
+            device->GetDevice(),
+            device->GetCommandPool(),
             static_cast<uint32_t>(commandBuffers.size()),
             commandBuffers.data()
         );
@@ -95,11 +95,11 @@ namespace Dog
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;							//Set what info this is holding to command buffer allocate info
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;														//Set level to primary (Primary buffers can be submitted for execution but cant be called by other buffers)
-        allocInfo.commandPool = device->getCommandPool();															//Simular to a string pool, this is pre-allocated memorey for commands so we dont have to allocate memory a lot
+        allocInfo.commandPool = device->GetCommandPool();															//Simular to a string pool, this is pre-allocated memorey for commands so we dont have to allocate memory a lot
         allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size()); //Tell the allocation info how many command buffers we are using
 
         //Allocate the command buffers
-        if (vkAllocateCommandBuffers(device->getDevice(), &allocInfo, commandBuffers.data()) != VK_SUCCESS)
+        if (vkAllocateCommandBuffers(device->GetDevice(), &allocInfo, commandBuffers.data()) != VK_SUCCESS)
         {
             DOG_CRITICAL("Failed to allocate command buffers");
         }
@@ -146,7 +146,7 @@ namespace Dog
         sampledViewInfo.subresourceRange.baseArrayLayer = 0;
         sampledViewInfo.subresourceRange.layerCount = 1;
 
-        if (vkCreateImageView(device->getDevice(), &sampledViewInfo, nullptr, &sceneImageView) != VK_SUCCESS)
+        if (vkCreateImageView(device->GetDevice(), &sampledViewInfo, nullptr, &sceneImageView) != VK_SUCCESS)
         {
             DOG_CRITICAL("Failed to create scene image view");
         }
@@ -168,7 +168,7 @@ namespace Dog
         samplerInfo.minLod = 0.0f;
         samplerInfo.maxLod = 1.0f;
 
-        if (vkCreateSampler(device->getDevice(), &samplerInfo, nullptr, &sceneSampler) != VK_SUCCESS)
+        if (vkCreateSampler(device->GetDevice(), &samplerInfo, nullptr, &sceneSampler) != VK_SUCCESS)
         {
             DOG_CRITICAL("Failed to create scene sampler");
         }
@@ -182,13 +182,13 @@ namespace Dog
 
         if (sceneSampler != VK_NULL_HANDLE)
         {
-            vkDestroySampler(device->getDevice(), sceneSampler, nullptr);
+            vkDestroySampler(device->GetDevice(), sceneSampler, nullptr);
             sceneSampler = VK_NULL_HANDLE;
         }
 
         if (sceneImageView != VK_NULL_HANDLE)
         {
-            vkDestroyImageView(device->getDevice(), sceneImageView, nullptr);
+            vkDestroyImageView(device->GetDevice(), sceneImageView, nullptr);
             sceneImageView = VK_NULL_HANDLE;
         }
 
@@ -240,14 +240,14 @@ namespace Dog
         viewInfo.subresourceRange.baseArrayLayer = 0;
         viewInfo.subresourceRange.layerCount = 1;
 
-        vkCreateImageView(device->getDevice(), &viewInfo, nullptr, &mDepthImageView);
+        vkCreateImageView(device->GetDevice(), &viewInfo, nullptr, &mDepthImageView);
     }
 
     void RenderingResource::CleanupDepthBuffer()
     {
         if (mDepthImageView != VK_NULL_HANDLE)
         {
-            vkDestroyImageView(device->getDevice(), mDepthImageView, nullptr);
+            vkDestroyImageView(device->GetDevice(), mDepthImageView, nullptr);
             mDepthImageView = VK_NULL_HANDLE;
         }
         if (mDepthImage != VK_NULL_HANDLE)

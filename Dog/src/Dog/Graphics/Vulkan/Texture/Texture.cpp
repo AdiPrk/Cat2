@@ -37,7 +37,7 @@ namespace Dog
 	{
 		if (mTextureImageView)
 		{
-			vkDestroyImageView(mDevice.getDevice(), mTextureImageView, nullptr);
+			vkDestroyImageView(mDevice.GetDevice(), mTextureImageView, nullptr);
 			mTextureImageView = VK_NULL_HANDLE;
 		}
 
@@ -95,7 +95,7 @@ namespace Dog
 
 	void Texture::TransitionImageLayout(Device& mDevice, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels)
 	{
-		VkCommandBuffer commandBuffer = mDevice.beginSingleTimeCommands(); // Helper to start recording commands
+		VkCommandBuffer commandBuffer = mDevice.BeginSingleTimeCommands(); // Helper to start recording commands
 
 		VkImageMemoryBarrier barrier{};
 		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -160,7 +160,7 @@ namespace Dog
 			1, &barrier
 		);
 
-		mDevice.endSingleTimeCommands(commandBuffer); // Helper to finish recording and submit the commands
+		mDevice.EndSingleTimeCommands(commandBuffer); // Helper to finish recording and submit the commands
 	}
 
 	void Texture::LoadPixelsFromFile(const std::string& filepath)
@@ -225,7 +225,7 @@ namespace Dog
 
 	void Texture::CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount)
 	{
-		VkCommandBuffer commandBuffer = mDevice.beginSingleTimeCommands();
+		VkCommandBuffer commandBuffer = mDevice.BeginSingleTimeCommands();
 
 		VkBufferImageCopy region{};
 		region.bufferOffset = 0;
@@ -248,21 +248,21 @@ namespace Dog
 			1,
 			&region);
 
-		mDevice.endSingleTimeCommands(commandBuffer);
+		mDevice.EndSingleTimeCommands(commandBuffer);
 	}
 
 	void Texture::GenerateMipmaps()
 	{
 		// Check if image format supports linear blitting
 		VkFormatProperties formatProperties;
-		vkGetPhysicalDeviceFormatProperties(mDevice.getPhysicalDevice(), mImageFormat, &formatProperties);
+		vkGetPhysicalDeviceFormatProperties(mDevice.GetPhysicalDevice(), mImageFormat, &formatProperties);
 
 		if (!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT))
 		{
             DOG_CRITICAL("texture image format does not support linear blitting!");
 		}
 
-		VkCommandBuffer commandBuffer = mDevice.beginSingleTimeCommands();
+		VkCommandBuffer commandBuffer = mDevice.BeginSingleTimeCommands();
 
 		VkImageMemoryBarrier barrier{};
 		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -337,7 +337,7 @@ namespace Dog
 			0, nullptr,
 			1, &barrier);
 
-		mDevice.endSingleTimeCommands(commandBuffer);
+		mDevice.EndSingleTimeCommands(commandBuffer);
 	}
 
 	void Texture::CreateTextureImageView() {
@@ -358,7 +358,7 @@ namespace Dog
 		viewInfo.subresourceRange.layerCount = 1;
 
 		VkImageView imageView;
-		if (vkCreateImageView(mDevice.getDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS)
+		if (vkCreateImageView(mDevice.GetDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS)
 		{
             DOG_CRITICAL("Failed to create texture image view!");
 		}

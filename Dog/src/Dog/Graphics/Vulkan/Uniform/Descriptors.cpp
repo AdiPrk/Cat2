@@ -70,7 +70,7 @@ namespace Dog
         descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();                           //Array of VkDescriptorSetLayoutBindings to make the set out of
 
         //Attempt to create the descriptor set layout
-        if (vkCreateDescriptorSetLayout(mDevice.getDevice(), &descriptorSetLayoutInfo, nullptr, &mDescriptorSetLayout) != VK_SUCCESS)
+        if (vkCreateDescriptorSetLayout(mDevice.GetDevice(), &descriptorSetLayoutInfo, nullptr, &mDescriptorSetLayout) != VK_SUCCESS)
         {
             //If failed throw error
             DOG_CRITICAL("Failed to create descriptor set layout");
@@ -80,7 +80,7 @@ namespace Dog
     DescriptorSetLayout::~DescriptorSetLayout()
     {
         //Destroy the set layout
-        vkDestroyDescriptorSetLayout(mDevice.getDevice(), mDescriptorSetLayout, nullptr);
+        vkDestroyDescriptorSetLayout(mDevice.GetDevice(), mDescriptorSetLayout, nullptr);
     }
 
     //-----Descriptor Pool Builder--------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -125,7 +125,7 @@ namespace Dog
         descriptorPoolInfo.flags = poolFlags;                                       //Set flags to customize the pool
 
         //Attempt to create the descriptor pool
-        if (vkCreateDescriptorPool(mDevice.getDevice(), &descriptorPoolInfo, nullptr, &mDescriptorPool) != VK_SUCCESS)
+        if (vkCreateDescriptorPool(mDevice.GetDevice(), &descriptorPoolInfo, nullptr, &mDescriptorPool) != VK_SUCCESS)
         {
             //If failed throw error
             DOG_CRITICAL("Failed to create descriptor pool");
@@ -135,7 +135,7 @@ namespace Dog
     DescriptorPool::~DescriptorPool()
     {
         //Destroy the descriptor pool
-        vkDestroyDescriptorPool(mDevice.getDevice(), mDescriptorPool, nullptr);
+        vkDestroyDescriptorPool(mDevice.GetDevice(), mDescriptorPool, nullptr);
     }
 
     bool DescriptorPool::AllocateDescriptor(const VkDescriptorSetLayout descriptorSetLayout, VkDescriptorSet& descriptor) const
@@ -148,7 +148,7 @@ namespace Dog
         allocInfo.descriptorSetCount = 1;                                 //Number of descriptors to allocate of this layout
 
         //Attempt to allocate the descriptor set
-        if (vkAllocateDescriptorSets(mDevice.getDevice(), &allocInfo, &descriptor) != VK_SUCCESS)
+        if (vkAllocateDescriptorSets(mDevice.GetDevice(), &allocInfo, &descriptor) != VK_SUCCESS)
         {
             //Most likely error if got here is that the pool is empty (no more memory)
             //Might want to create a "DescriptorPoolManager" class that handles this case, and builds
@@ -162,13 +162,13 @@ namespace Dog
     void DescriptorPool::FreeDescriptors(std::vector<VkDescriptorSet>& descriptors) const
     {
         //Free passed descriptors (returned to pool)
-        vkFreeDescriptorSets(mDevice.getDevice(), mDescriptorPool, static_cast<uint32_t>(descriptors.size()), descriptors.data());
+        vkFreeDescriptorSets(mDevice.GetDevice(), mDescriptorPool, static_cast<uint32_t>(descriptors.size()), descriptors.data());
     }
 
     void DescriptorPool::ResetPool()
     {
         //Free all descriptors allocated from this pool (all returned to pool)
-        vkResetDescriptorPool(mDevice.getDevice(), mDescriptorPool, 0);
+        vkResetDescriptorPool(mDevice.GetDevice(), mDescriptorPool, 0);
     }
 
     //-----Descriptor Writer------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -268,7 +268,7 @@ namespace Dog
         }
 
         //Update this descriptor set on the gpu
-        vkUpdateDescriptorSets(mPool.mDevice.getDevice(),
+        vkUpdateDescriptorSets(mPool.mDevice.GetDevice(),
             static_cast<uint32_t>(mWritesToPreform.size()),
             mWritesToPreform.data(),
             0,

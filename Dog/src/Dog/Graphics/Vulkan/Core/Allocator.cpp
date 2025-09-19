@@ -8,9 +8,9 @@ namespace Dog {
     Allocator::Allocator(Device& device)
     {
         VmaAllocatorCreateInfo allocatorInfo = {};
-        allocatorInfo.physicalDevice = device.getPhysicalDevice();
-        allocatorInfo.device = device.getDevice();
-        allocatorInfo.instance = device.getInstance();
+        allocatorInfo.physicalDevice = device.GetPhysicalDevice();
+        allocatorInfo.device = device.GetDevice();
+        allocatorInfo.instance = device.GetInstance();
         vmaCreateAllocator(&allocatorInfo, &mAllocator);
     }
 

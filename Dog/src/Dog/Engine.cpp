@@ -68,7 +68,7 @@ namespace Dog
             mEcs.FrameEnd();
         }
 
-        vkDeviceWaitIdle(mEcs.GetResource<RenderingResource>()->device->getDevice());
+        vkDeviceWaitIdle(mEcs.GetResource<RenderingResource>()->device->GetDevice());
         mEcs.Exit();
 
         return EXIT_SUCCESS;

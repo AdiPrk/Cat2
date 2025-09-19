@@ -39,37 +39,30 @@ namespace Dog {
 
         operator VkDevice() const { return device_; }
 
-        VkCommandPool getCommandPool() const { return commandPool; }
-        VkDevice getDevice() const { return device_; }
-        VkSurfaceKHR getSurface() const { return surface_; }
-        VkQueue getGraphicsQueue() const { return graphicsQueue_; }
-        VkQueue getPresentQueue() const { return presentQueue_; }
-        const VkPhysicalDevice& getPhysicalDevice() const { return physicalDevice; }
-        const VkInstance& getInstance() const { return instance; }
+        VkCommandPool GetCommandPool() const { return commandPool; }
+        VkDevice GetDevice() const { return device_; }
+        VkSurfaceKHR GetSurface() const { return surface_; }
+        VkQueue GetGraphicsQueue() const { return graphicsQueue_; }
+        VkQueue GetPresentQueue() const { return presentQueue_; }
+        const VkPhysicalDevice& GetPhysicalDevice() const { return physicalDevice; }
+        const VkInstance& GetInstance() const { return instance; }
 
-
-        SwapChainSupportDetails getSwapChainSupport() { return querySwapChainSupport(physicalDevice); }
-        uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
-        QueueFamilyIndices findPhysicalQueueFamilies() { return findQueueFamilies(physicalDevice); }
-        VkFormat findSupportedFormat(
-            const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+        SwapChainSupportDetails GetSwapChainSupport() { return querySwapChainSupport(physicalDevice); }
+        uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+        QueueFamilyIndices FindPhysicalQueueFamilies() { return findQueueFamilies(physicalDevice); }
+        VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
         uint32_t GetGraphicsFamily() const { return graphicsFamily_; }
         uint32_t GetPresentFamily() const { return presentFamily_; }
 
         // Buffer Helper Functions
-        void createBuffer(
-            VkDeviceSize size,
-            VkBufferUsageFlags usage,
-            VmaMemoryUsage memoryUsage,
-            VkBuffer& buffer,
-            VmaAllocation& bufferAllocation);
+        void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VmaMemoryUsage memoryUsage, VkBuffer& buffer, VmaAllocation& bufferAllocation);
 
-        VkCommandBuffer beginSingleTimeCommands();
-        void endSingleTimeCommands(VkCommandBuffer commandBuffer);
-        void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+        VkCommandBuffer BeginSingleTimeCommands();
+        void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
+        void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
-        void createImageWithInfo(
+        void CreateImageWithInfo(
             const VkImageCreateInfo& imageInfo,
             VmaMemoryUsage memoryUsage,
             VkImage& image,

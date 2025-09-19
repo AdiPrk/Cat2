@@ -61,11 +61,11 @@ namespace Dog
 
 		ImGui_ImplGlfw_InitForVulkan(window.getGLFWwindow(), true);
 		ImGui_ImplVulkan_InitInfo init_info = {};
-		init_info.Instance = device.getInstance();
-		init_info.PhysicalDevice = device.getPhysicalDevice();
+		init_info.Instance = device.GetInstance();
+		init_info.PhysicalDevice = device.GetPhysicalDevice();
 		init_info.Device = device;
 		init_info.QueueFamily = device.GetGraphicsFamily();
-		init_info.Queue = device.getGraphicsQueue();
+		init_info.Queue = device.GetGraphicsQueue();
 		init_info.PipelineCache = VK_NULL_HANDLE;
 		init_info.DescriptorPool = descriptorPool;// device.getImGuiDescriptorPool();
 		init_info.UseDynamicRendering = VK_TRUE;

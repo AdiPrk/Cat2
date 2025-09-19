@@ -45,14 +45,14 @@ namespace Dog
 	Pipeline::~Pipeline()
 	{
 		//Destroy shaders
-		vkDestroyShaderModule(device.getDevice(), mVertShaderModule, nullptr);
-		vkDestroyShaderModule(device.getDevice(), mFragShaderModule, nullptr);
+		vkDestroyShaderModule(device.GetDevice(), mVertShaderModule, nullptr);
+		vkDestroyShaderModule(device.GetDevice(), mFragShaderModule, nullptr);
 
 		//Destroy pipeline
-		vkDestroyPipeline(device.getDevice(), mGraphicsPipeline, nullptr);
+		vkDestroyPipeline(device.GetDevice(), mGraphicsPipeline, nullptr);
 
 		//Destroy created layout
-		vkDestroyPipelineLayout(device.getDevice(), mPipelineLayout, nullptr);
+		vkDestroyPipelineLayout(device.GetDevice(), mPipelineLayout, nullptr);
 	}
 
 	void Pipeline::Bind(VkCommandBuffer commandBuffer)
@@ -87,7 +87,7 @@ namespace Dog
 		pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
 
 		//Create pipeline
-		if (vkCreatePipelineLayout(device.getDevice(), &pipelineLayoutCreateInfo, nullptr, &mPipelineLayout) != VK_SUCCESS)
+		if (vkCreatePipelineLayout(device.GetDevice(), &pipelineLayoutCreateInfo, nullptr, &mPipelineLayout) != VK_SUCCESS)
 		{
 			//If failed throw error
             DOG_CRITICAL("Failed to create pipeline layout");
@@ -383,7 +383,7 @@ namespace Dog
         pipelineCreateInfo.pNext = &pipeline_create; // Link the dynamic rendering info to the pipeline create info
 
 		//Create the pipeline          not using pipeline cashe vvvvvvvvvv     no allocation callbacks vvvvv
-		if (vkCreateGraphicsPipelines(device.getDevice(), VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &mGraphicsPipeline) != VK_SUCCESS)
+		if (vkCreateGraphicsPipelines(device.GetDevice(), VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &mGraphicsPipeline) != VK_SUCCESS)
 		{
             DOG_ERROR("Failed to create graphics pipeline");
 		}

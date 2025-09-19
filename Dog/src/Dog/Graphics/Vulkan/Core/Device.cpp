@@ -254,7 +254,7 @@ namespace Dog {
     }
 
     void Device::createCommandPool() {
-        QueueFamilyIndices queueFamilyIndices = findPhysicalQueueFamilies();
+        QueueFamilyIndices queueFamilyIndices = FindPhysicalQueueFamilies();
 
         VkCommandPoolCreateInfo poolInfo = {};
         poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -470,7 +470,7 @@ namespace Dog {
         return details;
     }
 
-    VkFormat Device::findSupportedFormat(
+    VkFormat Device::FindSupportedFormat(
         const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
         for (VkFormat format : candidates) {
             VkFormatProperties props;
@@ -487,7 +487,7 @@ namespace Dog {
         throw std::runtime_error("failed to find supported format!");
     }
 
-    uint32_t Device::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
+    uint32_t Device::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
         VkPhysicalDeviceMemoryProperties memProperties;
         vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
         for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
@@ -500,7 +500,7 @@ namespace Dog {
         throw std::runtime_error("failed to find suitable memory type!");
     }
 
-    void Device::createBuffer(
+    void Device::CreateBuffer(
         VkDeviceSize size,
         VkBufferUsageFlags usage,
         VmaMemoryUsage memoryUsage,
@@ -523,7 +523,7 @@ namespace Dog {
         }
     }
 
-    VkCommandBuffer Device::beginSingleTimeCommands() {
+    VkCommandBuffer Device::BeginSingleTimeCommands() {
         // Allocate the command buffer
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -550,7 +550,7 @@ namespace Dog {
         return commandBuffer;
     }
 
-    void Device::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
+    void Device::EndSingleTimeCommands(VkCommandBuffer commandBuffer) {
         vkEndCommandBuffer(commandBuffer);
 
         VkSubmitInfo submitInfo{};
@@ -564,8 +564,8 @@ namespace Dog {
         vkFreeCommandBuffers(device_, commandPool, 1, &commandBuffer);
     }
 
-    void Device::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
-        VkCommandBuffer commandBuffer = beginSingleTimeCommands();
+    void Device::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
+        VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 
         VkBufferCopy copyRegion{};
         copyRegion.srcOffset = 0;  // Optional
@@ -573,10 +573,10 @@ namespace Dog {
         copyRegion.size = size;
         vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
-        endSingleTimeCommands(commandBuffer);
+        EndSingleTimeCommands(commandBuffer);
     }
 
-    void Device::createImageWithInfo(
+    void Device::CreateImageWithInfo(
         const VkImageCreateInfo& imageInfo,
         VmaMemoryUsage memoryUsage,
         VkImage& image,

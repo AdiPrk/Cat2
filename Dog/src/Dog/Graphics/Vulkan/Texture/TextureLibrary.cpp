@@ -16,7 +16,7 @@ namespace Dog
 
     TextureLibrary::~TextureLibrary()
     {
-        vkDestroySampler(device.getDevice(), mTextureSampler, nullptr);
+        vkDestroySampler(device.GetDevice(), mTextureSampler, nullptr);
         mTextures.clear();
     }
 
@@ -86,7 +86,7 @@ namespace Dog
     void TextureLibrary::CreateTextureSampler()
     {
         VkPhysicalDeviceProperties properties{};
-        vkGetPhysicalDeviceProperties(device.getPhysicalDevice(), &properties);
+        vkGetPhysicalDeviceProperties(device.GetPhysicalDevice(), &properties);
 
         VkSamplerCreateInfo samplerInfo{};
         samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -103,7 +103,7 @@ namespace Dog
         samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
         samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
-        if (vkCreateSampler(device.getDevice(), &samplerInfo, nullptr, &mTextureSampler) != VK_SUCCESS)
+        if (vkCreateSampler(device.GetDevice(), &samplerInfo, nullptr, &mTextureSampler) != VK_SUCCESS)
         {
             DOG_CRITICAL("Failed to create texture sampler");
         }

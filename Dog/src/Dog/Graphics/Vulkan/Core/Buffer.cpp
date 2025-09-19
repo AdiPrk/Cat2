@@ -30,7 +30,7 @@ namespace Dog
     void Buffer::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
     {
         //Start a single time command
-        VkCommandBuffer commandBuffer = mDevice.beginSingleTimeCommands();
+        VkCommandBuffer commandBuffer = mDevice.BeginSingleTimeCommands();
 
         //Create a buffer copy structs which hold infomation on which regions to copy in a buffer copy opertation
         VkBufferCopy copyRegion{};
@@ -42,7 +42,7 @@ namespace Dog
         vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
         //Stop recording to this buffer and subtmit it
-        mDevice.endSingleTimeCommands(commandBuffer);
+        mDevice.EndSingleTimeCommands(commandBuffer);
     }
 
     VkResult Buffer::Map(VkDeviceSize size, VkDeviceSize offset)

@@ -11,7 +11,7 @@ namespace Dog
         : mDevice{ deviceRef }
         , mWindowExtent{ extent }
     {
-        Init(mDevice.getInstance());
+        Init(mDevice.GetInstance());
     }
 
     SwapChain::SwapChain(Device& deviceRef, VkExtent2D extent, std::shared_ptr<SwapChain> previous)
@@ -19,7 +19,7 @@ namespace Dog
         , mWindowExtent{ extent }
         , mOldSwapChain{ previous }
     {
-        Init(mDevice.getInstance());
+        Init(mDevice.GetInstance());
 
         //Clean up oldswap chain data since its not used after init
         mOldSwapChain = nullptr;
@@ -30,40 +30,40 @@ namespace Dog
         //Delete all image views
         for (VkImageView imageView : mSwapChainImageViews)
         {
-            vkDestroyImageView(mDevice.getDevice(), imageView, nullptr);
+            vkDestroyImageView(mDevice.GetDevice(), imageView, nullptr);
         }
         mSwapChainImageViews.clear();
 
         //Delete the swapchain 
         if (mSwapChain != nullptr)
         {
-            vkDestroySwapchainKHR(mDevice.getDevice(), mSwapChain, nullptr);
+            vkDestroySwapchainKHR(mDevice.GetDevice(), mSwapChain, nullptr);
             mSwapChain = nullptr;
         }
 
         //Cleanup depth data
         for (size_t i = 0; i < mDepthImages.size(); i++) {
-            vkDestroyImageView(mDevice.getDevice(), mDepthImageViews[i], nullptr);
+            vkDestroyImageView(mDevice.GetDevice(), mDepthImageViews[i], nullptr);
             vmaDestroyImage(mDevice.GetVmaAllocator(), mDepthImages[i], mDepthImageMemorys[i]);
         }
 
         //Delete all framebuffers
         for (VkFramebuffer framebuffer : mSwapChainFramebuffers)
         {
-            vkDestroyFramebuffer(mDevice.getDevice(), framebuffer, nullptr);
+            vkDestroyFramebuffer(mDevice.GetDevice(), framebuffer, nullptr);
         }
 
         //Delete render pass
-        vkDestroyRenderPass(mDevice.getDevice(), mRenderPass, nullptr);
+        vkDestroyRenderPass(mDevice.GetDevice(), mRenderPass, nullptr);
     }
 
     VkResult SwapChain::AcquireNextImage(uint32_t* imageIndex, Synchronizer& syncObjects)
     {
         //Wait for fence of current frame to have completed (Waits in tell command buffer has completed)
-        //vkWaitForFences(mDevice.getDevice(), 1, &mCommandBuffInFlightFences[mCurrentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
+        //vkWaitForFences(mDevice.GetDevice(), 1, &mCommandBuffInFlightFences[mCurrentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
 
         //Get next image to draw too in the swap chain
-        VkResult result = vkAcquireNextImageKHR(mDevice.getDevice(), //Device swap chain is on
+        VkResult result = vkAcquireNextImageKHR(mDevice.GetDevice(), //Device swap chain is on
             mSwapChain,                                                //Swapchain being used
             std::numeric_limits<uint64_t>::max(),                      //Use max so no timeout
             syncObjects.GetImageAvailableSemaphore(),              //Give semaphore to be triggered when image is ready for rendering (must be a not signaled semaphore)
@@ -96,7 +96,7 @@ namespace Dog
         presentInfo.pImageIndices = imageIndex;                 //Index of the image to present to
 
         //Run command buffer present and save the result
-        VkResult result = vkQueuePresentKHR(mDevice.getPresentQueue(), &presentInfo);
+        VkResult result = vkQueuePresentKHR(mDevice.GetPresentQueue(), &presentInfo);
 
         //Return saved result
         return result;
@@ -114,7 +114,7 @@ namespace Dog
     void SwapChain::CreateSwapChain(VkInstance instance)
     {
         //Get the swap chain support details of the current device
-        SwapChainSupportDetails swapChainSupport = mDevice.getSwapChainSupport();
+        SwapChainSupportDetails swapChainSupport = mDevice.GetSwapChainSupport();
 
         //Get format to use for this swapchain's surface
         VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -138,7 +138,7 @@ namespace Dog
         //Create info for the swapchain 
         VkSwapchainCreateInfoKHR swapChainCreateInfo = {};
         swapChainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR; //Set what will be created to a swapchain
-        swapChainCreateInfo.surface = mDevice.getSurface();                     //Set surface to use to be our device's surface
+        swapChainCreateInfo.surface = mDevice.GetSurface();                     //Set surface to use to be our device's surface
 
         swapChainCreateInfo.minImageCount = imageCount;                       //Set minumum image count to use as the image count we found
         swapChainCreateInfo.imageFormat = surfaceFormat.format;               //Set format to use
@@ -148,7 +148,7 @@ namespace Dog
         swapChainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; //Set what this swapchain will be used for to color attachment (rendering) 
 
         //Find submission queues of our device ajnd get their indices
-        QueueFamilyIndices indices = mDevice.findPhysicalQueueFamilies();
+        QueueFamilyIndices indices = mDevice.FindPhysicalQueueFamilies();
         uint32_t queueFamilyIndices[] = { indices.graphicsFamily, indices.presentFamily };
 
         //Check if the two queues are not the same (if our device does not use one queue for both)
@@ -189,7 +189,7 @@ namespace Dog
         swapChainCreateInfo.oldSwapchain = (mOldSwapChain == nullptr) ? VK_NULL_HANDLE : mOldSwapChain->mSwapChain;
 
         //Create swap chain
-        if (vkCreateSwapchainKHR(mDevice.getDevice(), &swapChainCreateInfo, nullptr, &mSwapChain) != VK_SUCCESS)
+        if (vkCreateSwapchainKHR(mDevice.GetDevice(), &swapChainCreateInfo, nullptr, &mSwapChain) != VK_SUCCESS)
         {
             //If failed throw error
             DOG_CRITICAL("Failed to create swap chain");
@@ -199,9 +199,9 @@ namespace Dog
         //allowed to create a swap chain with more. That's why we'll first query the final number of
         //images with vkGetSwapchainImagesKHR, then resize the container and finally call it again to
         //retrieve the handles.
-        vkGetSwapchainImagesKHR(mDevice.getDevice(), mSwapChain, &imageCount, nullptr);
+        vkGetSwapchainImagesKHR(mDevice.GetDevice(), mSwapChain, &imageCount, nullptr);
         mSwapChainImages.resize(imageCount);
-        vkGetSwapchainImagesKHR(mDevice.getDevice(), mSwapChain, &imageCount, mSwapChainImages.data());
+        vkGetSwapchainImagesKHR(mDevice.GetDevice(), mSwapChain, &imageCount, mSwapChainImages.data());
 
         //Set format and extent member varibles
         mSwapChainImageFormat = surfaceFormat.format;
@@ -229,7 +229,7 @@ namespace Dog
             viewCreateInfo.subresourceRange.layerCount = 1;                         //Make so the image only has one level
 
             //Create the image view
-            if (vkCreateImageView(mDevice.getDevice(), &viewCreateInfo, nullptr, &mSwapChainImageViews[i]) != VK_SUCCESS)
+            if (vkCreateImageView(mDevice.GetDevice(), &viewCreateInfo, nullptr, &mSwapChainImageViews[i]) != VK_SUCCESS)
             {
                 DOG_CRITICAL("Failed to create texture image view");
             }
@@ -306,7 +306,7 @@ namespace Dog
         renderPassInfo.pDependencies = &dependency;                                 //Reference to dependency being used
 
         //Create render pass
-        if (vkCreateRenderPass(mDevice.getDevice(), &renderPassInfo, nullptr, &mRenderPass) != VK_SUCCESS)
+        if (vkCreateRenderPass(mDevice.GetDevice(), &renderPassInfo, nullptr, &mRenderPass) != VK_SUCCESS)
         {
             DOG_CRITICAL("Failed to create render pass");
         }
@@ -337,7 +337,7 @@ namespace Dog
             framebufferInfo.layers = 1;                                                  //Only one layer
 
             //Create framebufffer
-            if (vkCreateFramebuffer(mDevice.getDevice(), &framebufferInfo, nullptr, &mSwapChainFramebuffers[i]) != VK_SUCCESS)
+            if (vkCreateFramebuffer(mDevice.GetDevice(), &framebufferInfo, nullptr, &mSwapChainFramebuffers[i]) != VK_SUCCESS)
             {
                 DOG_CRITICAL("Failed to create framebuffer");
             }
@@ -401,7 +401,7 @@ namespace Dog
             viewInfo.subresourceRange.layerCount = 1;                         //Only one array layer
 
             //Create image view
-            if (vkCreateImageView(mDevice.getDevice(), &viewInfo, nullptr, &mDepthImageViews[i]) != VK_SUCCESS)
+            if (vkCreateImageView(mDevice.GetDevice(), &viewInfo, nullptr, &mDepthImageViews[i]) != VK_SUCCESS)
             {
                 DOG_CRITICAL("Failed to create texture image view");
             }
@@ -478,7 +478,7 @@ namespace Dog
     VkFormat SwapChain::FindDepthFormat()
     {
         //Get image format that supports being used as a depth buffer on device being used
-        return mDevice.findSupportedFormat(
+        return mDevice.FindSupportedFormat(
             { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
             VK_IMAGE_TILING_OPTIMAL,
             VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT

@@ -46,7 +46,7 @@ namespace Dog
 
         // If image is in flight, wait for its fence
         if (rr->syncObjects->GetImageInFlightFence(rr->currentImageIndex) != VK_NULL_HANDLE) {
-            vkWaitForFences(rr->device->getDevice(), 1, &rr->syncObjects->GetImageInFlightFence(rr->currentImageIndex), VK_TRUE, UINT64_MAX);
+            vkWaitForFences(rr->device->GetDevice(), 1, &rr->syncObjects->GetImageInFlightFence(rr->currentImageIndex), VK_TRUE, UINT64_MAX);
         }
         // Mark the image as now in use by this frame:
         rr->syncObjects->GetImageInFlightFence(rr->currentFrameIndex) = rr->syncObjects->GetCommandBufferInFlightFence();
@@ -109,7 +109,7 @@ namespace Dog
         VkCommandBuffer commandBuffer = rr->commandBuffers[rr->currentFrameIndex];
 
         // Execute the graph
-        rr->renderGraph->Execute(commandBuffer, rr->device->getDevice());
+        rr->renderGraph->Execute(commandBuffer, rr->device->GetDevice());
 
         // --- End Graph ---
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
@@ -132,8 +132,8 @@ namespace Dog
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
 
-        vkResetFences(rr->device->getDevice(), 1, &rr->syncObjects->GetCommandBufferInFlightFence());
-        if (vkQueueSubmit(rr->device->getGraphicsQueue(), 1, &submitInfo, rr->syncObjects->GetCommandBufferInFlightFence()) != VK_SUCCESS)
+        vkResetFences(rr->device->GetDevice(), 1, &rr->syncObjects->GetCommandBufferInFlightFence());
+        if (vkQueueSubmit(rr->device->GetGraphicsQueue(), 1, &submitInfo, rr->syncObjects->GetCommandBufferInFlightFence()) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to submit draw command buffer!");
         }
