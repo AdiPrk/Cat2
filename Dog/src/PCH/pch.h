@@ -70,7 +70,7 @@
 #include "enet/enet.h"
 
 // My files
-#include "Logger/Logger.h"
+#include "Utils/Logger.h"
 #include "Utils/AssimpGlmHelper.h"
 
 // Shared files

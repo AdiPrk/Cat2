@@ -1,17 +1,8 @@
 #pragma once
 
-//#include "Graphics/Vulkan/Descriptors/Descriptors.h"
-//#include "Graphics/Vulkan/Core/Device.h"
-//#include "Graphics/Vulkan/Renderer.h"
-//#include "Graphics/Vulkan/Texture/TextureLibrary.h"
-//#include "Graphics/Vulkan/Models/ModelLibrary.h"
-//#include "Graphics/Vulkan/Animation/Animation.h"
-//#include "Graphics/Vulkan/Animation/Animator.h"
-
 #include "Graphics/Window/Window.h"
 
 #include "ECS/ECS.h"
-
 #include "ECS/Resources/IResource.h"
 
 namespace Dog 

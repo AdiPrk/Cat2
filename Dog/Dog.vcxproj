@@ -241,7 +241,7 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
     <ClCompile Include="src\Dog\Graphics\Window\FrameRate.cpp" />
     <ClCompile Include="src\Dog\Graphics\Window\Window.cpp" />
     <ClCompile Include="src\Dog\Engine.cpp" />
-    <ClCompile Include="src\Dog\Logger\Logger.cpp" />
+    <ClCompile Include="src\Dog\Utils\Logger.cpp" />
     <ClCompile Include="src\Dog\ECS\Systems\ISystem.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\RenderingResource.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\WindowResource.cpp" />
@@ -314,7 +314,7 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
     <ClInclude Include="src\Dog\Graphics\Window\Window.h" />
     <ClInclude Include="src\Dog\Utils\InputMap.h" />
     <ClInclude Include="src\Dog\Engine.h" />
-    <ClInclude Include="src\Dog\Logger\Logger.h" />
+    <ClInclude Include="src\Dog\Utils\Logger.h" />
     <ClInclude Include="src\Dog\ECS\Systems\ISystem.h" />
     <ClInclude Include="src\Dog\ECS\Resources\IResource.h" />
     <ClInclude Include="src\Dog\ECS\Resources\RenderingResource.h" />

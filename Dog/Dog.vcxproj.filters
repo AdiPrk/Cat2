@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\Dog\Engine.cpp" />
-    <ClCompile Include="src\Dog\Logger\Logger.cpp" />
+    <ClCompile Include="src\Dog\Utils\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PCH\pch.cpp" />
     <ClCompile Include="src\Dog\ECS\Systems\ISystem.cpp" />
@@ -41,19 +41,6 @@
     <ClCompile Include="src\Dog\ECS\Systems\CameraSystem.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\SerializationResource.cpp" />
     <ClCompile Include="src\Dog\Utils\SerializationOperators.cpp" />
-    <ClCompile Include="Dependencies\imgui\ImSequencer.cpp" />
-    <ClCompile Include="Dependencies\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Dependencies\imgui\imgui_tables.cpp" />
-    <ClCompile Include="Dependencies\imgui\imgui_stdlib.cpp" />
-    <ClCompile Include="Dependencies\imgui\imgui_demo.cpp" />
-    <ClCompile Include="Dependencies\imgui\GraphEditor.cpp" />
-    <ClCompile Include="Dependencies\imgui\ImCurveEdit.cpp" />
-    <ClCompile Include="Dependencies\imgui\ImGradient.cpp" />
-    <ClCompile Include="Dependencies\imgui\imgui.cpp" />
-    <ClCompile Include="Dependencies\imgui\imgui_draw.cpp" />
-    <ClCompile Include="Dependencies\imgui\backends\imgui_impl_glfw.cpp" />
-    <ClCompile Include="Dependencies\imgui\backends\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="Dependencies\imgui\backends\imgui_impl_vulkan.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Model\Animation\Animation.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Model\Animation\Animator.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Model\Animation\Bone.cpp" />
@@ -62,8 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dog\Engine.h" />
-    <ClInclude Include="src\Dog\Input\inputMap.h" />
-    <ClInclude Include="src\Dog\Logger\Logger.h" />
+    <ClInclude Include="src\Dog\Utils\InputMap.h" />
+    <ClInclude Include="src\Dog\Utils\Logger.h" />
     <ClInclude Include="src\PCH\pch.h" />
     <ClInclude Include="src\Dog\ECS\Systems\ISystem.h" />
     <ClInclude Include="src\Dog\Utils\Utils.h" />
@@ -108,11 +95,30 @@
     <ClInclude Include="src\Dog\Graphics\Vulkan\Model\Animation\Animator.h" />
     <ClInclude Include="src\Dog\Utils\AssimpGlmHelper.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Model\Animation\AnimationLibrary.h" />
+    <ClInclude Include="Dependencies\imgui\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="Dependencies\imgui\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="Dependencies\imgui\backends\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="Dependencies\imgui\backends\imgui_impl_vulkan.h" />
+    <ClInclude Include="Dependencies\imgui\GraphEditor.h" />
+    <ClInclude Include="Dependencies\imgui\imconfig.h" />
+    <ClInclude Include="Dependencies\imgui\ImCurveEdit.h" />
+    <ClInclude Include="Dependencies\imgui\ImGradient.h" />
+    <ClInclude Include="Dependencies\imgui\imgui.h" />
+    <ClInclude Include="Dependencies\imgui\imgui_internal.h" />
+    <ClInclude Include="Dependencies\imgui\imgui_stdlib.h" />
+    <ClInclude Include="Dependencies\imgui\ImGuizmo.h" />
+    <ClInclude Include="Dependencies\imgui\ImSequencer.h" />
+    <ClInclude Include="Dependencies\imgui\imstb_rectpack.h" />
+    <ClInclude Include="Dependencies\imgui\imstb_textedit.h" />
+    <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
+    <ClInclude Include="Dependencies\imgui\ImZoomSlider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.inl" />
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\*.*" />
+    <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />
