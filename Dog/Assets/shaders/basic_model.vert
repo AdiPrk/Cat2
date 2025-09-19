@@ -21,6 +21,7 @@ layout(set = 0, binding = 0) uniform Uniforms {
 struct Instance {
   mat4 model;
   uint textureIndex;
+  uint boneOffset;
 };
 
 layout(std430, set = 1, binding = 1) buffer readonly InstanceDataBuffer {
@@ -28,7 +29,7 @@ layout(std430, set = 1, binding = 1) buffer readonly InstanceDataBuffer {
 } instanceData;
 
 layout(set = 1, binding = 2) buffer readonly BoneBuffer {
-	mat4 finalBonesMatrices[100];
+	mat4 finalBonesMatrices[10000];
 } animationData;
 
 void main() 
@@ -36,18 +37,15 @@ void main()
     vec4 totalPosition = vec4(0.0f);
     vec3 totalNormal = vec3(0.0f);
     
+    uint offset = instanceData.instances[gl_InstanceIndex].boneOffset;
+    if (offset != 10001)
     {
-        // Yes animations
         bool validBoneFound = false;
 
-        for(int i = 0 ; i < 4 ; i++)
+        for (uint i = offset; i < offset + 4 ; i++)
         {
             if(boneIds[i] == -1) continue;
-
-            if(boneIds[i] >= 100) 
-            {
-                continue;
-            }
+            if(boneIds[i] >= 10000) continue;
 
             vec4 localPosition = animationData.finalBonesMatrices[boneIds[i]] * vec4(position,1.0f);
             totalPosition += localPosition * weights[i];
@@ -58,7 +56,8 @@ void main()
             validBoneFound = true;
         }
 
-        if (!validBoneFound || totalPosition == vec4(0.0)) {
+        if (!validBoneFound || totalPosition == vec4(0.0))
+        {
 		    totalPosition = vec4(position, 1.0);
 	    }
     }

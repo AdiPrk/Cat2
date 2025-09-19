@@ -24,8 +24,8 @@ namespace Dog
         int& GetBoneCount() { return mBoneCounter; }
         bool HasAnimations() const { return mHasAnimations; }
 
-        glm::vec3 GetModelCenter() const { return glm::vec3(mAnimationTransformData.x, mAnimationTransformData.y, mAnimationTransformData.z); }
-        float GetModelScale() const { return mAnimationTransformData.w; }
+        glm::vec3 GetModelCenter() const { return glm::vec3(mAnimationTransform.x, mAnimationTransform.y, mAnimationTransform.z); }
+        float GetModelScale() const { return mAnimationTransform.w; }
 
     private:
         // Main load model function
@@ -34,16 +34,17 @@ namespace Dog
         // Load and process model using assimp
         const aiScene* LoadMeshes(const std::string& filepath);
         
-        void ProcessNode(aiNode* node, const aiScene* scene);
-        Mesh& ProcessMesh(aiMesh* mesh, const aiScene* scene);
+        void ProcessNode(aiNode* node);
+        Mesh& ProcessMesh(aiMesh* mesh);
         
-        void ProcessMaterials(aiMesh* mesh, const aiScene* scene, Mesh& newMesh);
+        void ProcessMaterials(aiMesh* mesh, Mesh& newMesh);
         void ProcessBaseColor(const aiScene* scene, aiMaterial* material, Mesh& newMesh);
         void ProcessDiffuseTexture(const aiScene* scene, aiMaterial* material, Mesh& newMesh);
 
         void UpdateAABB(aiVector3D min, aiVector3D max);
+        void NormalizeModel();
 
-        void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
+        void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh);
 
         Device& device; // the device!
 
@@ -59,7 +60,7 @@ namespace Dog
         int mBoneCounter = 0;
 
         bool mHasAnimations = false;
-        glm::vec4 mAnimationTransformData = glm::vec4(0.f); // xyz = center, w = inv scale
+        glm::vec4 mAnimationTransform = glm::vec4(0.f); // xyz = center, w = inv scale
 
         friend class AnimationLibrary;
         const aiScene* mScene = nullptr;

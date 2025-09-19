@@ -38,9 +38,6 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 // Shaderlang
 #include "glslang/Public/ShaderLang.h"
 
-// msdf
-#include <msdf-atlas-gen/msdf-atlas-gen.h>
-
 #include <string>
 #include <iostream>
 #include <fstream>

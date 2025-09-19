@@ -11,18 +11,12 @@ namespace Dog
     {
     }
 
-    Animation::Animation(const std::string& animationPath, const aiScene* scene, Model* model)
+    Animation::Animation(const aiScene* scene, Model* model)
         : mDuration(0.0f)
         , mTicksPerSecond(30)
         , nodeCounter(0)
         , mRootNodeIndex(0)
     {
-        if (!scene || !scene->mAnimations[0] || !scene->mRootNode)
-        {
-            DOG_CRITICAL("Failed to load animation at path: {0}", animationPath);
-            return;
-        }
-
         // Load the first animation
         aiAnimation* animation = scene->mAnimations[0];
 
@@ -51,21 +45,7 @@ namespace Dog
 
 
         ReadHeirarchyData(-1, scene->mRootNode);
-        ReadMissingBones(animation, *model);
-        int num = 0;
-        for (const auto& pair : mBoneMap)
-        {
-            const Bone& info = pair.second;
-
-            // log all key rotations
-            for (int i = 0; i < info.GetNumRotationKeys(); i++)
-            {
-                const KeyRotation& rotation = info.GetRotationKeys()[i];
-                DOG_INFO("Bone ID: {0}, Rotation Key {1}: Time: {2}, Value: ({3}, {4}, {5}, {6})", info.GetBoneID(), i, rotation.time, rotation.orientation.x, rotation.orientation.y, rotation.orientation.z, rotation.orientation.w);
-            }
-            break;
-        }
-       
+        ReadMissingBones(animation, *model);       
 
         // clear data that we don't need anymore
         mNameToIDMap.clear();

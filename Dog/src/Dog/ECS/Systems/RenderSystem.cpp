@@ -13,8 +13,6 @@
 #include "Graphics/Vulkan/Uniform/Uniform.h"
 #include "Graphics/Vulkan/RenderGraph.h"
 #include "Graphics/Vulkan/Model/Animation/AnimationLibrary.h"
-#include "Graphics/Vulkan/Model/Animation/Animator.h"
-
 
 #include "../ECS.h"
 #include "ECS/Entities/Entity.h"
@@ -82,7 +80,7 @@ namespace Dog
         renderingResource->cameraUniform->SetUniformData(camData, 0, renderingResource->currentFrameIndex);
         
         auto& al = renderingResource->animationLibrary;
-        al->GetAnimator(0)->UpdateAnimation(dt);
+        al->UpdateAnimation(0, dt);
         
         // Add the scene render pass
         rg->AddPass(
@@ -149,12 +147,9 @@ namespace Dog
 
         // Update animations!
         auto& al = renderingResource->animationLibrary;
-        auto& finalBones = al->GetAnimator(0)->GetFinalBoneMatrices();
+        auto& finalBones = al->GetAnimationMatrices();
 
-        // put bones in vector
-        std::vector<glm::mat4> finalBonesVec(finalBones.begin(), finalBones.end());
-
-        renderingResource->instanceUniform->SetUniformData(finalBonesVec, 2, renderingResource->currentFrameIndex);
+        renderingResource->instanceUniform->SetUniformData(finalBones, 2, renderingResource->currentFrameIndex);
 
         uint32_t baseInstance = 0;
         for (auto& entityHandle : entityView)

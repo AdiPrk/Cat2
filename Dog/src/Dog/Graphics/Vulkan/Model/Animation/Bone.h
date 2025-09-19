@@ -46,36 +46,15 @@ namespace Dog
     Bone(int ID);
     Bone(int ID, const aiNodeAnim* channel);
 
-    // Interpolates transformation matrix based on current animation time
     void Update(float animationTime);
 
     inline const glm::mat4& GetLocalTransform() const noexcept { return mLocalTransform; }
 
     int GetBoneID() const { return mID; }
 
-    /* Gets the current index on mKeyPositions to interpolate to based on
-    the current animation time*/
-    int GetPositionIndex(float animationTime);
-
-    /* Gets the current index on mKeyRotations to interpolate to based on the
-    current animation time*/
-    int GetRotationIndex(float animationTime);
-
-    /* Gets the current index on mKeyScalings to interpolate to based on the
-    current animation time */
-    int GetScaleIndex(float animationTime);
-
-    int GetNumPositionKeys() const { return mNumPositions; }
-    int GetNumRotationKeys() const { return mNumRotations; }
-    int GetNumScalingKeys() const { return mNumScalings; }
-
     const std::vector<KeyPosition>& GetPositionKeys() const { return mPositions; }
     const std::vector<KeyRotation>& GetRotationKeys() const { return mRotations; }
-    const std::vector<KeyScale>& GetScalingKeys() const { return mScales; }
-    std::vector<KeyPosition>& GetPositionKeys() { return mPositions; }
-    std::vector<KeyRotation>& GetRotationKeys() { return mRotations; }
-    std::vector<KeyScale>& GetScalingKeys() { return mScales; }
-
+    const std::vector<KeyScale>& GetScalingKeys()     const { return mScales;    }
 
   private:
     friend class Animator;
@@ -99,9 +78,6 @@ namespace Dog
     std::vector<KeyPosition> mPositions;
     std::vector<KeyRotation> mRotations;
     std::vector<KeyScale> mScales;
-    int mNumPositions;
-    int mNumRotations;
-    int mNumScalings;
 
     glm::mat4 mLocalTransform;
     glm::mat4 mPositionMatrix;

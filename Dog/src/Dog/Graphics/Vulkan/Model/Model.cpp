@@ -17,7 +17,7 @@ namespace Dog
 
     void Model::LoadModel(const std::string& filePath)
     {
-        const aiScene* scene = LoadMeshes(filePath);
+        LoadMeshes(filePath);
 
         // Create vertex and index buffers for all meshes
         for (Mesh& mesh : mMeshes) {
@@ -49,49 +49,32 @@ namespace Dog
         mDirectory = filepath.substr(0, filepath.find_last_of('/'));
         mModelName = std::filesystem::path(filepath).stem().string();
 
-        ProcessNode(scene->mRootNode, scene);
+        ProcessNode(scene->mRootNode);
 
         // Scale all meshes to fit in a 1x1x1 cube and translate to 0,0,0
-        glm::vec3 size = mAABBmax - mAABBmin;
-
-        glm::vec3 center = (mAABBmax + mAABBmin) * 0.5f;
-        float scale = std::max({ size.x, size.y, size.z });
-        float invScale = 1.f / scale;
-        mAnimationTransformData = glm::vec4(center, invScale);
-
-        // Don't normalize for animations since that's already done in the animation matrices
-        if (!HasAnimations())
-        {
-            for (Mesh& mesh : mMeshes)
-            {
-                for (Vertex& vertex : mesh.mVertices)
-                {
-                    vertex.position = (vertex.position - center) * invScale;
-                }
-            }
-        }
+        NormalizeModel();
 
         return scene;
     }
 
-    void Model::ProcessNode(aiNode* node, const aiScene* scene)
+    void Model::ProcessNode(aiNode* node)
     {
         // Process each mesh in the current node
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
-            aiMesh* aMesh = scene->mMeshes[node->mMeshes[i]];
-            Mesh& mesh = ProcessMesh(aMesh, scene);
-            ProcessMaterials(aMesh, scene, mesh);
+            aiMesh* aMesh = mScene->mMeshes[node->mMeshes[i]];
+            Mesh& mesh = ProcessMesh(aMesh);
+            ProcessMaterials(aMesh, mesh);
         }
 
         // Recursively process each child node
         for (unsigned int i = 0; i < node->mNumChildren; i++)
         {
-            ProcessNode(node->mChildren[i], scene);
+            ProcessNode(node->mChildren[i]);
         }
     }
 
-    Mesh& Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
+    Mesh& Model::ProcessMesh(aiMesh* mesh)
     {
         Mesh& newMesh = mMeshes.emplace_back();
         
@@ -147,7 +130,7 @@ namespace Dog
             }
         }
 
-        ExtractBoneWeightForVertices(newMesh.mVertices, mesh, scene);
+        ExtractBoneWeightForVertices(newMesh.mVertices, mesh);
 
         return newMesh;
     }
@@ -158,16 +141,39 @@ namespace Dog
         mAABBmax = glm::max(glm::vec3(max.x, max.y, max.z), mAABBmax);
     }
 
-    void Model::ProcessMaterials(aiMesh* mesh, const aiScene* scene, Mesh& newMesh)
+    void Model::NormalizeModel()
     {
-        if (!scene->HasMaterials()) return;
+        glm::vec3 size = mAABBmax - mAABBmin;
 
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        ProcessBaseColor(scene, material, newMesh);
-        ProcessDiffuseTexture(scene, material, newMesh);
+        glm::vec3 center = (mAABBmax + mAABBmin) * 0.5f;
+        float invScale = 1.f / std::max({ size.x, size.y, size.z });
+
+        if (!HasAnimations())
+        {
+            for (Mesh& mesh : mMeshes)
+            {
+                for (Vertex& vertex : mesh.mVertices)
+                {
+                    vertex.position = (vertex.position - center) * invScale;
+                }
+            }
+        }
+        else
+        {
+            mAnimationTransform = glm::vec4(center, invScale);
+        }
     }
 
-    void Model::ProcessBaseColor(const aiScene* scene, aiMaterial* material, Mesh& newMesh)
+    void Model::ProcessMaterials(aiMesh* mesh, Mesh& newMesh)
+    {
+        if (!mScene->HasMaterials()) return;
+
+        aiMaterial* material = mScene->mMaterials[mesh->mMaterialIndex];
+        ProcessBaseColor(mScene, material, newMesh);
+        ProcessDiffuseTexture(mScene, material, newMesh);
+    }
+
+    void Model::ProcessBaseColor(const aiScene* mScene, aiMaterial* material, Mesh& newMesh)
     {
         bool hasBaseColor = false;
         aiColor4D baseColor;
@@ -186,12 +192,12 @@ namespace Dog
         }
     }
     
-    void Model::ProcessDiffuseTexture(const aiScene* scene, aiMaterial* material, Mesh& newMesh)
+    void Model::ProcessDiffuseTexture(const aiScene* mScene, aiMaterial* material, Mesh& newMesh)
     {
         aiString texturePath;
         if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) != AI_SUCCESS) return;
 
-        const aiTexture* embeddedTexture = scene->GetEmbeddedTexture(texturePath.C_Str());
+        const aiTexture* embeddedTexture = mScene->GetEmbeddedTexture(texturePath.C_Str());
         if (!embeddedTexture)
         {
             std::filesystem::path path(texturePath.C_Str());
@@ -212,7 +218,7 @@ namespace Dog
         }
     }
 
-    void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene)
+    void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh)
     {
         // Iterate over all bones in the aiMesh
         for (unsigned int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)

@@ -42,7 +42,6 @@ namespace Dog
 
         animationLibrary = std::make_unique<AnimationLibrary>();
         animationLibrary->AddAnimation("Assets/models/jack_samba.glb", modelLibrary->GetModel(0));
-        animationLibrary->GetAnimator(0)->PlayAnimation(animationLibrary->GetAnimation(0));
 
         modelLibrary->LoadTextures();
 

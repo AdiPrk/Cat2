@@ -19,17 +19,18 @@ namespace Dog
     Animator(Animation* animation);
 
     void UpdateAnimation(float dt);
-
     void PlayAnimation(Animation* pAnimation);
-
     void CalculateBoneTransform(int nodeIndex, const glm::mat4& parentTransform);
 
-    const auto& GetFinalBoneMatrices() const { return mFinalBoneMatrices; }
+    const std::vector<glm::mat4>& GetFinalBoneMatrices() const { return mFinalBoneMatrices; }
+    bool IsPlaying() const { return mIsPlaying; }
 
   private:
-    std::array<glm::mat4, Animation::MAX_BONES> mFinalBoneMatrices;
+    std::vector<glm::mat4> mFinalBoneMatrices;
     Animation* mCurrentAnimation;
     float mCurrentTime;
+
+    bool mIsPlaying = true;
   };
 
 } // namespace Rendering

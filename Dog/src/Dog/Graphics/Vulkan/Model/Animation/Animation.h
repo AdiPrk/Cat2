@@ -26,7 +26,7 @@ namespace Dog
   {
   public:
     Animation();
-    Animation(const std::string& animationPath, const aiScene* scene, Model* model);
+    Animation(const aiScene* scene, Model* model);
     ~Animation() {}
 
     Bone* FindBone(int id);

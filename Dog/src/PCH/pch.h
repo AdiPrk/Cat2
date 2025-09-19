@@ -58,7 +58,7 @@
 
 #include "vk_mem_alloc.h"
 
-#define AI_SBBC_DEFAULT_MAX_BONES 100
+#define AI_SBBC_DEFAULT_MAX_BONES 500
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"

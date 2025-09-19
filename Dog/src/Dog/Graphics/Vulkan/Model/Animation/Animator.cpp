@@ -9,6 +9,7 @@ namespace Dog
     mCurrentTime = 0.0;
     mCurrentAnimation = animation;
 
+    mFinalBoneMatrices.resize(Animation::MAX_BONES);
     std::fill(mFinalBoneMatrices.begin(), mFinalBoneMatrices.end(), glm::mat4(1.0f));
   }
 
