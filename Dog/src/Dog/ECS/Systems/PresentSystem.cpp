@@ -66,7 +66,7 @@ namespace Dog
         // Start a new render graph!
         rg->clear();
 
-        // --- NEW: Import the SRGB view for sampling FROM ---
+        // Import resources!
         rg->import_texture(
             "SceneColor",
             rr->sceneImage,
@@ -141,8 +141,12 @@ namespace Dog
         // --- Presentation ---
         VkResult result = rr->swapChain->PresentImage(&rr->currentImageIndex, *rr->syncObjects);
 
-        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        bool winResized = ecs->GetResource<WindowResource>()->window->wasWindowResized();
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || winResized)
+        {
+            ecs->GetResource<WindowResource>()->window->resetWindowResizedFlag();
             rr->RecreateSwapChain();
+            rr->RecreateAllSceneTextures();
             rr->syncObjects->ClearImageFences();
         }
         else if (result != VK_SUCCESS) {

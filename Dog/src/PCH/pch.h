@@ -77,6 +77,7 @@
 
 // My files
 #include "Logger/Logger.h"
+#include "Utils/AssimpGlmHelper.h"
 
 // Shared files
 #include "../../Common/src/Core.h"

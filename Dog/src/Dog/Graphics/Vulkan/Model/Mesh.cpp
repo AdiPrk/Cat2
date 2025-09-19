@@ -137,10 +137,10 @@ namespace Dog
         attributeDescriptions.push_back({ 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv) });
 
         //Set attribute description data for bone IDs
-        //attributeDescriptions.push_back({ 4, 0, VK_FORMAT_R32G32B32A32_SINT, offsetof(Vertex, boneIDs) });
+        attributeDescriptions.push_back({ 4, 0, VK_FORMAT_R32G32B32A32_SINT, offsetof(Vertex, boneIDs) });
 
         //Set attribute description data for bone weights
-        //attributeDescriptions.push_back({ 5, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Vertex, weights) });
+        attributeDescriptions.push_back({ 5, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Vertex, weights) });
 
         //Return description
         return attributeDescriptions;
@@ -148,7 +148,8 @@ namespace Dog
 
     void Vertex::SetBoneData(int boneID, float weight)
     {
-        for (int i = 0; i < MAX_BONE_INFLUENCE; i++) {
+        for (int i = 0; i < MAX_BONE_INFLUENCE; i++) 
+        {
             if (weights[i] == 0.0f)
             {
                 boneIDs[i] = boneID;

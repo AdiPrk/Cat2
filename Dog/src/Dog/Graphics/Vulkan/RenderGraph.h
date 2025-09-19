@@ -80,6 +80,9 @@ namespace Dog
         // Clears all passes and resources for the next frame.
         void clear();
 
+        // Resize
+        void resize(uint32_t width, uint32_t height);
+
         RGResourceHandle get_resource_handle(const std::string& name) const;
 
     private:

@@ -5,6 +5,7 @@
 
 #include "glslang/Public/ResourceLimits.h"
 #include "glslang/SPIRV/GlslangToSpv.h"
+#include "../Uniform/ShaderTypes.h"
 
 namespace Dog
 {
@@ -133,11 +134,11 @@ namespace Dog
 		// macros
 		static std::vector<std::pair<std::string, std::string>> macros = 
 		{
-			{ "DOG_MAX_INSTANCES", std::to_string(10000) },
+			{ "DOG_MAX_INSTANCES", std::to_string(InstanceUniforms::MAX_INSTANCES) },
 			{ "DOG_MAX_GLYPHS", std::to_string(95) },
 			{ "DOG_MAX_MODELS", std::to_string(100) },
 			{ "DOG_MAX_TEXTURES", std::to_string(10000) },
-			{ "DOG_MAX_BONES ", std::to_string(200) },
+			{ "DOG_MAX_BONES ", std::to_string(100) },
 			{ "DOG_MAX_BONE_INFLUENCE ", std::to_string(4) },
 			{ "DOG_INVALID_FONT_INDEX", std::to_string(9999) },
 			{ "DOG_INVALID_ANIMATION_INDEX", std::to_string(9999) },

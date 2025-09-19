@@ -14,6 +14,9 @@
 
 #include "Graphics/Vulkan/Model/ModelLibrary.h"
 #include "Graphics/Vulkan/Texture/TextureLibrary.h"
+#include "Graphics/Vulkan/Model/Animation/AnimationLibrary.h"
+#include "Graphics/Vulkan/Model/Model.h"
+#include "Graphics/Vulkan/Model/Animation/Animator.h"
 
 namespace Dog
 {
@@ -31,17 +34,24 @@ namespace Dog
         syncObjects = std::make_unique<Synchronizer>(device->getDevice(), swapChain->ImageCount());
 
         textureLibrary = std::make_unique<TextureLibrary>(*device);
+
         modelLibrary = std::make_unique<ModelLibrary>(*device, *textureLibrary);
-        modelLibrary->AddModel("Assets/models/okayu.pmx");
+        modelLibrary->AddModel("Assets/models/jack_samba.glb");
+        //modelLibrary->AddModel("Assets/models/okayu.pmx");
         //modelLibrary->AddModel("Assets/models/AlisaMikhailovna.fbx");
 
+        animationLibrary = std::make_unique<AnimationLibrary>();
+        animationLibrary->AddAnimation("Assets/models/jack_samba.glb", modelLibrary->GetModel(0));
+        animationLibrary->GetAnimator(0)->PlayAnimation(animationLibrary->GetAnimation(0));
+
         modelLibrary->LoadTextures();
+
+        CreateCommandBuffers();
+        renderGraph = std::make_unique<RenderGraph>();
 
         cameraUniform = std::make_unique<Uniform>(*device, *this, cameraUniformSettings);
         instanceUniform = std::make_unique<Uniform>(*device, *this, instanceUniformSettings);
 
-        CreateCommandBuffers();
-        renderGraph = std::make_unique<RenderGraph>();
     }
 
     RenderingResource::~RenderingResource()
@@ -162,7 +172,7 @@ namespace Dog
         {
             DOG_CRITICAL("Failed to create scene sampler");
         }
-
+        
         sceneTextureDescriptorSet = ImGui_ImplVulkan_AddTexture(sceneSampler, sceneImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
     }
 
@@ -254,6 +264,12 @@ namespace Dog
         CreateDepthBuffer();
     }
 
+    void RenderingResource::RecreateAllSceneTextures()
+    {
+        RecreateSceneTexture();
+        RecreateDepthBuffer();
+    }
+
     VkFormat RenderingResource::ToLinearFormat(VkFormat format)
     {
         if (format == VK_FORMAT_R8G8B8A8_SRGB) {
@@ -265,5 +281,17 @@ namespace Dog
 
         DOG_CRITICAL("Unsupported format for sRGB conversion");
         return format;
+    }
+
+    void RenderingResource::LoadAnimations()
+    {
+        /*for (int i = 0; i < modelLibrary->GetModelCount(); i++)
+        {
+            Model* model = modelLibrary->GetModel(i);
+            if (model->HasAnimations())
+            {
+                
+            }
+        }*/
     }
 }

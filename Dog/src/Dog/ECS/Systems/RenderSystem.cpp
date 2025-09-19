@@ -12,6 +12,9 @@
 #include "Graphics/Vulkan/Model/Model.h"
 #include "Graphics/Vulkan/Uniform/Uniform.h"
 #include "Graphics/Vulkan/RenderGraph.h"
+#include "Graphics/Vulkan/Model/Animation/AnimationLibrary.h"
+#include "Graphics/Vulkan/Model/Animation/Animator.h"
+
 
 #include "../ECS.h"
 #include "ECS/Entities/Entity.h"
@@ -64,7 +67,7 @@ namespace Dog
     {
     }
     
-    void RenderSystem::Update(float)
+    void RenderSystem::Update(float dt)
     {
         auto renderingResource = ecs->GetResource<RenderingResource>();
         auto editorResource = ecs->GetResource<EditorResource>();
@@ -77,7 +80,10 @@ namespace Dog
         camData.projection[1][1] *= -1;
         camData.projectionView = camData.projection * camData.view;
         renderingResource->cameraUniform->SetUniformData(camData, 0, renderingResource->currentFrameIndex);
-
+        
+        auto& al = renderingResource->animationLibrary;
+        al->GetAnimator(0)->UpdateAnimation(dt);
+        
         // Add the scene render pass
         rg->add_pass(
             "ScenePass",
@@ -135,15 +141,20 @@ namespace Dog
             {
                 InstanceUniforms& data = instanceData.emplace_back();
                 data.model = tc.GetTransform();
-                //data.model = glm::mat4(1.0f);
-                //data.model = glm::translate(data.model, glm::vec3(0.0f, -0.75f, -2.0f));
-                //data.model = glm::scale(data.model, glm::vec3(0.1f));
-                //data.model = glm::rotate(data.model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
                 data.textureIndex = mesh.diffuseTextureIndex;
             }
         }
         
         renderingResource->instanceUniform->SetUniformData(instanceData, 1, renderingResource->currentFrameIndex);
+
+        // Update animations!
+        auto& al = renderingResource->animationLibrary;
+        auto& finalBones = al->GetAnimator(0)->GetFinalBoneMatrices();
+
+        // put bones in vector
+        std::vector<glm::mat4> finalBonesVec(finalBones.begin(), finalBones.end());
+
+        renderingResource->instanceUniform->SetUniformData(finalBonesVec, 2, renderingResource->currentFrameIndex);
 
         uint32_t baseInstance = 0;
         for (auto& entityHandle : entityView)

@@ -15,6 +15,7 @@ namespace Dog
     class Uniform;
     class ModelLibrary;
     class TextureLibrary;
+    class AnimationLibrary;
 
     struct RenderingResource : public IResource
     {
@@ -28,6 +29,7 @@ namespace Dog
 
         std::unique_ptr<ModelLibrary> modelLibrary;
         std::unique_ptr<TextureLibrary> textureLibrary;
+        std::unique_ptr<AnimationLibrary> animationLibrary;
 
         std::unique_ptr<RenderGraph> renderGraph;
 
@@ -69,8 +71,12 @@ namespace Dog
         void CreateDepthBuffer();
         void CleanupDepthBuffer();
         void RecreateDepthBuffer();
+        void RecreateAllSceneTextures();
         // --------------------------------
 
         VkFormat ToLinearFormat(VkFormat format);
+
+        // Temp Animation
+        void LoadAnimations();
     };
 }

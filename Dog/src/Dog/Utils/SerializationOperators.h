@@ -1,7 +1,8 @@
 #pragma once
 #include "json.hpp"
 
-namespace glm {
+namespace glm
+    {
     // Serializer for glm::vec2
     inline void to_json(nlohmann::json& j, const glm::vec2& v) {
         j = { v.x, v.y };
@@ -34,5 +35,5 @@ namespace glm {
         j.at(2).get_to(v.z);
         j.at(3).get_to(v.w);
     }
-}
 
+}

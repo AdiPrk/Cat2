@@ -65,7 +65,7 @@ namespace Dog
         }
     }
 
-    void ECS::AddEntity(const std::string& name)
+    Entity ECS::AddEntity(const std::string& name)
     {
         Entity entity(&mRegistry);
 
@@ -73,6 +73,8 @@ namespace Dog
         entity.AddComponent<TransformComponent>();
 
         mEntityMap[name] = entity;
+
+        return entity;
     }
 
     Entity ECS::GetEntity(const std::string& name)

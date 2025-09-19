@@ -45,6 +45,10 @@ namespace Dog
         std::vector<Vertex> mVertices{};
         std::vector<uint32_t> mIndices{};
 
+        // Tex data if from memory
+        std::unique_ptr<unsigned char[]> mTextureData = nullptr;
+        uint32_t mTextureSize = 0;
+
         // unique index for this mesh
         uint32_t mMeshID = 0;
 

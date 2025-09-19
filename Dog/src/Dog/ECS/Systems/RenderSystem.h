@@ -14,7 +14,7 @@ namespace Dog
 
         void Init();
         void FrameStart();
-        void Update(float);
+        void Update(float dt);
         void FrameEnd();
         void Exit();
 

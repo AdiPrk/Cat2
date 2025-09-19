@@ -16,5 +16,5 @@ int main(int argc, char* argv[])
 
     Dog::Engine& Engine = Dog::Engine::Create(specs);
 
-    return Engine.Run("dragon");
+    return Engine.Run("scene");
 }

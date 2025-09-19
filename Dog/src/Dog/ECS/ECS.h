@@ -57,7 +57,7 @@ namespace Dog
             return dynamic_cast<T*>(it->second.get());
         }
 
-        void AddEntity(const std::string& name);
+        Entity AddEntity(const std::string& name);
         Entity GetEntity(const std::string& name);
 
         entt::registry& GetRegistry() { return mRegistry; }

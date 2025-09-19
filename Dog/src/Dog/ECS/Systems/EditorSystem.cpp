@@ -21,8 +21,7 @@ namespace Dog
 		InitImGui();
 
         auto rr = ecs->GetResource<RenderingResource>();
-		rr->CreateSceneTexture();
-		rr->CreateDepthBuffer();
+		rr->RecreateAllSceneTextures();
     }
 
     void EditorSystem::FrameStart()
@@ -90,6 +89,11 @@ namespace Dog
 					// Trigger the save action here
 					ecs->GetResource<SerializationResource>()->Serialize("assets/scenes/scene.json");
 				}
+                if (ImGui::MenuItem("Load"))
+                {
+                    // Trigger the load action here
+                    ecs->GetResource<SerializationResource>()->Deserialize("assets/scenes/scene.json");
+                }
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();

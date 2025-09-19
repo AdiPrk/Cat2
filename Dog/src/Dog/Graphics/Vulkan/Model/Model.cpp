@@ -30,10 +30,8 @@ namespace Dog
     {
         static Assimp::Importer importer;
 
-        unsigned int processFlags = aiProcessPreset_TargetRealtime_MaxQuality;
-        processFlags |= aiProcess_GlobalScale;
-
-        const aiScene* scene = importer.ReadFile(filepath, 0);
+        const aiScene* scene = importer.ReadFile(filepath, aiProcessPreset_TargetRealtime_MaxQuality);
+        mScene = scene;
 
         // Check if the scene was loaded successfully
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -45,16 +43,33 @@ namespace Dog
         // check how many animations are in this
         if (scene->HasAnimations())
         {
-            DOG_INFO("Model has {0} animations", scene->mNumAnimations);
-            for (unsigned int i = 0; i < scene->mNumAnimations; i++)
-            {
-                aiAnimation* animation = scene->mAnimations[i];
-                DOG_INFO("Animation {0} has duration {1} ticks at {2} ticks per second", i, animation->mDuration, animation->mTicksPerSecond);
-            }
+            mHasAnimations = true;
         }
 
         mDirectory = filepath.substr(0, filepath.find_last_of('/'));
+        mModelName = std::filesystem::path(filepath).stem().string();
+
         ProcessNode(scene->mRootNode, scene);
+
+        // Scale all meshes to fit in a 1x1x1 cube and translate to 0,0,0
+        glm::vec3 size = mAABBmax - mAABBmin;
+
+        glm::vec3 center = (mAABBmax + mAABBmin) * 0.5f;
+        float scale = std::max({ size.x, size.y, size.z });
+        float invScale = 1.f / scale;
+        mAnimationTransformData = glm::vec4(center, invScale);
+
+        // Don't normalize for animations since that's already done in the animation matrices
+        if (!HasAnimations())
+        {
+            for (Mesh& mesh : mMeshes)
+            {
+                for (Vertex& vertex : mesh.mVertices)
+                {
+                    vertex.position = (vertex.position - center) * invScale;
+                }
+            }
+        }
 
         return scene;
     }
@@ -101,13 +116,7 @@ namespace Dog
             // Normals
             if (mesh->HasNormals())
             {
-                glm::vec3 normal = {
-                    mesh->mNormals[j].x,
-                    mesh->mNormals[j].y,
-                    mesh->mNormals[j].z
-                };
-
-                vertex.normal = normal;
+                vertex.normal = { mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z };
             }
 
             // UV Coordinates
@@ -137,6 +146,8 @@ namespace Dog
                 newMesh.mIndices.push_back(face.mIndices[l]);
             }
         }
+
+        ExtractBoneWeightForVertices(newMesh.mVertices, mesh, scene);
 
         return newMesh;
     }
@@ -186,15 +197,51 @@ namespace Dog
             std::filesystem::path path(texturePath.C_Str());
             std::string filename = path.filename().string();
 
-            newMesh.diffuseTexturePath = mDirectory + "/ModelTextures/" + filename;
+            newMesh.diffuseTexturePath = mDirectory + "/ModelTextures/" + mModelName + "/" + filename;
         }
         else if (embeddedTexture->mHeight == 0)
         {
+            newMesh.mTextureSize = static_cast<uint32_t>(embeddedTexture->mWidth);
 
+            newMesh.mTextureData = std::make_unique<unsigned char[]>(newMesh.mTextureSize);
+            std::memcpy(newMesh.mTextureData.get(), embeddedTexture->pcData, static_cast<size_t>(embeddedTexture->mWidth));
         }
         else
         {
             DOG_CRITICAL("How are we here");
+        }
+    }
+
+    void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene)
+    {
+        // Iterate over all bones in the aiMesh
+        for (unsigned int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
+        {
+            aiBone* bone = mesh->mBones[boneIndex];
+            std::string boneName = bone->mName.C_Str();
+            int boneID = -1;
+
+            if (mBoneInfoMap.find(boneName) == mBoneInfoMap.end())
+            {
+                BoneInfo newBoneInfo(mBoneCounter, aiMatToGlm(bone->mOffsetMatrix));
+
+                mBoneInfoMap[boneName] = newBoneInfo;
+                boneID = mBoneCounter++;
+            }
+            else
+            {
+                boneID = mBoneInfoMap[boneName].id;
+            }
+
+            // Process each vertex weight associated with the bone
+            for (unsigned int weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex)
+            {
+                const aiVertexWeight& weightData = bone->mWeights[weightIndex];
+                int vertexId = weightData.mVertexId;
+                float weight = weightData.mWeight;
+
+                vertices[vertexId].SetBoneData(boneID, weight);
+            }
         }
     }
 }

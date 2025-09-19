@@ -11,5 +11,7 @@ namespace Dog
     struct alignas(16) InstanceUniforms {
         glm::mat4 model;
         uint32_t textureIndex;
+
+        const static uint32_t MAX_INSTANCES = 10000;
     };
 }

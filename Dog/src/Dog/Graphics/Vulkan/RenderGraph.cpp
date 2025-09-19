@@ -244,6 +244,16 @@ namespace Dog
         m_resources.clear();
     }
 
+    void RenderGraph::resize(uint32_t width, uint32_t height)
+    {
+        // resize all resources extents
+        for (auto& resource : m_resources)
+        {
+            resource.extent.width = width;
+            resource.extent.height = height;
+        }
+    }
+
     RGResourceHandle RenderGraph::get_resource_handle(const std::string& name) const
     {
         auto it = m_resourceLookup.find(name);

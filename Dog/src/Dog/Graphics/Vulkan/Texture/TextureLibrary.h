@@ -13,6 +13,8 @@ namespace Dog
 		~TextureLibrary();
 
 		uint32_t AddTexture(const std::string& texturePath);
+		uint32_t AddTexture(const unsigned char* textureData, uint32_t textureSize, const std::string& texturePath);
+
 		Texture* GetTexture(uint32_t textureID);
 		Texture* GetTexture(const std::string& texturePath);
 		const Texture& GetTextureByIndex(uint32_t index) const;

@@ -55,6 +55,8 @@ namespace Dog
 
     int Engine::Run(const std::string& sceneName) 
     {
+        mEcs.GetResource<SerializationResource>()->Deserialize("Assets/scenes/" + sceneName + ".json");
+
         FrameRateController frameRateController(mSpecs.fps);
 
         while (!mEcs.GetResource<WindowResource>()->window->shouldClose() && mRunning) 

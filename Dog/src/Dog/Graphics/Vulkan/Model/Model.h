@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Mesh.h"
+#include "Animation/Bone.h"
 
 namespace Dog
 {
@@ -18,6 +19,14 @@ namespace Dog
 
         std::vector<Mesh> mMeshes;
 
+        std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() { return mBoneInfoMap; }
+        const std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() const { return mBoneInfoMap; }
+        int& GetBoneCount() { return mBoneCounter; }
+        bool HasAnimations() const { return mHasAnimations; }
+
+        glm::vec3 GetModelCenter() const { return glm::vec3(mAnimationTransformData.x, mAnimationTransformData.y, mAnimationTransformData.z); }
+        float GetModelScale() const { return mAnimationTransformData.w; }
+
     private:
         // Main load model function
         void LoadModel(const std::string& filePath);
@@ -34,12 +43,25 @@ namespace Dog
 
         void UpdateAABB(aiVector3D min, aiVector3D max);
 
+        void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
+
         Device& device; // the device!
 
         glm::vec3 mAABBmin;
         glm::vec3 mAABBmax;
 
         bool mAddedTexture = false;
+        std::string mModelName;
         std::string mDirectory; // For texture loading
+
+        // Animation data
+        std::unordered_map<std::string, BoneInfo> mBoneInfoMap;
+        int mBoneCounter = 0;
+
+        bool mHasAnimations = false;
+        glm::vec4 mAnimationTransformData = glm::vec4(0.f); // xyz = center, w = inv scale
+
+        friend class AnimationLibrary;
+        const aiScene* mScene = nullptr;
     };
 }

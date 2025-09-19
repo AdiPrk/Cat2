@@ -49,9 +49,11 @@ namespace Dog
             DescriptorWriter writer(*uniform.GetDescriptorLayout(), *uniform.GetDescriptorPool());
 
             VkDescriptorBufferInfo bufferInfo = uniform.GetUniformBuffer(1, frameIndex)->DescriptorInfo();
+            VkDescriptorBufferInfo bufferInfo2 = uniform.GetUniformBuffer(2, frameIndex)->DescriptorInfo();
 
             writer.WriteImage(0, imageInfos.data(), static_cast<uint32_t>(imageInfos.size()));
             writer.WriteBuffer(1, &bufferInfo);
+            writer.WriteBuffer(2, &bufferInfo2);
 
             writer.Build(uniform.GetDescriptorSets()[frameIndex]);
         }

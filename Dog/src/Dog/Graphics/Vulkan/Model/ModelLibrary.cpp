@@ -75,10 +75,18 @@ namespace Dog
         {
             for (auto& mesh : model->mMeshes)
             {
-                if (mesh.diffuseTexturePath.empty()) continue;
-                
-                uint32_t ind = mTextureLibrary.AddTexture(mesh.diffuseTexturePath);
-                mesh.diffuseTextureIndex = ind;
+                if (mesh.diffuseTexturePath.empty())
+                {
+                    if (!mesh.mTextureData || mesh.mTextureSize == 0) continue;
+
+                    uint32_t ind = mTextureLibrary.AddTexture(mesh.mTextureData.get(), mesh.mTextureSize, "EmbeddedTexture_" + std::to_string(mesh.mMeshID));
+                    mesh.diffuseTextureIndex = ind;
+                }
+                else 
+                {
+                    uint32_t ind = mTextureLibrary.AddTexture(mesh.diffuseTexturePath);
+                    mesh.diffuseTextureIndex = ind;
+                }
             }
         }
     }

@@ -15,7 +15,8 @@ namespace Dog
 
     const UniformSettings instanceUniformSettings = UniformSettings(InstanceUniformInit)
         .AddISBinding(VK_SHADER_STAGE_FRAGMENT_BIT, TextureLibrary::MAX_TEXTURE_COUNT)
-        .AddSSBOBinding(VK_SHADER_STAGE_VERTEX_BIT, sizeof(InstanceUniforms), 100);
+        .AddSSBOBinding(VK_SHADER_STAGE_VERTEX_BIT, sizeof(InstanceUniforms), InstanceUniforms::MAX_INSTANCES)
+        .AddSSBOBinding(VK_SHADER_STAGE_VERTEX_BIT, sizeof(glm::mat4), 100);
 
 
 }

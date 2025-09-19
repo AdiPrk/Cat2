@@ -12,6 +12,14 @@ namespace Dog {
         ~Entity();
 
         template<typename T, typename... Args>
+        T& TryAddComponent(Args&&... args) {
+            if (!HasComponent<T>()) {
+                return AddComponent<T>(std::forward<Args>(args)...);
+            }
+            return GetComponent<T>();
+        }
+
+        template<typename T, typename... Args>
         T& AddComponent(Args&&... args) {
             return entities->emplace<T>(handle, std::forward<Args>(args)...);
         }
