@@ -85,7 +85,7 @@ namespace Dog
         al->GetAnimator(0)->UpdateAnimation(dt);
         
         // Add the scene render pass
-        rg->add_pass(
+        rg->AddPass(
             "ScenePass",
             [&](RGPassBuilder& builder) {
                 builder.writes("SceneColor");

@@ -37,7 +37,7 @@ namespace Dog
 			return;
 		}
 		
-		rr->renderGraph->add_pass(
+		rr->renderGraph->AddPass(
 			"ImGuiPass",
 			[&](RGPassBuilder& builder) {
 				builder.reads("SceneColor");

@@ -64,10 +64,10 @@ namespace Dog
         }
 
         // Start a new render graph!
-        rg->clear();
+        rg->Clear();
 
         // Import resources!
-        rg->import_texture(
+        rg->ImportTexture(
             "SceneColor",
             rr->sceneImage,
             rr->sceneImageView,
@@ -75,7 +75,7 @@ namespace Dog
             rr->swapChain->GetImageFormat()
         );
 
-        rg->import_texture(
+        rg->ImportTexture(
             "SceneDepth",
             rr->mDepthImage,
             rr->mDepthImageView,
@@ -83,7 +83,7 @@ namespace Dog
             rr->swapChain->FindDepthFormat()
         );
 
-        rg->import_backBuffer(
+        rg->ImportBackbuffer(
             "BackBuffer",
             rr->swapChain->GetImage(),
             rr->swapChain->GetImageView(),
@@ -109,7 +109,7 @@ namespace Dog
         VkCommandBuffer commandBuffer = rr->commandBuffers[rr->currentFrameIndex];
 
         // Execute the graph
-        rr->renderGraph->execute(commandBuffer, rr->device->getDevice());
+        rr->renderGraph->Execute(commandBuffer, rr->device->getDevice());
 
         // --- End Graph ---
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {

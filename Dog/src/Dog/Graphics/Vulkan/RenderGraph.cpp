@@ -13,7 +13,7 @@ namespace Dog
         m_pass.readTargets.push_back(handleName);
     }
 
-    RGResourceHandle RenderGraph::import_texture(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format, bool backBuffer)
+    RGResourceHandle RenderGraph::ImportTexture(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format, bool backBuffer)
     {
         RGResource resource;
         resource.name = name;
@@ -24,29 +24,17 @@ namespace Dog
         resource.currentLayout = VK_IMAGE_LAYOUT_UNDEFINED;
         resource.isBackBuffer = backBuffer;
 
-        m_resources.push_back(resource);
-        m_resourceLookup[name] = static_cast<uint32_t>(m_resources.size() - 1);
-        return { static_cast<uint32_t>(m_resources.size() - 1) };
+        mResources.push_back(resource);
+        mResourceLookup[name] = static_cast<uint32_t>(mResources.size() - 1);
+        return { static_cast<uint32_t>(mResources.size() - 1) };
     }
 
-    RGResourceHandle RenderGraph::import_backBuffer(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format)
+    RGResourceHandle RenderGraph::ImportBackbuffer(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format)
     {
-        return import_texture(name, image, view, extent, format, true);
+        return ImportTexture(name, image, view, extent, format, true);
     }
 
-    RGResourceHandle RenderGraph::create_texture(const char* name, VkExtent2D extent, VkFormat format)
-    {
-        RGResource new_resource;
-        new_resource.name = name;
-        new_resource.extent = extent;
-        new_resource.format = format;
-
-        // Resource should be created in graph but we're temporarily making it in renderer once instead to get things running
-        m_resources.push_back(new_resource);
-        return { static_cast<uint32_t>(m_resources.size() - 1) };
-    }
-
-    void RenderGraph::add_pass(const char* name,
+    void RenderGraph::AddPass(const char* name,
         std::function<void(RGPassBuilder&)>&& setup,
         std::function<void(VkCommandBuffer)>&& execute)
     {
@@ -58,20 +46,20 @@ namespace Dog
         RGPassBuilder builder(pass);
         pass.setupCallback(builder);
 
-        m_passes.push_back(pass);
+        mPasses.push_back(pass);
     }
 
-    void RenderGraph::execute(VkCommandBuffer cmd, VkDevice device)
+    void RenderGraph::Execute(VkCommandBuffer cmd, VkDevice device)
     {
-        for (const auto& pass : m_passes)
+        for (const auto& pass : mPasses)
         {
 
             // --- 1. Automatic Barrier Insertion (Image Layout Transitions) ---
 
             for (const auto& handleName : pass.readTargets)
             {
-                RGResourceHandle handle = get_resource_handle(handleName);
-                RGResource& resource = m_resources[handle.index];
+                RGResourceHandle handle = GetResourceHandle(handleName);
+                RGResource& resource = mResources[handle.index];
                 if (resource.currentLayout != VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
                 {
                     VkImageMemoryBarrier barrier{};
@@ -101,8 +89,8 @@ namespace Dog
 
             for (const auto& handleName : pass.writeTargets)
             {
-                RGResourceHandle handle = get_resource_handle(handleName);
-                RGResource& resource = m_resources[handle.index];
+                RGResourceHandle handle = GetResourceHandle(handleName);
+                RGResource& resource = mResources[handle.index];
 
                 // Check if it's a depth format
                 bool isDepth = (resource.format == VK_FORMAT_D32_SFLOAT);
@@ -148,8 +136,8 @@ namespace Dog
                 RGResource* colorTarget = nullptr;
                 RGResource* depthTarget = nullptr;
                 for (const auto& handleName : pass.writeTargets) {
-                    RGResourceHandle handle = get_resource_handle(handleName);
-                    RGResource& res = m_resources[handle.index];
+                    RGResourceHandle handle = GetResourceHandle(handleName);
+                    RGResource& res = mResources[handle.index];
                     if (res.format == VK_FORMAT_D32_SFLOAT) { // Or your chosen format
                         depthTarget = &res;
                     }
@@ -198,10 +186,10 @@ namespace Dog
 
         // --- 3. Final Transition for Presentation ---
         // After all passes, transition the backbuffer for presenting.
-        if (!m_resources.empty())
+        if (!mResources.empty())
         {
             RGResource* finalBackbuffer = nullptr;
-            for (auto& resource : m_resources)
+            for (auto& resource : mResources)
             {
                 if (resource.isBackBuffer)
                 {
@@ -238,26 +226,26 @@ namespace Dog
         }
     }
 
-    void RenderGraph::clear()
+    void RenderGraph::Clear()
     {
-        m_passes.clear();
-        m_resources.clear();
+        mPasses.clear();
+        mResources.clear();
     }
 
-    void RenderGraph::resize(uint32_t width, uint32_t height)
+    void RenderGraph::Resize(uint32_t width, uint32_t height)
     {
         // resize all resources extents
-        for (auto& resource : m_resources)
+        for (auto& resource : mResources)
         {
             resource.extent.width = width;
             resource.extent.height = height;
         }
     }
 
-    RGResourceHandle RenderGraph::get_resource_handle(const std::string& name) const
+    RGResourceHandle RenderGraph::GetResourceHandle(const std::string& name) const
     {
-        auto it = m_resourceLookup.find(name);
-        if (it != m_resourceLookup.end()) {
+        auto it = mResourceLookup.find(name);
+        if (it != mResourceLookup.end()) {
             return { it->second };
         }
 

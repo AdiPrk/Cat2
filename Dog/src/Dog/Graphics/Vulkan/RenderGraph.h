@@ -63,31 +63,29 @@ namespace Dog
         RenderGraph() = default;
 
         // Imports an existing, externally managed image (like the swapchain) into the graph.
-        RGResourceHandle import_texture(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format, bool backBuffer = false);
-        RGResourceHandle import_backBuffer(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format);
-
-        // Create a transient texture owned by the graph
-        RGResourceHandle create_texture(const char* name, VkExtent2D extent, VkFormat format);
+        RGResourceHandle ImportTexture(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format, bool backBuffer = false);
+        RGResourceHandle ImportBackbuffer(const char* name, VkImage image, VkImageView view, VkExtent2D extent, VkFormat format);
 
         // Adds a new pass to the graph. The setup callback declares dependencies.
-        void add_pass(const char* name,
+        void AddPass(const char* name,
             std::function<void(RGPassBuilder&)>&& setup,
             std::function<void(VkCommandBuffer)>&& execute);
 
         // Compiles and executes the graph, recording commands into the provided buffer.
-        void execute(VkCommandBuffer cmd, VkDevice device);
+        void Execute(VkCommandBuffer cmd, VkDevice device);
 
         // Clears all passes and resources for the next frame.
-        void clear();
+        void Clear();
 
         // Resize
-        void resize(uint32_t width, uint32_t height);
+        void Resize(uint32_t width, uint32_t height);
 
-        RGResourceHandle get_resource_handle(const std::string& name) const;
 
     private:
-        std::vector<RGResource> m_resources;
-        std::vector<RGPass> m_passes;
-        std::unordered_map<std::string, RGResourceHandle> m_resourceLookup;
+        RGResourceHandle GetResourceHandle(const std::string& name) const;
+
+        std::vector<RGResource> mResources;
+        std::vector<RGPass> mPasses;
+        std::unordered_map<std::string, RGResourceHandle> mResourceLookup;
     };
 }
