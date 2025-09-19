@@ -265,10 +265,6 @@ namespace Dog
 		{
             DOG_CRITICAL("Cannot create graphics pipeline: no pipelineLayout provided in configInfo");
 		}
-		//if (configInfo.renderPass == VK_NULL_HANDLE)
-		//{
-        //    DOG_CRITICAL("Cannot create graphics pipeline: no renderPass provided in configInfo");
-		//}
 
 		// Read code files
 		std::ifstream vertSPVFile(mSpvVertPath, std::ios::binary);
@@ -295,8 +291,6 @@ namespace Dog
 
 			Shader::CreateShaderModule(device, vertShaderSPV, &mVertShaderModule);
 			Shader::CreateShaderModule(device, fragShaderSPV, &mFragShaderModule);
-
-            DOG_WARN("Used .spv for shaders - No Recompilation");
 		}
 
 		//Make create infos for vertex and fragment shader stages

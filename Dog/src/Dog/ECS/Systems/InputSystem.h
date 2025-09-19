@@ -2,7 +2,7 @@
 
 #include "ISystem.h"
 
-#include "Input/inputMap.h"
+#include "Utils/InputMap.h"
 
 struct GLFWwindow;
 struct GLFWcursor;

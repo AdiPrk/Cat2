@@ -85,8 +85,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(SolutionDir)ImGui\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ImGui.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <AdditionalOptions>/ignore:4099
@@ -132,8 +132,8 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlibd1.dll" "$(OutDir)" /Y
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(SolutionDir)ImGui\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ImGui.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
@@ -177,8 +177,8 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(SolutionDir)ImGui\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\msdfgen\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ImGui.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4099
  %(AdditionalOptions)</AdditionalOptions>
     </Link>
@@ -203,71 +203,6 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Dependencies\imgui\backends\imgui_impl_glfw.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependencies\imgui\backends\imgui_impl_opengl3.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependencies\imgui\backends\imgui_impl_vulkan.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependencies\imgui\GraphEditor.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependencies\imgui\ImCurveEdit.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependencies\imgui\ImGradient.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependencies\imgui\imgui.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependencies\imgui\imgui_demo.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependencies\imgui\imgui_draw.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependencies\imgui\imgui_stdlib.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependencies\imgui\imgui_tables.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependencies\imgui\imgui_widgets.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependencies\imgui\ImSequencer.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Ship|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="src\Dog\ECS\Entities\Components.cpp" />
     <ClCompile Include="src\Dog\ECS\Entities\Entity.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\EditorResource.cpp" />
@@ -322,6 +257,23 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dependencies\imgui\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="Dependencies\imgui\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="Dependencies\imgui\backends\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="Dependencies\imgui\backends\imgui_impl_vulkan.h" />
+    <ClInclude Include="Dependencies\imgui\GraphEditor.h" />
+    <ClInclude Include="Dependencies\imgui\imconfig.h" />
+    <ClInclude Include="Dependencies\imgui\ImCurveEdit.h" />
+    <ClInclude Include="Dependencies\imgui\ImGradient.h" />
+    <ClInclude Include="Dependencies\imgui\imgui.h" />
+    <ClInclude Include="Dependencies\imgui\ImGuizmo.h" />
+    <ClInclude Include="Dependencies\imgui\imgui_internal.h" />
+    <ClInclude Include="Dependencies\imgui\imgui_stdlib.h" />
+    <ClInclude Include="Dependencies\imgui\ImSequencer.h" />
+    <ClInclude Include="Dependencies\imgui\imstb_rectpack.h" />
+    <ClInclude Include="Dependencies\imgui\imstb_textedit.h" />
+    <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
+    <ClInclude Include="Dependencies\imgui\ImZoomSlider.h" />
     <ClInclude Include="Dependencies\nlohmann\json.hpp" />
     <ClInclude Include="src\Dog\ECS\Entities\Components.h" />
     <ClInclude Include="src\Dog\ECS\Entities\Entity.h" />
@@ -360,7 +312,7 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
     <ClInclude Include="src\Dog\Graphics\Vulkan\Core\Device.h" />
     <ClInclude Include="src\Dog\Graphics\Window\FrameRate.h" />
     <ClInclude Include="src\Dog\Graphics\Window\Window.h" />
-    <ClInclude Include="src\Dog\Input\inputMap.h" />
+    <ClInclude Include="src\Dog\Utils\InputMap.h" />
     <ClInclude Include="src\Dog\Engine.h" />
     <ClInclude Include="src\Dog\Logger\Logger.h" />
     <ClInclude Include="src\Dog\ECS\Systems\ISystem.h" />
