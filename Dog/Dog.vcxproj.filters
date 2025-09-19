@@ -112,4 +112,9 @@
   <ItemGroup>
     <None Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.inl" />
   </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\*.*" />
+    <CustomBuild Include="Assets\Shaders\*.*" />
+    <CustomBuild Include="Assets\Shaders\*.*" />
+  </ItemGroup>
 </Project>

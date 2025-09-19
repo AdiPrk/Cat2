@@ -270,66 +270,33 @@ namespace Dog
         //    DOG_CRITICAL("Cannot create graphics pipeline: no renderPass provided in configInfo");
 		//}
 
-		//Read code files
-		bool useSPV = !RecompileShaders;
-		if (useSPV)
+		// Read code files
+		std::ifstream vertSPVFile(mSpvVertPath, std::ios::binary);
+		std::ifstream fragSPVFile(mSpvFragPath, std::ios::binary);
+
+		if (vertSPVFile.is_open() && fragSPVFile.is_open())
 		{
-			// check if spv exist
-			std::ifstream vertSPVFile(mSpvVertPath, std::ios::binary);
-			std::ifstream fragSPVFile(mSpvFragPath, std::ios::binary);
+			// read spv files
+			vertSPVFile.seekg(0, std::ios::end);
+			size_t vertSPVFileSize = vertSPVFile.tellg();
+			vertSPVFile.seekg(0, std::ios::beg);
 
-			if (vertSPVFile.is_open() && fragSPVFile.is_open())
-			{
-				// read spv files
-				vertSPVFile.seekg(0, std::ios::end);
-				size_t vertSPVFileSize = vertSPVFile.tellg();
-				vertSPVFile.seekg(0, std::ios::beg);
-
-				std::vector<uint32_t> vertShaderSPV(vertSPVFileSize / sizeof(uint32_t));
-				vertSPVFile.read(reinterpret_cast<char*>(vertShaderSPV.data()), vertSPVFileSize);
-				vertSPVFile.close();
-
-				fragSPVFile.seekg(0, std::ios::end);
-				size_t fragSPVFileSize = fragSPVFile.tellg();
-				fragSPVFile.seekg(0, std::ios::beg);
-
-				std::vector<uint32_t> fragShaderSPV(fragSPVFileSize / sizeof(uint32_t));
-				fragSPVFile.read(reinterpret_cast<char*>(fragShaderSPV.data()), fragSPVFileSize);
-				fragSPVFile.close();
-
-				Shader::CreateShaderModule(device, vertShaderSPV, &mVertShaderModule);
-				Shader::CreateShaderModule(device, fragShaderSPV, &mFragShaderModule);
-
-                DOG_WARN("Used .spv for shaders - No Recompilation");
-			}
-			else
-			{
-				useSPV = false;
-			}
-		}
-
-		if (!useSPV)
-		{
-			const std::string& vertCode = Shader::ReadShader(mVertPath);
-			const std::string& fragCode = Shader::ReadShader(mFragPath);
-
-			//Compile shaders
-			std::vector<uint32_t> vertShaderSPV = Shader::CompileGLSLtoSPV(vertCode, EShLangVertex, mVertPath);
-			std::vector<uint32_t> fragShaderSPV = Shader::CompileGLSLtoSPV(fragCode, EShLangFragment, mFragPath);
-
-			// save spv files
-			std::ofstream vertSPVFile(mSpvVertPath, std::ios::binary);
-			vertSPVFile.write(reinterpret_cast<const char*>(vertShaderSPV.data()), vertShaderSPV.size() * sizeof(uint32_t));
+			std::vector<uint32_t> vertShaderSPV(vertSPVFileSize / sizeof(uint32_t));
+			vertSPVFile.read(reinterpret_cast<char*>(vertShaderSPV.data()), vertSPVFileSize);
 			vertSPVFile.close();
 
-			std::ofstream fragSPVFile(mSpvFragPath, std::ios::binary);
-			fragSPVFile.write(reinterpret_cast<const char*>(fragShaderSPV.data()), fragShaderSPV.size() * sizeof(uint32_t));
+			fragSPVFile.seekg(0, std::ios::end);
+			size_t fragSPVFileSize = fragSPVFile.tellg();
+			fragSPVFile.seekg(0, std::ios::beg);
+
+			std::vector<uint32_t> fragShaderSPV(fragSPVFileSize / sizeof(uint32_t));
+			fragSPVFile.read(reinterpret_cast<char*>(fragShaderSPV.data()), fragSPVFileSize);
 			fragSPVFile.close();
 
 			Shader::CreateShaderModule(device, vertShaderSPV, &mVertShaderModule);
 			Shader::CreateShaderModule(device, fragShaderSPV, &mFragShaderModule);
 
-			DOG_INFO("Recompiling vert/frag shaders");
+            DOG_WARN("Used .spv for shaders - No Recompilation");
 		}
 
 		//Make create infos for vertex and fragment shader stages

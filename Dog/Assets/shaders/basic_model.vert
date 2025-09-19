@@ -24,11 +24,11 @@ struct Instance {
 };
 
 layout(std430, set = 1, binding = 1) buffer readonly InstanceDataBuffer {
-  Instance instances[DOG_MAX_INSTANCES];
+  Instance instances[10000];
 } instanceData;
 
 layout(set = 1, binding = 2) buffer readonly BoneBuffer {
-	mat4 finalBonesMatrices[DOG_MAX_BONES];
+	mat4 finalBonesMatrices[100];
 } animationData;
 
 void main() 
@@ -40,11 +40,11 @@ void main()
         // Yes animations
         bool validBoneFound = false;
 
-        for(int i = 0 ; i < DOG_MAX_BONE_INFLUENCE ; i++)
+        for(int i = 0 ; i < 4 ; i++)
         {
             if(boneIds[i] == -1) continue;
 
-            if(boneIds[i] >= DOG_MAX_BONES) 
+            if(boneIds[i] >= 100) 
             {
                 continue;
             }

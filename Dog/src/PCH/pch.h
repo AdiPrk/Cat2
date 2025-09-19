@@ -31,12 +31,6 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-// Shaderlang
-#include "glslang/Public/ShaderLang.h"
-
-// msdf
-#include <msdf-atlas-gen/msdf-atlas-gen.h>
-
 #include <string>
 #include <iostream>
 #include <fstream>

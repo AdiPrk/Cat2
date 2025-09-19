@@ -29,6 +29,7 @@ namespace Dog {
 #define DOG_TRACE(...)
 #define DOG_INFO(...)
 #define DOG_WARN(...)
-#define DOG_ERROR(...)
-#define DOG_CRITICAL(...)
+// Keep ERROR and CRITICAL for release builds as well
+#define DOG_ERROR(...)    ::Dog::Logger::GetLogger()->error(__VA_ARGS__)
+#define DOG_CRITICAL(...) ::Dog::Logger::GetLogger()->critical(__VA_ARGS__)
 #endif

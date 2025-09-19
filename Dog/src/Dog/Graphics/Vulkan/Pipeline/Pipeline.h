@@ -54,13 +54,6 @@ namespace Dog
 	class Pipeline
 	{
 	public:
-		// MUST BE TRUE to recompile shaders!
-		/*
-		* True: Read from .frag/.vert files and save to .spv files. This *always* recompiles shaders
-		* False: Try reading from .spv file directly. This will NOT recompile shaders. If file doesn't exist default to Option 1.
-		*/
-		static const bool RecompileShaders = true;
-
 		// Shader Directories
 		inline static const std::string ShaderDir = "Assets/shaders/";
 		inline static const std::string SpvDir = "Assets/shaders/spv/";
