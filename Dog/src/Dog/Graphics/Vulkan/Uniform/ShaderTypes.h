@@ -19,7 +19,7 @@ namespace Dog
 
     struct AnimationUniforms
     {
-        glm::mat4 boneMatrix;
+        VQS boneVQS;
 
         const static uint32_t MAX_BONES = 10000;
     };

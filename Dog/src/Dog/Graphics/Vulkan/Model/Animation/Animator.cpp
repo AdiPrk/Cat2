@@ -19,8 +19,7 @@ namespace Dog
         }
     }
 
-    mFinalBoneMatrices.resize(maxBoneID + 1);
-    std::fill(mFinalBoneMatrices.begin(), mFinalBoneMatrices.end(), glm::mat4(1.0f));
+    mFinalBoneVQS.resize(maxBoneID + 1);
   }
 
   void Animator::UpdateAnimation(float dt)
@@ -29,7 +28,8 @@ namespace Dog
     {
       mCurrentTime += mCurrentAnimation->GetTicksPerSecond() * dt;
       mCurrentTime = fmod(mCurrentTime, mCurrentAnimation->GetDuration());
-      CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), glm::mat4(1.0f));
+      VQS identity;
+      CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), identity);
     }
   }
 
@@ -38,7 +38,8 @@ namespace Dog
       if (mCurrentAnimation)
       {
           mCurrentTime = time;
-          CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), glm::mat4(1.0f));
+          VQS identity;
+          CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), identity);
       }
   }
 
@@ -48,31 +49,30 @@ namespace Dog
     mCurrentTime = 0.0f;
   }
 
-  void Animator::CalculateBoneTransform(int nodeIndex, const glm::mat4& parentTransform)
+  void Animator::CalculateBoneTransform(int nodeIndex, const VQS& parentTransform)
   {
     const AnimationNode& node = mCurrentAnimation->GetNode(nodeIndex);
     int nodeId = node.id;
-    const glm::mat4* nodeTransform = nullptr;
+    VQS nodeTransform;
 
     if (Bone* Bone = mCurrentAnimation->FindBone(nodeId))
     {
       Bone->Update(mCurrentTime);
-      nodeTransform = &Bone->GetLocalTransform();
+      nodeTransform = Bone->GetLocalTransform();
     }
     else
     {
-      nodeTransform = &node.transformation;
+      nodeTransform = node.transformation;
     }
 
-    glm::mat4 globalTransformation = parentTransform * *nodeTransform;
+    VQS globalTransformation = compose(parentTransform, nodeTransform);
 
     const auto& boneInfoMap = mCurrentAnimation->GetBoneIDMap();
-
     auto boneIt = boneInfoMap.find(nodeId);
     if (boneIt != boneInfoMap.end())
     {
-      const BoneInfo& info = boneIt->second;
-      mFinalBoneMatrices[info.id] = globalTransformation * info.offset;
+        const BoneInfo& info = boneIt->second;
+        mFinalBoneVQS[info.id] = compose(globalTransformation, info.vqsOffset);
     }
 
     for (int childIndex : node.childIndices)

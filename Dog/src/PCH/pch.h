@@ -30,6 +30,7 @@
 #include <glm/gtx/hash.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 #include <string>
 #include <iostream>
@@ -72,6 +73,7 @@
 // My files
 #include "Utils/Logger.h"
 #include "Utils/AssimpGlmHelper.h"
+#include "Graphics/Vulkan/Model/Animation/VQS.h"
 
 // Shared files
 #include "../../Common/src/Core.h"

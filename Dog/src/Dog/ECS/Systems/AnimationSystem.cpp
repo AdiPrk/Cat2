@@ -49,7 +49,7 @@ namespace Dog
                 animator->UpdateAnimationInstant(ac.AnimationTime);
             }
 
-            const auto& finalMatrices = animator->GetFinalBoneMatrices();
+            const auto& finalMatrices = animator->GetFinalBoneVQS();
             bonesMatrices.insert(bonesMatrices.end(), finalMatrices.begin(), finalMatrices.end());
             ac.BoneOffset = boneOffset;
             boneOffset += static_cast<uint32_t>(finalMatrices.size());

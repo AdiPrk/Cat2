@@ -296,6 +296,7 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
     <ClInclude Include="src\Dog\Graphics\Vulkan\Model\Animation\AnimationLibrary.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Model\Animation\Animator.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Model\Animation\Bone.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Model\Animation\VQS.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Model\Mesh.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Model\Model.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Model\ModelLibrary.h" />

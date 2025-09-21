@@ -8,6 +8,6 @@ namespace Dog
     {
         AnimationResource();
 
-        std::vector<glm::mat4> bonesMatrices;
+        std::vector<VQS> bonesMatrices;
     };
 }

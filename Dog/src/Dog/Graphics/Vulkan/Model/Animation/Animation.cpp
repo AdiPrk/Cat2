@@ -31,16 +31,34 @@ namespace Dog
             mNodes.clear();
 
             AnimationNode node;
-            node.transformation = aiMatToGlm(scene->mRootNode->mTransformation);
+            glm::mat4 rootTransformMat = aiMatToGlm(scene->mRootNode->mTransformation);
+
+            // 1. Decompose the root node's transform into an initial VQS
+            VQS rootVQS;
+            {
+                glm::vec3 s, t, sk;
+                glm::quat r;
+                glm::vec4 p;
+                glm::decompose(rootTransformMat, s, r, t, sk, p);
+                rootVQS.scale = s;
+                rootVQS.rotation = r;
+                rootVQS.translation = t;
+            }
+
+            // 2. Create VQS structs for the scale and center adjustments
+            VQS scaleVQS;
+            scaleVQS.scale = glm::vec3(model->GetModelScale());
+
+            VQS centerVQS;
+            centerVQS.translation = -model->GetModelCenter();
+
+            // 3. Compose the transforms together using your VQS compose function
+            // The order is the same: root * scale * center
+            VQS finalVQS = compose(compose(rootVQS, scaleVQS), centerVQS);
+
+            // 4. Store the final result
+            node.transformation = finalVQS;
             mNodes.push_back(node);
-
-            glm::vec3 center = model->GetModelCenter();
-            float scale = model->GetModelScale();
-
-            glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(scale));
-            glm::mat4 centerMatrix = glm::translate(glm::mat4(1.0f), -center);
-
-            mNodes[0].transformation = mNodes[0].transformation * scaleMatrix * centerMatrix;
         }
 
 
@@ -80,7 +98,21 @@ namespace Dog
         {
             AnimationNode node;
             node.id = nodeId;
-            node.transformation = aiMatToGlm(src->mTransformation);
+
+            glm::mat4 transform = aiMatToGlm(src->mTransformation);
+
+            VQS vqs;
+            {
+                glm::vec3 s, t, sk;
+                glm::quat r;
+                glm::vec4 p;
+                glm::decompose(transform, s, r, t, sk, p);
+                vqs.scale = s;
+                vqs.rotation = r;
+                vqs.translation = t;
+            }
+
+            node.transformation = vqs;
             mNodes.push_back(node);
 
             mNodes[parentIndex].childIndices.push_back(currentIndex);

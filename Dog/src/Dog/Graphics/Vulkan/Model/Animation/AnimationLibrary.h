@@ -15,7 +15,7 @@ namespace Dog
 		uint32_t AddAnimation(const std::string& animPath, Model* model);
         Animation* GetAnimation(uint32_t index);
         Animator* GetAnimator(uint32_t index);
-		const std::vector<glm::mat4>& GetAnimationMatrices();
+		const std::vector<VQS>& GetAnimationVQS();
 		void UpdateAnimations(float dt);
 		void UpdateAnimation(uint32_t index, float dt);
 
@@ -30,6 +30,6 @@ namespace Dog
         std::vector<std::unique_ptr<Animator>> mAnimators;
 
         std::unordered_map<std::string, uint32_t> mAnimationMap;
-        std::vector<glm::mat4> mAnimationMatrices;
+        std::vector<VQS> mAnimationVQS;
 	};
 }

@@ -219,7 +219,20 @@ namespace Dog
 
             if (mBoneInfoMap.find(boneName) == mBoneInfoMap.end())
             {
-                BoneInfo newBoneInfo(mBoneCounter, aiMatToGlm(bone->mOffsetMatrix));
+                glm::mat4 offset = aiMatToGlm(bone->mOffsetMatrix);
+                glm::vec3 scale;
+                glm::quat rotation;
+                glm::vec3 translation;
+                glm::vec3 skew;
+                glm::vec4 perspective;
+                glm::decompose(offset, scale, rotation, translation, skew, perspective);
+
+                VQS vqs;
+                vqs.scale = scale;
+                vqs.rotation = rotation;
+                vqs.translation = translation;
+
+                BoneInfo newBoneInfo(mBoneCounter, offset, vqs);
 
                 mBoneInfoMap[boneName] = newBoneInfo;
                 boneID = mBoneCounter++;

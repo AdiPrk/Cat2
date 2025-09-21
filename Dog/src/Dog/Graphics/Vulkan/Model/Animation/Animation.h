@@ -17,7 +17,7 @@ namespace Dog
   // This struct is used when creating the animation data
   struct AnimationNode
   {
-    glm::mat4 transformation;
+    VQS transformation;
     int id;
     std::vector<int> childIndices;
   };

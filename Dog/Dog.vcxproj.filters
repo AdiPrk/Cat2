@@ -116,11 +116,13 @@
     <ClInclude Include="Dependencies\imgui\ImZoomSlider.h" />
     <ClInclude Include="src\Dog\ECS\Systems\AnimationSystem.h" />
     <ClInclude Include="src\Dog\ECS\Resources\AnimationResource.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Model\Animation\VQS.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.inl" />
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />

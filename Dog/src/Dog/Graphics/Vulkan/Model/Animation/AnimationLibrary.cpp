@@ -57,17 +57,17 @@ namespace Dog
         return mAnimators[index].get();
     }
 
-    const std::vector<glm::mat4>& AnimationLibrary::GetAnimationMatrices()
+    const std::vector<VQS>& AnimationLibrary::GetAnimationVQS()
     {
-        mAnimationMatrices.clear();
+        mAnimationVQS.clear();
 
         for (const auto& animator : mAnimators)
         {
-            const auto& finalMatrices = animator->GetFinalBoneMatrices();
-            mAnimationMatrices.insert(mAnimationMatrices.end(), finalMatrices.begin(), finalMatrices.end());
+            const auto& finalVQS = animator->GetFinalBoneVQS();
+            mAnimationVQS.insert(mAnimationVQS.end(), finalVQS.begin(), finalVQS.end());
         }
 
-        return mAnimationMatrices;
+        return mAnimationVQS;
     }
 
     void AnimationLibrary::UpdateAnimations(float dt)

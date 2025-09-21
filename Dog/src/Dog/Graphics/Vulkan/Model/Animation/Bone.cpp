@@ -8,28 +8,19 @@ namespace Dog
     // default ctor required for some stl containers
     Bone::Bone()
         : mID(-1)
-        , mLocalTransform(1.0f)
-        , mPositionMatrix(1.0f)
-        , mRotationMatrix(1.0f)
-        , mScalingMatrix(1.0f)
+        , mLocalTransform()
     {
     }
 
     Bone::Bone(int ID)
         : mID(ID)
-        , mLocalTransform(1.0f)
-        , mPositionMatrix(1.0f)
-        , mRotationMatrix(1.0f)
-        , mScalingMatrix(1.0f)
+        , mLocalTransform()
     {
     }
 
     Bone::Bone(int ID, const aiNodeAnim* channel)
         : mID(ID)
-        , mLocalTransform(1.0f)
-        , mPositionMatrix(1.0f)
-        , mRotationMatrix(1.0f)
-        , mScalingMatrix(1.0f)
+        , mLocalTransform()
     {
         for (int positionIndex = 0; positionIndex < channel->mNumPositionKeys; ++positionIndex)
         {
@@ -61,8 +52,6 @@ namespace Dog
         InterpolatePosition(animationTime);
         InterpolateRotation(animationTime);
         InterpolateScaling(animationTime);
-    
-        mLocalTransform = mPositionMatrix * mRotationMatrix * mScalingMatrix;
     }
 
     template<typename T>
@@ -100,7 +89,7 @@ namespace Dog
     {
         if (mPositions.size() == 1)
         {
-            mPositionMatrix = glm::translate(glm::mat4(1.0f), mPositions[0].position);
+            mLocalTransform.translation = mPositions[0].position;
             return;
         }
 
@@ -108,16 +97,14 @@ namespace Dog
         int p1Index = p0Index + 1;
 
         float scaleFactor = GetScaleFactor(mPositions[p0Index].time, mPositions[p1Index].time, animationTime);
-        glm::vec3 finalPosition = glm::mix(mPositions[p0Index].position, mPositions[p1Index].position, scaleFactor);
-
-        mPositionMatrix = glm::translate(glm::mat4(1.0f), finalPosition);
+        mLocalTransform.translation = glm::mix(mPositions[p0Index].position, mPositions[p1Index].position, scaleFactor);
     }
 
     void Bone::InterpolateRotation(float animationTime)
     {
         if (mRotations.size() == 1)
         {
-            mRotationMatrix = glm::toMat4(glm::normalize(mRotations[0].orientation));
+            mLocalTransform.rotation = glm::normalize(mRotations[0].orientation);
             return;
         }
 
@@ -125,16 +112,16 @@ namespace Dog
         int p1Index = p0Index + 1;
 
         float scaleFactor = GetScaleFactor(mRotations[p0Index].time, mRotations[p1Index].time, animationTime);
-        glm::quat finalRotation = glm::slerp(mRotations[p0Index].orientation, mRotations[p1Index].orientation, scaleFactor);
 
-        mRotationMatrix = glm::toMat4(glm::normalize(finalRotation));
+        mLocalTransform.rotation = glm::slerp(mRotations[p0Index].orientation, mRotations[p1Index].orientation, scaleFactor);
+        mLocalTransform.rotation = glm::normalize(mLocalTransform.rotation); // Normalize after slerp
     }
 
     void Bone::InterpolateScaling(float animationTime)
     {
         if (mScales.size() == 1)
         {
-            mScalingMatrix = glm::scale(glm::mat4(1.0f), mScales[0].scale);
+            mLocalTransform.scale = mScales[0].scale;
             return;
         }
 
@@ -142,8 +129,6 @@ namespace Dog
         int p1Index = p0Index + 1;
 
         float scaleFactor = GetScaleFactor(mScales[p0Index].time, mScales[p1Index].time, animationTime);
-        glm::vec3 finalScale = glm::mix(mScales[p0Index].scale, mScales[p1Index].scale, scaleFactor);
-
-        mScalingMatrix = glm::scale(glm::mat4(1.0f), finalScale);
+        mLocalTransform.scale = glm::mix(mScales[p0Index].scale, mScales[p1Index].scale, scaleFactor);
     }
 }

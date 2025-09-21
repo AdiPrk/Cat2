@@ -2,41 +2,42 @@
 
 namespace Dog
 {
-  struct BoneInfo
-  {
-    int id; // index into finalBoneMatrices
-    glm::mat4 offset; // offset from model to bone space
+    struct BoneInfo
+    {
+        int id;           // index into finalBoneMatrices
+        glm::mat4 offset; // offset from model to bone space
+        VQS vqsOffset;
 
-    BoneInfo() : id(0), offset(1.0f) {}
-    BoneInfo(int ID, const glm::mat4& offsetMatrix) : id(ID), offset(offsetMatrix) {}
-  };
+        BoneInfo() : id(0), offset(1.0f) {}
+        BoneInfo(int ID, const glm::mat4& offsetMatrix, VQS vqs) : id(ID), offset(offsetMatrix), vqsOffset(vqs) {}
+    };
 
-  struct KeyPosition
-  {
-    glm::vec3 position;
-    float time;
+    struct KeyPosition
+    {
+        glm::vec3 position;
+        float time;
 
-    KeyPosition() : position(0.0f), time(0.0f) {}
-    KeyPosition(const glm::vec3& pos, float timeStamp) : position(pos), time(timeStamp) {}
-  };
+        KeyPosition() : position(0.0f), time(0.0f) {}
+        KeyPosition(const glm::vec3& pos, float timeStamp) : position(pos), time(timeStamp) {}
+    };
 
-  struct KeyRotation
-  {
-    glm::quat orientation;
-    float time;
+    struct KeyRotation
+    {
+        glm::quat orientation;
+        float time;
 
-    KeyRotation() : orientation(1.0f, 0.0f, 0.0f, 0.0f), time(0.0f) {}
-    KeyRotation(const glm::quat& ori, float timeStamp) : orientation(ori), time(timeStamp) {}
-  };
+        KeyRotation() : orientation(1.0f, 0.0f, 0.0f, 0.0f), time(0.0f) {}
+        KeyRotation(const glm::quat& ori, float timeStamp) : orientation(ori), time(timeStamp) {}
+    };
 
-  struct KeyScale
-  {
-    glm::vec3 scale;
-    float time;
+    struct KeyScale
+    {
+        glm::vec3 scale;
+        float time;
 
-    KeyScale() : scale(1.0f), time(0.0f) {}
-    KeyScale(const glm::vec3& scale, float timeStamp) : scale(scale), time(timeStamp) {}
-  };
+        KeyScale() : scale(1.0f), time(0.0f) {}
+        KeyScale(const glm::vec3& scale, float timeStamp) : scale(scale), time(timeStamp) {}
+    };
 
   class Bone
   {
@@ -48,7 +49,7 @@ namespace Dog
 
     void Update(float animationTime);
 
-    inline const glm::mat4& GetLocalTransform() const noexcept { return mLocalTransform; }
+    inline const VQS& GetLocalTransform() const noexcept { return mLocalTransform; }
 
     int GetBoneID() const { return mID; }
 
@@ -79,10 +80,7 @@ namespace Dog
     std::vector<KeyRotation> mRotations;
     std::vector<KeyScale> mScales;
 
-    glm::mat4 mLocalTransform;
-    glm::mat4 mPositionMatrix;
-    glm::mat4 mRotationMatrix;
-    glm::mat4 mScalingMatrix;
+    VQS mLocalTransform;
     int mID;
   };
 }
