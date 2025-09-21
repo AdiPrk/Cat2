@@ -38,29 +38,29 @@ void main()
     vec3 totalNormal = vec3(0.0f);
     
     uint offset = instanceData.instances[gl_InstanceIndex].boneOffset;
+    bool validBoneFound = false;
     if (offset != 10001)
     {
-        bool validBoneFound = false;
-
-        for (uint i = offset; i < offset + 4 ; i++)
+        for (uint i = 0; i < 4 ; i++)
         {
             if(boneIds[i] == -1) continue;
             if(boneIds[i] >= 10000) continue;
 
-            vec4 localPosition = animationData.finalBonesMatrices[boneIds[i]] * vec4(position,1.0f);
+            vec4 localPosition = animationData.finalBonesMatrices[offset + boneIds[i]] * vec4(position,1.0f);
             totalPosition += localPosition * weights[i];
 
-            vec3 localNormal = mat3(animationData.finalBonesMatrices[boneIds[i]]) * normal;
+            vec3 localNormal = mat3(animationData.finalBonesMatrices[offset + boneIds[i]]) * normal;
             totalNormal += localNormal * weights[i];
 
             validBoneFound = true;
         }
 
-        if (!validBoneFound || totalPosition == vec4(0.0))
-        {
-		    totalPosition = vec4(position, 1.0);
-	    }
     }
+    
+    if (!validBoneFound || totalPosition == vec4(0.0))
+    {
+		totalPosition = vec4(position, 1.0);
+	}
 
     gl_Position = uniforms.projectionView * instanceData.instances[gl_InstanceIndex].model * vec4(totalPosition.xyz, 1.0);
 

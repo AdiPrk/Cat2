@@ -19,6 +19,7 @@ namespace Dog
     Animator(Animation* animation);
 
     void UpdateAnimation(float dt);
+    void UpdateAnimationInstant(float time);
     void PlayAnimation(Animation* pAnimation);
     void CalculateBoneTransform(int nodeIndex, const glm::mat4& parentTransform);
 

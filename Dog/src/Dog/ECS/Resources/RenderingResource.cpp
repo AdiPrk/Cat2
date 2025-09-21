@@ -1,4 +1,5 @@
 #include <PCH/pch.h>
+
 #include "RenderingResource.h"
 
 #include "Graphics/Vulkan/Core/Device.h"
@@ -36,12 +37,16 @@ namespace Dog
         textureLibrary = std::make_unique<TextureLibrary>(*device);
 
         modelLibrary = std::make_unique<ModelLibrary>(*device, *textureLibrary);
+        animationLibrary = std::make_unique<AnimationLibrary>();
+        
+        modelLibrary->AddModel("Assets/models/quad.obj");
+        modelLibrary->AddModel("Assets/models/TaylorDancing.glb");
         modelLibrary->AddModel("Assets/models/jack_samba.glb");
+        animationLibrary->AddAnimation("Assets/models/TaylorDancing.glb", modelLibrary->GetModel("TaylorDancing"));
+        animationLibrary->AddAnimation("Assets/models/jack_samba.glb", modelLibrary->GetModel("jack_samba"));
         //modelLibrary->AddModel("Assets/models/okayu.pmx");
         //modelLibrary->AddModel("Assets/models/AlisaMikhailovna.fbx");
 
-        animationLibrary = std::make_unique<AnimationLibrary>();
-        animationLibrary->AddAnimation("Assets/models/jack_samba.glb", modelLibrary->GetModel(0));
 
         modelLibrary->LoadTextures();
 
@@ -92,10 +97,10 @@ namespace Dog
 
         //Create struct for holding allocation info for this command buffer
         VkCommandBufferAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;							//Set what info this is holding to command buffer allocate info
-        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;														//Set level to primary (Primary buffers can be submitted for execution but cant be called by other buffers)
-        allocInfo.commandPool = device->GetCommandPool();															//Simular to a string pool, this is pre-allocated memorey for commands so we dont have to allocate memory a lot
-        allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size()); //Tell the allocation info how many command buffers we are using
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandPool = device->GetCommandPool();
+        allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
 
         //Allocate the command buffers
         if (vkAllocateCommandBuffers(device->GetDevice(), &allocInfo, commandBuffers.data()) != VK_SUCCESS)

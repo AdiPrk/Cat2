@@ -55,6 +55,9 @@ namespace Dog
         std::string mModelName;
         std::string mDirectory; // For texture loading
 
+        friend class RenderSystem;
+        glm::mat4 mNormalizationMatrix;
+
         // Animation data
         std::unordered_map<std::string, BoneInfo> mBoneInfoMap;
         int mBoneCounter = 0;

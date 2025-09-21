@@ -2,6 +2,7 @@
 #include "Engine.h"
 
 #include "ECS/Systems/InputSystem.h"
+#include "ECS/Systems/AnimationSystem.h"
 #include "ECS/Systems/RenderSystem.h"
 #include "ECS/Systems/EditorSystem.h"
 #include "ECS/Systems/PresentSystem.h"
@@ -12,6 +13,7 @@
 #include "ECS/Resources/RenderingResource.h"
 #include "ECS/Resources/EditorResource.h"
 #include "ECS/Resources/SerializationResource.h"
+#include "ECS/Resources/AnimationResource.h"
 
 #include "Graphics/Vulkan/Core/Device.h"
 #include "Graphics/Window/FrameRate.h"
@@ -29,6 +31,7 @@ namespace Dog
         mEcs.AddSystem<InputSystem>();
         mEcs.AddSystem<CameraSystem>();
         mEcs.AddSystem<PresentSystem>();
+        mEcs.AddSystem<AnimationSystem>();
         mEcs.AddSystem<RenderSystem>();
         mEcs.AddSystem<EditorSystem>();
         // ---------------------------------
@@ -43,6 +46,7 @@ namespace Dog
         auto rr = mEcs.GetResource<RenderingResource>();
         mEcs.CreateResource<EditorResource>(*rr->device, *rr->swapChain, *wr->window);
         mEcs.CreateResource<SerializationResource>();
+        mEcs.CreateResource<AnimationResource>();
         // ---------------------------------
 
         // Initialize ECS

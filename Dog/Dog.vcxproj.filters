@@ -46,6 +46,8 @@
     <ClCompile Include="src\Dog\Graphics\Vulkan\Model\Animation\Bone.cpp" />
     <ClCompile Include="src\Dog\Utils\AssimpGlmHelper.cpp" />
     <ClCompile Include="src\Dog\Graphics\Vulkan\Model\Animation\AnimationLibrary.cpp" />
+    <ClCompile Include="src\Dog\ECS\Systems\AnimationSystem.cpp" />
+    <ClCompile Include="src\Dog\ECS\Resources\AnimationResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dog\Engine.h" />
@@ -112,11 +114,14 @@
     <ClInclude Include="Dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
     <ClInclude Include="Dependencies\imgui\ImZoomSlider.h" />
+    <ClInclude Include="src\Dog\ECS\Systems\AnimationSystem.h" />
+    <ClInclude Include="src\Dog\ECS\Resources\AnimationResource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.inl" />
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />

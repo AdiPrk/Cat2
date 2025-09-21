@@ -148,20 +148,10 @@ namespace Dog
         glm::vec3 center = (mAABBmax + mAABBmin) * 0.5f;
         float invScale = 1.f / std::max({ size.x, size.y, size.z });
 
-        if (!HasAnimations())
-        {
-            for (Mesh& mesh : mMeshes)
-            {
-                for (Vertex& vertex : mesh.mVertices)
-                {
-                    vertex.position = (vertex.position - center) * invScale;
-                }
-            }
-        }
-        else
-        {
-            mAnimationTransform = glm::vec4(center, invScale);
-        }
+        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), -center);
+        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(invScale));
+        mNormalizationMatrix = scaleMatrix * translationMatrix;
+        mAnimationTransform = glm::vec4(center, invScale);
     }
 
     void Model::ProcessMaterials(aiMesh* mesh, Mesh& newMesh)

@@ -205,9 +205,11 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
   <ItemGroup>
     <ClCompile Include="src\Dog\ECS\Entities\Components.cpp" />
     <ClCompile Include="src\Dog\ECS\Entities\Entity.cpp" />
+    <ClCompile Include="src\Dog\ECS\Resources\AnimationResource.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\EditorResource.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\InputResource.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\SerializationResource.cpp" />
+    <ClCompile Include="src\Dog\ECS\Systems\AnimationSystem.cpp" />
     <ClCompile Include="src\Dog\ECS\Systems\CameraSystem.cpp" />
     <ClCompile Include="src\Dog\ECS\Systems\EditorSystem.cpp" />
     <ClCompile Include="src\Dog\ECS\Systems\InputSystem.cpp" />
@@ -277,9 +279,11 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
     <ClInclude Include="Dependencies\nlohmann\json.hpp" />
     <ClInclude Include="src\Dog\ECS\Entities\Components.h" />
     <ClInclude Include="src\Dog\ECS\Entities\Entity.h" />
+    <ClInclude Include="src\Dog\ECS\Resources\AnimationResource.h" />
     <ClInclude Include="src\Dog\ECS\Resources\EditorResource.h" />
     <ClInclude Include="src\Dog\ECS\Resources\InputResource.h" />
     <ClInclude Include="src\Dog\ECS\Resources\SerializationResource.h" />
+    <ClInclude Include="src\Dog\ECS\Systems\AnimationSystem.h" />
     <ClInclude Include="src\Dog\ECS\Systems\CameraSystem.h" />
     <ClInclude Include="src\Dog\ECS\Systems\EditorSystem.h" />
     <ClInclude Include="src\Dog\ECS\Systems\InputSystem.h" />

@@ -182,6 +182,11 @@ namespace Dog
                     vkCmdEndRendering(cmd);
                 }
             }
+            else
+            {
+                // Just execute that
+                pass.executeCallback(cmd);
+            }
         }
 
         // --- 3. Final Transition for Presentation ---

@@ -27,7 +27,16 @@ namespace Dog {
 
 	struct ModelComponent
 	{
-		uint32_t ModelIndex = 9999;
+		uint32_t ModelIndex = 0;
+	};
+
+	struct AnimationComponent
+	{
+        bool IsPlaying = true;
+        uint32_t AnimationIndex = 10001; // AnimationLibrary::INVALID_ANIMATION_INDEX
+        float AnimationTime = 0.0f;
+
+        uint32_t BoneOffset = 0; // Used internally
 	};
 
 	struct CameraComponent
@@ -35,5 +44,8 @@ namespace Dog {
 		float FOV = 45.0f;
 		float Near = 0.1f;
 		float Far = 1000.0f;
+
+        glm::vec3 Forward = glm::vec3(0.0f, 0.0f, -1.0f);
+        glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
 	};
 }

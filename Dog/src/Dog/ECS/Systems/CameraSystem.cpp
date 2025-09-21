@@ -39,12 +39,15 @@ namespace Dog
             const glm::vec3 rightDir{ forwardDir.z, 0.f, -forwardDir.x };
             const glm::vec3 upDir{ 0.f, -1.f, 0.f };
 
+            camera.Forward = forwardDir;
+            camera.Up = upDir;
+
             glm::vec3 moveDir{ 0.f };
 
             if (InputSystem::isKeyDown(Key::W)) moveDir += forwardDir;
             if (InputSystem::isKeyDown(Key::S)) moveDir -= forwardDir;
-            if (InputSystem::isKeyDown(Key::D)) moveDir -= rightDir;
-            if (InputSystem::isKeyDown(Key::A)) moveDir += rightDir;
+            if (InputSystem::isKeyDown(Key::A)) moveDir -= rightDir;
+            if (InputSystem::isKeyDown(Key::D)) moveDir += rightDir;
             if (InputSystem::isKeyDown(Key::E)) moveDir += upDir;
             if (InputSystem::isKeyDown(Key::Q)) moveDir -= upDir;
 
@@ -55,9 +58,7 @@ namespace Dog
             {
                 transform.Translation += mMoveSpeed * dt * glm::normalize(moveDir);
             }
-        }
-
-        
+        }        
         
     }
 }

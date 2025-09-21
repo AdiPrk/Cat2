@@ -9,7 +9,17 @@ namespace Dog
     mCurrentTime = 0.0;
     mCurrentAnimation = animation;
 
-    mFinalBoneMatrices.resize(Animation::MAX_BONES);
+    // resize the final bone matrices based on biggest bone ID in the animation
+    int maxBoneID = 0;
+    for (const auto& pair : mCurrentAnimation->GetBoneIDMap())
+    {
+        if (pair.second.id > maxBoneID)
+        {
+            maxBoneID = pair.second.id;
+        }
+    }
+
+    mFinalBoneMatrices.resize(maxBoneID + 1);
     std::fill(mFinalBoneMatrices.begin(), mFinalBoneMatrices.end(), glm::mat4(1.0f));
   }
 
@@ -21,6 +31,15 @@ namespace Dog
       mCurrentTime = fmod(mCurrentTime, mCurrentAnimation->GetDuration());
       CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), glm::mat4(1.0f));
     }
+  }
+
+  void Animator::UpdateAnimationInstant(float time)
+  {
+      if (mCurrentAnimation)
+      {
+          mCurrentTime = time;
+          CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), glm::mat4(1.0f));
+      }
   }
 
   void Animator::PlayAnimation(Animation* pAnimation)

@@ -6,7 +6,7 @@
 
 namespace Dog
 {
-    const uint32_t ModelLibrary::INVALID_MODEL_INDEX = 9999;
+    const uint32_t ModelLibrary::INVALID_MODEL_INDEX = 10001;
 
     ModelLibrary::ModelLibrary(Device& device, TextureLibrary& textureLibrary)
         : mDevice{ device }
@@ -31,16 +31,23 @@ namespace Dog
         
         uint32_t modelID = static_cast<uint32_t>(mModels.size());
         mModels.push_back(std::move(model));
-        mModelMap[filePath] = modelID;
+
+        std::string mModelName = std::filesystem::path(filePath).stem().string();
+        mModelMap[mModelName] = modelID;
         
         return modelID;
     }
 
     Model* ModelLibrary::GetModel(uint32_t index)
     {
+        if (index == INVALID_MODEL_INDEX)
+        {
+            return nullptr;
+        }
+
         if (index >= mModels.size())
         {
-            DOG_CRITICAL("Model ID {0} is out of range!", index);
+            DOG_WARN("Model ID {0} is out of range!", index);
             return nullptr;
         }
 

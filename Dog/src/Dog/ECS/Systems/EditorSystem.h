@@ -23,5 +23,6 @@ namespace Dog
         void RenderSceneWindow();
         void RenderEntitiesWindow();
         void RenderInspectorWindow();
+        void RenderSceneControls();
     };
 }

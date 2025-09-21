@@ -4,7 +4,7 @@
 
 namespace Dog
 {
-    const uint32_t AnimationLibrary::INVALID_ANIMATION_INDEX = 9999;
+    const uint32_t AnimationLibrary::INVALID_ANIMATION_INDEX = 10001;
 
     AnimationLibrary::AnimationLibrary()
     {
@@ -40,9 +40,10 @@ namespace Dog
     {
         if (index >= mAnimation.size())
         {
-            DOG_CRITICAL("Animation ID {0} is out of range!", index);
+            DOG_WARN("Animation ID {0} is out of range!", index);
             return nullptr;
         }
+
         return mAnimation[index].get();
     }
 
@@ -50,7 +51,7 @@ namespace Dog
     {
         if (index >= mAnimators.size())
         {
-            DOG_CRITICAL("Animator ID {0} is out of range!", index);
+            DOG_WARN("Animator ID {0} is out of range!", index);
             return nullptr;
         }
         return mAnimators[index].get();

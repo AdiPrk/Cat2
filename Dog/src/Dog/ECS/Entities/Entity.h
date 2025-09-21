@@ -34,6 +34,11 @@ namespace Dog {
             return entities->all_of<T>(handle);
         }
 
+        template<typename T>
+        void RemoveComponent() {
+            entities->remove<T>(handle);
+        }
+
         bool operator==(const Entity& other) const {
             return handle == other.handle;
         }
