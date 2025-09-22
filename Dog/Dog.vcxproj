@@ -85,8 +85,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\imgui\lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ImGui.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\imgui\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ImGuiDebug.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <AdditionalOptions>/ignore:4099
@@ -133,7 +133,7 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlibd1.dll" "$(OutDir)" /Y
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\spdlog\lib;$(ProjectDir)Dependencies\yaml-cpp\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\imgui\lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ImGui.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ImGuiRelease.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
@@ -178,7 +178,7 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\VulkanSDK\1.4.321.1\Lib;$(ProjectDir)Dependencies\glfw\lib-vc2022;$(ProjectDir)Dependencies\assimp\lib;$(ProjectDir)Dependencies\spdlog\lib;$(SolutionDir)Common\Dependencies\enet\lib;$(SolutionDir)Common\$(Platform)\$(Configuration)\;$(ProjectDir)Dependencies\imgui\lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ImGui.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ImGuiShip.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3_mt.lib;spdlog.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4099
  %(AdditionalOptions)</AdditionalOptions>
     </Link>

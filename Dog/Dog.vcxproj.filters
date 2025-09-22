@@ -130,5 +130,6 @@
     <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />
+    <CustomBuild Include="Assets\Shaders\*.*" />
   </ItemGroup>
 </Project>
