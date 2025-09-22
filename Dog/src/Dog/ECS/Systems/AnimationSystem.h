@@ -10,6 +10,6 @@ namespace Dog
         AnimationSystem() : ISystem("AnimationSystem") {};
         ~AnimationSystem() {}
 
-        void Update(float dt);
+        void Update(float dt) {}
     };
 }

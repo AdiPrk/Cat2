@@ -23,6 +23,16 @@ namespace Dog
 		CreateTextureImageView();
 	}
 
+	Texture::Texture(Device& device, const std::string& name, const unsigned char* textureData, uint32_t w, uint32_t h, uint32_t ch, VkFormat imageFormat)
+        : mDevice(device)
+        , mPath(name)
+        , mImageFormat(imageFormat)
+	{
+		UseLoadedPixels(const_cast<unsigned char*>(textureData), static_cast<int>(w), static_cast<int>(h), static_cast<int>(ch));
+		CreateTextureImage();
+        CreateTextureImageView();
+	}
+
 	Texture::Texture(Device& device, const std::string& name, const unsigned char* textureData, uint32_t textureSize, VkFormat imageFormat)
 		: mDevice(device)
 		, mPath(name)
@@ -72,7 +82,10 @@ namespace Dog
 		vmaUnmapMemory(mDevice.GetVmaAllocator(), stagingBufferAllocation);  // Unmap the memory after copy
 
 		// Free the pixel data
-		stbi_image_free(mPixels);
+		if (loadedPixels) 
+		{
+			stbi_image_free(mPixels);
+		}
 
 		//Set the usage flags for the image
 		VkImageUsageFlags usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
@@ -176,6 +189,7 @@ namespace Dog
 
 		// width * height * 4 (rgba)
 		mImageSize = mTexWidth * mTexHeight * 4;
+		loadedPixels = true;
 	}
 
 	void Texture::LoadPixelsFromMemory(const unsigned char* textureData, int textureSize)
@@ -185,12 +199,26 @@ namespace Dog
 		// Load in the pixel data
 		mPixels = stbi_load_from_memory(textureData, static_cast<int>(textureSize), &mTexWidth, &mTexHeight, &mTexChannels, STBI_rgb_alpha);
 
-		if (!mPixels) {
-            DOG_CRITICAL("stbi_load_from_memory failed");
+		if (mPixels == nullptr)
+		{
+			// This is the key debugging function!
+			const char* failureReason = stbi_failure_reason();
+			DOG_CRITICAL("Failed to load texture from memory. Reason: {}", failureReason);
+			DOG_CRITICAL("Texture Data Pointer: {}, Size: {}", (void*)textureData, textureSize);
 		}
 
 		// width * height * 4 (rgba)
 		mImageSize = mTexWidth * mTexHeight * 4;
+		loadedPixels = true;
+	}
+
+	void Texture::UseLoadedPixels(unsigned char* textureData, int texWidth, int texHeight, int numChannels)
+	{
+		mPixels = textureData;
+		mTexWidth = texWidth;
+		mTexHeight = texHeight;
+		mTexChannels = numChannels;
+        mImageSize = texWidth * texHeight * numChannels;
 	}
 
 	void Texture::CreateImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VmaMemoryUsage memoryUsage)

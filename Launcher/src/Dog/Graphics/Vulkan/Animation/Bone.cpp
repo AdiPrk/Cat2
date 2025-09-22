@@ -33,6 +33,7 @@ namespace Dog
     {
     }
 
+    /*
     Bone::Bone(int ID, const aiNodeAnim* channel)
         : mID(ID)
         , mLocalTransform(1.0f)
@@ -68,6 +69,7 @@ namespace Dog
             mScales.emplace_back(aiVecToGlm(scale), time);
         }
     }
+    */
 
     void Bone::Update(float animationTime)
     {
