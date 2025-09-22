@@ -14,7 +14,6 @@ int main(int argc, char* argv[])
     specs.serverAddress = "localhost";
     specs.serverPort = 7777;
 
-    Dog::Engine& Engine = Dog::Engine::Create(specs);
-
+    Dog::Engine Engine(specs);
     return Engine.Run("scene");
 }

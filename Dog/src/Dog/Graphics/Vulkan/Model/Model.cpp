@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "Mesh.h"
 #include "../Core/Buffer.h"
+#include <assimp/DefaultLogger.hpp>
 
 namespace Dog
 {
@@ -26,22 +27,26 @@ namespace Dog
         }
     }
 
-    const aiScene* Model::LoadMeshes(const std::string& filepath)
+    void Model::LoadMeshes(const std::string& filepath)
     {
-        static Assimp::Importer importer;
+        //Assimp::DefaultLogger::create("", Assimp::Logger::VERBOSE, aiDefaultLogStream_STDOUT);
 
-        const aiScene* scene = importer.ReadFile(filepath, aiProcessPreset_TargetRealtime_MaxQuality);
-        mScene = scene;
+        Assimp::Importer importer;
+        mScene = importer.ReadFile(filepath, aiProcessPreset_TargetRealtime_MaxQuality);
 
+        //static Assimp::Importer importer;
+        //
+        //mScene = importer.ReadFile(filepath, aiProcessPreset_TargetRealtime_MaxQuality);
+        
         // Check if the scene was loaded successfully
-        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+        if (!mScene || mScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !mScene->mRootNode)
         {
             DOG_CRITICAL("Assimp Error: {}", importer.GetErrorString());
-            return nullptr;
+            return;
         }
 
         // check how many animations are in this
-        if (scene->HasAnimations())
+        if (mScene->HasAnimations())
         {
             mHasAnimations = true;
         }
@@ -49,12 +54,10 @@ namespace Dog
         mDirectory = filepath.substr(0, filepath.find_last_of('/'));
         mModelName = std::filesystem::path(filepath).stem().string();
 
-        ProcessNode(scene->mRootNode);
+        ProcessNode(mScene->mRootNode);
 
         // Scale all meshes to fit in a 1x1x1 cube and translate to 0,0,0
         NormalizeModel();
-
-        return scene;
     }
 
     void Model::ProcessNode(aiNode* node)

@@ -23,9 +23,9 @@ namespace Dog {
     class Device {
     public:
 #ifdef NDEBUG
-        const bool enableValidationLayers = false;
+        bool enableValidationLayers = false;
 #else
-        const bool enableValidationLayers = true;
+        bool enableValidationLayers = true;
 #endif
 
         Device(Window& window);

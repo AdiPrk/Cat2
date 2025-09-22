@@ -32,7 +32,7 @@ namespace Dog
         void LoadModel(const std::string& filePath);
 
         // Load and process model using assimp
-        const aiScene* LoadMeshes(const std::string& filepath);
+        void LoadMeshes(const std::string& filepath);
         
         void ProcessNode(aiNode* node);
         Mesh& ProcessMesh(aiMesh* mesh);

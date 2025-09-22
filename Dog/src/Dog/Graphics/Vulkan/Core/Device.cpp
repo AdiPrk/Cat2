@@ -87,8 +87,10 @@ namespace Dog {
 
     void Device::createInstance() 
     {
-        if (enableValidationLayers && !checkValidationLayerSupport()) {
-            throw std::runtime_error("validation layers requested, but not available!");
+        if (enableValidationLayers && !checkValidationLayerSupport()) 
+        {
+            enableValidationLayers = false;
+            DOG_WARN("Validation layers not available!");
         }
 
         VkApplicationInfo appInfo = {};

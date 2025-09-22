@@ -25,19 +25,6 @@ namespace Dog
 		Engine(const EngineSpec& specs);
 		~Engine();
 
-		// Called by client to create the engine.
-		static Engine& Create(const EngineSpec& specs = {})
-		{
-			static Engine instance(specs);
-			return instance;
-		}
-
-		static Engine& Get()
-		{
-			return Create();
-		}
-
-
 		Engine(const Engine&) = delete;
 		Engine& operator=(const Engine&) = delete;
 
