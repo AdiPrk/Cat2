@@ -1,7 +1,6 @@
 #include <PCH/pch.h>
 #include "ModelLibrary.h"
 #include "Model.h"
-#include "ModelLoader/ModelLoader.h"
 
 #include "../Texture/TextureLibrary.h"
 
@@ -12,7 +11,6 @@ namespace Dog
     ModelLibrary::ModelLibrary(Device& device, TextureLibrary& textureLibrary)
         : mDevice{ device }
         , mTextureLibrary{ textureLibrary }
-        , mModelLoader{ std::make_unique<ModelLoader>() }
     {
     }
 
@@ -29,15 +27,7 @@ namespace Dog
             return it->second;
         }
 
-        // Load the model
-        ModelLoadData loadData;
-        if (!mModelLoader->LoadModel(loadData, filePath))
-        {
-            DOG_CRITICAL("Failed to load model: {0}", filePath);
-            return INVALID_MODEL_INDEX;
-        }
-
-        std::unique_ptr<Model> model = std::make_unique<Model>(mDevice, filePath, loadData);
+        std::unique_ptr<Model> model = std::make_unique<Model>(mDevice, filePath);
         
         uint32_t modelID = static_cast<uint32_t>(mModels.size());
         mModels.push_back(std::move(model));
@@ -92,14 +82,7 @@ namespace Dog
         {
             for (auto& mesh : model->mMeshes)
             {
-                if (mesh.mTextureLoaded)
-                {
-                    if (!mesh.mTextureData || mesh.mTextureSize == 0) continue;
-
-                    uint32_t ind = mTextureLibrary.AddPreloadedTexture(mesh.mTextureData.get(), mesh.mWidth, mesh.mHeight, mesh.mChannels, "EmbeddedTexture_" + std::to_string(mesh.mMeshID));
-                    mesh.diffuseTextureIndex = ind;
-                }
-                else if (mesh.diffuseTexturePath.empty())
+                if (mesh.diffuseTexturePath.empty())
                 {
                     if (!mesh.mTextureData || mesh.mTextureSize == 0) continue;
 

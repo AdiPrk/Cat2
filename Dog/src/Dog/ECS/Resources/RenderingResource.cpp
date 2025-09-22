@@ -17,7 +17,7 @@
 #include "Graphics/Vulkan/Texture/TextureLibrary.h"
 #include "Graphics/Vulkan/Model/Animation/AnimationLibrary.h"
 #include "Graphics/Vulkan/Model/Model.h"
-//#include "Graphics/Vulkan/Model/Animation/Animator.h"
+#include "Graphics/Vulkan/Model/Animation/Animator.h"
 
 namespace Dog
 {
@@ -37,15 +37,15 @@ namespace Dog
         textureLibrary = std::make_unique<TextureLibrary>(*device);
 
         modelLibrary = std::make_unique<ModelLibrary>(*device, *textureLibrary);
-        //animationLibrary = std::make_unique<AnimationLibrary>();
+        animationLibrary = std::make_unique<AnimationLibrary>();
         
         modelLibrary->AddModel("Assets/models/quad.obj");
         modelLibrary->AddModel("Assets/models/travisFloppin.glb");
-        //modelLibrary->AddModel("Assets/models/TaylorDancing.glb");
-        //modelLibrary->AddModel("Assets/models/jack_samba.glb");
-        //animationLibrary->AddAnimation("Assets/models/travisFloppin.glb", modelLibrary->GetModel("travisFloppin"));
-        //animationLibrary->AddAnimation("Assets/models/TaylorDancing.glb", modelLibrary->GetModel("TaylorDancing"));
-        //animationLibrary->AddAnimation("Assets/models/jack_samba.glb", modelLibrary->GetModel("jack_samba"));
+        modelLibrary->AddModel("Assets/models/TaylorDancing.glb");
+        modelLibrary->AddModel("Assets/models/jack_samba.glb");
+        animationLibrary->AddAnimation("Assets/models/travisFloppin.glb", modelLibrary->GetModel("travisFloppin"));
+        animationLibrary->AddAnimation("Assets/models/TaylorDancing.glb", modelLibrary->GetModel("TaylorDancing"));
+        animationLibrary->AddAnimation("Assets/models/jack_samba.glb", modelLibrary->GetModel("jack_samba"));
         //modelLibrary->AddModel("Assets/models/okayu.pmx");
         //modelLibrary->AddModel("Assets/models/AlisaMikhailovna.fbx");
 

@@ -15,7 +15,6 @@ namespace Dog
 	class Model;
 	class Uniform;
 	class TextureLibrary;
-	class ModelLoader;
 
 	class ModelLibrary
 	{
@@ -43,7 +42,6 @@ namespace Dog
 
 		Device& mDevice;
         TextureLibrary& mTextureLibrary;
-        std::unique_ptr<ModelLoader> mModelLoader;
 	};
 
 } // namespace Rendering

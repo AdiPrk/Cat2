@@ -33,7 +33,6 @@ namespace Dog
         for (unsigned ind = 0; ind < channel->mNumRotationKeys; ++ind)
         {
             aiQuaternion aiOrientation = channel->mRotationKeys[ind].mValue;
-            double dTime = channel->mRotationKeys[ind].mTime;
             float time = static_cast<float>(channel->mRotationKeys[ind].mTime);
 
             mRotations.emplace_back(aiQuatToGlm(aiOrientation), time);

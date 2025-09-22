@@ -56,24 +56,6 @@ namespace Dog
         return newIndex;
     }
 
-    uint32_t TextureLibrary::AddPreloadedTexture(const unsigned char* textureData, uint32_t w, uint32_t h, uint32_t ch, const std::string& texturePath)
-    {
-        // Check if texture already exists
-        auto it = mTextureMap.find(texturePath);
-        if (it != mTextureMap.end()) {
-            return it->second; // Return existing texture index
-        }
-
-        // Load new texture
-        auto newTexture = std::make_unique<Texture>(device, texturePath, textureData, w, h, ch);
-
-        uint32_t newIndex = static_cast<uint32_t>(mTextures.size());
-        mTextures.push_back(std::move(newTexture));
-        mTextureMap[texturePath] = newIndex;
-
-        return newIndex;
-    }
-
     Texture* TextureLibrary::GetTexture(uint32_t index)
     {
         if (index < mTextures.size()) {

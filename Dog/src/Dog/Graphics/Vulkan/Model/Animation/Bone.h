@@ -44,7 +44,7 @@ namespace Dog
     // Reads bone keyframe data from the aiNodeAnim
     Bone();
     Bone(int ID);
-    //Bone(int ID, const aiNodeAnim* channel);
+    Bone(int ID, const aiNodeAnim* channel);
 
     void Update(float animationTime);
 

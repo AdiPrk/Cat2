@@ -29,7 +29,7 @@ namespace Dog
 
         std::unique_ptr<ModelLibrary> modelLibrary;
         std::unique_ptr<TextureLibrary> textureLibrary;
-        //std::unique_ptr<AnimationLibrary> animationLibrary;
+        std::unique_ptr<AnimationLibrary> animationLibrary;
         std::unique_ptr<RenderGraph> renderGraph;
 
         // Uniforms ----------------

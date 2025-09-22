@@ -59,9 +59,10 @@
 
 #include "vk_mem_alloc.h"
 
-// Tiny-gltf
-#include "tiny_gltf.h"
-#include "tiny_obj_loader.h"
+#define AI_SBBC_DEFAULT_MAX_BONES 500
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
 
 // EnTT
 #include "entt/entt.hpp"
@@ -71,6 +72,7 @@
 
 // My files
 #include "Utils/Logger.h"
+#include "Utils/AssimpGlmHelper.h"
 #include "Graphics/Vulkan/Model/Animation/VQS.h"
 
 // Shared files

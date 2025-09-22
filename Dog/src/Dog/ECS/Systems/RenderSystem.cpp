@@ -175,8 +175,7 @@ namespace Dog
         auto& registry = ecs->GetRegistry();
         auto entityView = registry.view<ModelComponent, TransformComponent>();
 
-        
-        //AnimationLibrary* al = rr->animationLibrary.get();
+        AnimationLibrary* al = rr->animationLibrary.get();
         for (auto& entityHandle : entityView)
         {
             Entity entity(&registry, entityHandle);
@@ -186,16 +185,16 @@ namespace Dog
             Model* model = rr->modelLibrary->GetModel(mc.ModelIndex);
             if (!model) continue;
             
-            uint32_t boneOffset = 10001;// AnimationLibrary::INVALID_ANIMATION_INDEX;
-            //if (ac && ac->IsPlaying && al->GetAnimation(ac->AnimationIndex) && al->GetAnimator(ac->AnimationIndex))
-            //{
-            //    boneOffset = ac->BoneOffset;
-            //}
+            uint32_t boneOffset = AnimationLibrary::INVALID_ANIMATION_INDEX;
+            if (ac && ac->IsPlaying && al->GetAnimation(ac->AnimationIndex) && al->GetAnimator(ac->AnimationIndex))
+            {
+                boneOffset = ac->BoneOffset;
+            }
 
             for (auto& mesh : model->mMeshes)
             {
                 InstanceUniforms& data = instanceData.emplace_back();
-                if (boneOffset == 10001)// AnimationLibrary::INVALID_ANIMATION_INDEX)
+                if (boneOffset == AnimationLibrary::INVALID_ANIMATION_INDEX)
                 {
                     data.model = model->mNormalizationMatrix * tc.GetTransform();
                 }

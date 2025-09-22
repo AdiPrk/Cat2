@@ -10,7 +10,6 @@ namespace Dog
 
 		Texture(Device& device, const std::string& path, VkFormat imageFormat = VK_FORMAT_R8G8B8A8_SRGB);
 		Texture(Device& device, const std::string& name, const unsigned char* textureData, uint32_t textureSize, VkFormat imageFormat = VK_FORMAT_R8G8B8A8_SRGB);
-		Texture(Device& device, const std::string& name, const unsigned char* textureData, uint32_t w, uint32_t h, uint32_t ch, VkFormat imageFormat = VK_FORMAT_R8G8B8A8_SRGB);
 
 		~Texture();
 
@@ -23,7 +22,6 @@ namespace Dog
 
 		void LoadPixelsFromFile(const std::string& filepath);
 		void LoadPixelsFromMemory(const unsigned char* textureData, int textureSize);
-		void UseLoadedPixels(unsigned char* textureData, int texWidth, int texHeight, int numChannels);
 
 		void CreateTextureImage();
 
@@ -48,7 +46,6 @@ namespace Dog
 		int mTexWidth, mTexHeight, mTexChannels;
 		VkDeviceSize mImageSize;
 		unsigned char* mPixels;
-		bool loadedPixels = false;
 
 		VkFormat mImageFormat;
 	};

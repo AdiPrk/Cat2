@@ -1,6 +1,5 @@
 #include <PCH/pch.h>
 #include "Mesh.h"
-#include "Vertex.h"
 
 #include "../Core/Device.h"
 #include "../Core/Buffer.h"

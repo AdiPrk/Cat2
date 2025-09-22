@@ -8,14 +8,13 @@
 #include "ECS/Entities/Entity.h"
 #include "ECS/Entities/Components.h"
 
-//#include "Graphics/Vulkan/Model/Animation/AnimationLibrary.h"
-//#include "Graphics/Vulkan/Model/Animation/Animator.h"
+#include "Graphics/Vulkan/Model/Animation/AnimationLibrary.h"
+#include "Graphics/Vulkan/Model/Animation/Animator.h"
 #include "Graphics/Vulkan/Uniform/Uniform.h"
 #include "Graphics/Vulkan/RenderGraph.h"
 
 namespace Dog
 {
-    /*
     void AnimationSystem::Update(float dt)
     {
         auto rr = ecs->GetResource<RenderingResource>();
@@ -68,5 +67,4 @@ namespace Dog
             }
         );
     }
-    */
 }
