@@ -20,5 +20,6 @@ namespace Dog
         float sceneWindowHeight = 1.f;
 
         Entity selectedEntity;
+        Entity entityToDelete;
     };
 }

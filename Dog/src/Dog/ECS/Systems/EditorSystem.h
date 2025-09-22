@@ -17,12 +17,11 @@ namespace Dog
         void Exit();
 
     private:
-        void InitImGui();
         void RenderImGui(VkCommandBuffer cmd);
 
+        void RenderMainMenuBar();
         void RenderSceneWindow();
         void RenderEntitiesWindow();
         void RenderInspectorWindow();
-        void RenderSceneControls();
     };
 }

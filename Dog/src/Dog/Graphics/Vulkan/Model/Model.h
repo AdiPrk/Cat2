@@ -41,10 +41,9 @@ namespace Dog
         void ProcessBaseColor(const aiScene* scene, aiMaterial* material, Mesh& newMesh);
         void ProcessDiffuseTexture(const aiScene* scene, aiMaterial* material, Mesh& newMesh);
 
-        void UpdateAABB(aiVector3D min, aiVector3D max);
         void NormalizeModel();
 
-        void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh);
+        void ExtractBoneWeights(std::vector<Vertex>& vertices, aiMesh* mesh);
 
         Device& device; // the device!
 

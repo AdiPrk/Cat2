@@ -15,7 +15,7 @@ void main()
 {
 	if (textureIndex == -1)
 	{
-		outColor = vec4(fragNormal, 1.0);
+		outColor = vec4(fragColor, 1.0);
 	}
 	else
 	{

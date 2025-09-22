@@ -28,10 +28,6 @@ layout(std430, set = 1, binding = 1) buffer readonly InstanceDataBuffer {
   Instance instances[10000];
 } instanceData;
 
-// layout(set = 1, binding = 2) buffer readonly BoneBuffer {
-// 	mat4 finalBonesMatrices[10000];
-// } animationData;
-
 struct VQS {
     vec4 rotation;    // Quat
     vec3 translation; // Vector
@@ -65,10 +61,9 @@ void main()
             VQS transform = animationData.finalBoneVQS[offset + boneIds[i]];
 
             // --- Position Transformation ---
-            // Component-wise multiplication for non-uniform scale
             vec3 localPosition = rotate(transform.rotation, position * transform.scale) + transform.translation;
 
-            // --- Normal Transformation (Corrected for Non-Uniform Scale) ---
+            // --- Normal Transformation
             vec3 inverseScale = vec3(1.0) / transform.scale;
             vec3 localNormal = rotate(transform.rotation, normal * inverseScale);
 

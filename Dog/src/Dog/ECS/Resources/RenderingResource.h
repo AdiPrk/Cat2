@@ -30,11 +30,12 @@ namespace Dog
         std::unique_ptr<ModelLibrary> modelLibrary;
         std::unique_ptr<TextureLibrary> textureLibrary;
         std::unique_ptr<AnimationLibrary> animationLibrary;
-
         std::unique_ptr<RenderGraph> renderGraph;
 
+        // Uniforms ----------------
         std::unique_ptr<Uniform> cameraUniform;
         std::unique_ptr<Uniform> instanceUniform;
+        // -------------------------
 
         std::vector<VkCommandBuffer> commandBuffers;
         uint32_t currentImageIndex = 0;
@@ -52,6 +53,8 @@ namespace Dog
 
         VkDescriptorSet sceneTextureDescriptorSet{ VK_NULL_HANDLE };
         // --------------------------------
+
+        bool renderWireframe = false;
 
     private:
         Window& window;

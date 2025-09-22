@@ -28,6 +28,7 @@ namespace Dog
     {
       mCurrentTime += mCurrentAnimation->GetTicksPerSecond() * dt;
       mCurrentTime = fmod(mCurrentTime, mCurrentAnimation->GetDuration());
+
       VQS identity;
       CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), identity);
     }
@@ -38,6 +39,7 @@ namespace Dog
       if (mCurrentAnimation)
       {
           mCurrentTime = time;
+
           VQS identity;
           CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), identity);
       }
@@ -65,14 +67,14 @@ namespace Dog
       nodeTransform = node.transformation;
     }
 
-    VQS globalTransformation = compose(parentTransform, nodeTransform);
+    VQS globalTransformation = parentTransform * nodeTransform;
 
     const auto& boneInfoMap = mCurrentAnimation->GetBoneIDMap();
     auto boneIt = boneInfoMap.find(nodeId);
     if (boneIt != boneInfoMap.end())
     {
         const BoneInfo& info = boneIt->second;
-        mFinalBoneVQS[info.id] = compose(globalTransformation, info.vqsOffset);
+        mFinalBoneVQS[info.id] = globalTransformation * info.vqsOffset;
     }
 
     for (int childIndex : node.childIndices)

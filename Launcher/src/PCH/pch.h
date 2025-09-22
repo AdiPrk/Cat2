@@ -71,10 +71,6 @@ constexpr int INVALID_TEXTURE_INDEX = 9999;
 // EnTT
 #include "entt/entt.hpp"
 
-// Yaml
-#define YAML_CPP_STATIC_DEFINE
-#include "yaml-cpp/yaml.h"
-
 // Enet
 #include "enet/enet.h"
 

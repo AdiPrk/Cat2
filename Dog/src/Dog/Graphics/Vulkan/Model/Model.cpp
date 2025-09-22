@@ -63,8 +63,7 @@ namespace Dog
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
             aiMesh* aMesh = mScene->mMeshes[node->mMeshes[i]];
-            Mesh& mesh = ProcessMesh(aMesh);
-            ProcessMaterials(aMesh, mesh);
+            ProcessMesh(aMesh);
         }
 
         // Recursively process each child node
@@ -78,8 +77,8 @@ namespace Dog
     {
         Mesh& newMesh = mMeshes.emplace_back();
         
-        aiVector3D min(FLT_MAX, FLT_MAX, FLT_MAX);
-        aiVector3D max(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+        glm::vec3 meshMin(std::numeric_limits<float>::max());
+        glm::vec3 meshMax(std::numeric_limits<float>::lowest());
 
         // Extract vertex data
         for (unsigned int j = 0; j < mesh->mNumVertices; j++)
@@ -89,12 +88,8 @@ namespace Dog
             vertex.position = { mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z };
 
             // Update min and max vectors for AABB
-            min.x = std::min(min.x, vertex.position.x);
-            min.y = std::min(min.y, vertex.position.y);
-            min.z = std::min(min.z, vertex.position.z);
-            max.x = std::max(max.x, vertex.position.x);
-            max.y = std::max(max.y, vertex.position.y);
-            max.z = std::max(max.z, vertex.position.z);
+            meshMin = glm::min(meshMin, vertex.position);
+            meshMax = glm::max(meshMax, vertex.position);
 
             // Normals
             if (mesh->HasNormals())
@@ -118,7 +113,8 @@ namespace Dog
         }
 
         //Update model's AABB
-        UpdateAABB(min, max);
+        mAABBmin = glm::min(meshMin, mAABBmin);
+        mAABBmax = glm::max(meshMax, mAABBmax);
 
         // Extract indices from faces
         for (unsigned int k = 0; k < mesh->mNumFaces; k++)
@@ -130,15 +126,10 @@ namespace Dog
             }
         }
 
-        ExtractBoneWeightForVertices(newMesh.mVertices, mesh);
+        ProcessMaterials(mesh, newMesh);
+        ExtractBoneWeights(newMesh.mVertices, mesh);
 
         return newMesh;
-    }
-
-    void Model::UpdateAABB(aiVector3D min, aiVector3D max)
-    {
-        mAABBmin = glm::min(glm::vec3(min.x, min.y, min.z), mAABBmin);
-        mAABBmax = glm::max(glm::vec3(max.x, max.y, max.z), mAABBmax);
     }
 
     void Model::NormalizeModel()
@@ -150,6 +141,7 @@ namespace Dog
 
         glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), -center);
         glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(invScale));
+
         mNormalizationMatrix = scaleMatrix * translationMatrix;
         mAnimationTransform = glm::vec4(center, invScale);
     }
@@ -165,15 +157,10 @@ namespace Dog
 
     void Model::ProcessBaseColor(const aiScene* mScene, aiMaterial* material, Mesh& newMesh)
     {
-        bool hasBaseColor = false;
         aiColor4D baseColor;
-        if (material->Get(AI_MATKEY_BASE_COLOR, baseColor) == AI_SUCCESS) {
-            hasBaseColor = true;
-        }
-        else if (material->Get(AI_MATKEY_COLOR_DIFFUSE, baseColor) == AI_SUCCESS) {
-            hasBaseColor = true;
-        }
-        if (hasBaseColor)
+
+        if (material->Get(AI_MATKEY_BASE_COLOR, baseColor) == AI_SUCCESS ||
+            material->Get(AI_MATKEY_COLOR_DIFFUSE, baseColor) == AI_SUCCESS)
         {
             for (Vertex& vertex : newMesh.mVertices)
             {
@@ -198,8 +185,8 @@ namespace Dog
         else if (embeddedTexture->mHeight == 0)
         {
             newMesh.mTextureSize = static_cast<uint32_t>(embeddedTexture->mWidth);
-
             newMesh.mTextureData = std::make_unique<unsigned char[]>(newMesh.mTextureSize);
+
             std::memcpy(newMesh.mTextureData.get(), embeddedTexture->pcData, static_cast<size_t>(embeddedTexture->mWidth));
         }
         else
@@ -208,7 +195,7 @@ namespace Dog
         }
     }
 
-    void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh)
+    void Model::ExtractBoneWeights(std::vector<Vertex>& vertices, aiMesh* mesh)
     {
         // Iterate over all bones in the aiMesh
         for (unsigned int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
@@ -217,39 +204,19 @@ namespace Dog
             std::string boneName = bone->mName.C_Str();
             int boneID = -1;
 
-            if (mBoneInfoMap.find(boneName) == mBoneInfoMap.end())
-            {
-                glm::mat4 offset = aiMatToGlm(bone->mOffsetMatrix);
-                glm::vec3 scale;
-                glm::quat rotation;
-                glm::vec3 translation;
-                glm::vec3 skew;
-                glm::vec4 perspective;
-                glm::decompose(offset, scale, rotation, translation, skew, perspective);
+            // Add bones to a map
+            auto [it, inserted] = mBoneInfoMap.try_emplace(
+                boneName, mBoneCounter, aiMatToGlm(bone->mOffsetMatrix)
+            );
 
-                VQS vqs;
-                vqs.scale = scale;
-                vqs.rotation = rotation;
-                vqs.translation = translation;
+            if (inserted) boneID = mBoneCounter++;
+            else boneID = it->second.id;
 
-                BoneInfo newBoneInfo(mBoneCounter, offset, vqs);
-
-                mBoneInfoMap[boneName] = newBoneInfo;
-                boneID = mBoneCounter++;
-            }
-            else
-            {
-                boneID = mBoneInfoMap[boneName].id;
-            }
-
-            // Process each vertex weight associated with the bone
+            // Update vertex weights
             for (unsigned int weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex)
             {
                 const aiVertexWeight& weightData = bone->mWeights[weightIndex];
-                int vertexId = weightData.mVertexId;
-                float weight = weightData.mWeight;
-
-                vertices[vertexId].SetBoneData(boneID, weight);
+                vertices[weightData.mVertexId].SetBoneData(boneID, weightData.mWeight);
             }
         }
     }

@@ -23,6 +23,7 @@ namespace Dog
     private:
 
         std::unique_ptr<Pipeline> mPipeline;
+        std::unique_ptr<Pipeline> mWireframePipeline;
     };
 }
 

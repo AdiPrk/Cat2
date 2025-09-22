@@ -18,8 +18,6 @@ namespace Dog
 {
     void EditorSystem::Init()
     {
-		InitImGui();
-
         auto rr = ecs->GetResource<RenderingResource>();
 		rr->RecreateAllSceneTextures();
     }
@@ -49,12 +47,18 @@ namespace Dog
 
     void EditorSystem::FrameEnd()
     {
-    }
+        auto er = ecs->GetResource<EditorResource>();
+        if (er->entityToDelete)
+        {
+            if (er->selectedEntity == er->entityToDelete)
+            {
+                er->selectedEntity = {};
+            }
 
-	void EditorSystem::InitImGui()
-	{
-		
-	}
+            ecs->RemoveEntity(er->entityToDelete);
+            er->entityToDelete = {};
+        }
+    }
 
     void EditorSystem::Exit()
     {
@@ -80,45 +84,55 @@ namespace Dog
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		if (ImGui::BeginMainMenuBar())
-		{
-			if (ImGui::BeginMenu("File"))
-			{
-				if (ImGui::MenuItem("Save"))
-				{
-					// Trigger the save action here
-					ecs->GetResource<SerializationResource>()->Serialize("assets/scenes/scene.json");
-				}
-                if (ImGui::MenuItem("Load"))
-                {
-                    // Trigger the load action here
-                    ecs->GetResource<SerializationResource>()->Deserialize("assets/scenes/scene.json");
-                }
-				ImGui::EndMenu();
-			}
-			ImGui::EndMainMenuBar();
-		}
+		
 
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 		RenderSceneWindow();
 		RenderEntitiesWindow(); 
 		RenderInspectorWindow();
-        RenderSceneControls();
+
+        ImGui::Begin("Debug");
+        ImGui::Checkbox("Wireframe", &ecs->GetResource<RenderingResource>()->renderWireframe);
+        ImGui::End();
 
 		// Rendering
 		ImGui::Render();
 		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), cmd);
 	}
 
-	void EditorSystem::RenderSceneWindow()
+    void EditorSystem::RenderMainMenuBar()
+    {
+        if (!ImGui::BeginMainMenuBar()) return;
+        {
+            if (ImGui::BeginMenu("File"))
+            {
+                if (ImGui::MenuItem("Save Scene"))
+                {
+                    ecs->GetResource<SerializationResource>()->Serialize("assets/scenes/scene.json");
+                }
+                if (ImGui::MenuItem("Load Scene"))
+                {
+                    ecs->GetResource<SerializationResource>()->Deserialize("assets/scenes/scene.json");
+                }
+
+                ImGui::EndMenu();
+            }
+
+            ImGui::EndMainMenuBar();
+        }
+    }
+
+    void EditorSystem::RenderSceneWindow()
 	{
 		// Create a window and display the scene texture
 		VkDescriptorSet sceneTextureDescriptorSet = ecs->GetResource<RenderingResource>()->sceneTextureDescriptorSet;
 
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("Viewport");
 		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 		ImGui::Image(reinterpret_cast<void*>(sceneTextureDescriptorSet), viewportSize);
 		ImGui::End();
+        ImGui::PopStyleVar();
 
 		auto editorResource = ecs->GetResource<EditorResource>();
 		editorResource->sceneWindowWidth = viewportSize.x;
@@ -127,32 +141,43 @@ namespace Dog
 
 	void EditorSystem::RenderEntitiesWindow()
 	{
+        auto er = ecs->GetResource<EditorResource>();
+
 		ImGui::Begin("Entities##window", nullptr, ImGuiWindowFlags_MenuBar);
-
-		// Iterate through all entities with a tag, and without a parent
-
 		entt::registry& registry = ecs->GetRegistry();
-
 		auto view = registry.view<TagComponent>();
+
 		for (auto& entityHandle : view) 
 		{
 			Entity entity(&registry, entityHandle);
 			TagComponent& tag = entity.GetComponent<TagComponent>();
 
-			ImGuiTreeNodeFlags leafFlags = ImGuiTreeNodeFlags_Leaf;
+            ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_SpanAvailWidth;
+            if (er->selectedEntity == entity)
+            {
+                flags |= ImGuiTreeNodeFlags_Selected;
+            }
 
-			bool opened = false;
-			opened = ImGui::TreeNodeEx((void*)(uint64_t)entityHandle, leafFlags, tag.Tag.c_str());
+            bool opened = ImGui::TreeNodeEx((void*)(uint64_t)entityHandle, flags, tag.Tag.c_str());
+            if (ImGui::IsItemClicked())
+            {
+                er->selectedEntity = entity;
+            }
 
-			if (ImGui::IsItemClicked()) {
-				DOG_INFO("Entity {0} Selected!", tag.Tag.c_str());
-                ecs->GetResource<EditorResource>()->selectedEntity = entity;
-			}
+            if (ImGui::BeginPopupContextItem())
+            {
+                if (ImGui::MenuItem("Remove Entity"))
+                {
+                    // Mark for deletion, but don't delete yet!
+                    er->entityToDelete = entity;
+                }
+                ImGui::EndPopup();
+            }
 
-			// end treenodex
-			if (opened) {
-				ImGui::TreePop();
-			}
+            if (opened)
+            {
+                ImGui::TreePop();
+            }
 		}
 
 		ImGui::End(); // End of Entities
@@ -167,26 +192,23 @@ namespace Dog
             return;
         }
 
-        // Use a consistent set of flags for a modern, clean look
         const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen
-            | ImGuiTreeNodeFlags_Framed
-            | ImGuiTreeNodeFlags_SpanAvailWidth
-            | ImGuiTreeNodeFlags_AllowItemOverlap
-            | ImGuiTreeNodeFlags_FramePadding;
+                                               | ImGuiTreeNodeFlags_Framed
+                                               | ImGuiTreeNodeFlags_SpanAvailWidth
+                                               | ImGuiTreeNodeFlags_AllowItemOverlap
+                                               | ImGuiTreeNodeFlags_FramePadding;
 
-        auto& component = entity.GetComponent<T>();
-        ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
+        T& component = entity.GetComponent<T>();
 
+        // Create a collapsible header for the component
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
         float lineHeight = ImGui::GetFrameHeight();
         ImGui::Separator();
-
-        // Create a collapsible header for the component
         bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags, name);
         ImGui::PopStyleVar();
 
-        // --- Component Settings Menu (the '...' button) ---
-        // We add it on the same line, to the far right.
+        // --- Component Settings Menu ---
+        ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
         ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
         if (ImGui::Button("...", ImVec2{ lineHeight, lineHeight }))
         {
@@ -196,7 +218,6 @@ namespace Dog
         bool componentRemoved = false;
         if (ImGui::BeginPopup("ComponentSettings"))
         {
-            // Add a "Remove" option to the menu
             if (ImGui::MenuItem("Remove Component"))
             {
                 componentRemoved = true;
@@ -211,10 +232,10 @@ namespace Dog
             ImGui::TreePop();
         }
 
-        // Defer removal until after drawing to avoid issues
+        // Remove component if needed
         if (componentRemoved)
         {
-            // We prevent the removal of essential components like Tag or Transform
+            // Avoid removal of Tag and Transform
             if constexpr (!std::is_same_v<T, TagComponent> && !std::is_same_v<T, TransformComponent>)
             {
                 entity.RemoveComponent<T>();
@@ -222,7 +243,7 @@ namespace Dog
         }
     }
 
-    // Helper for the "Add Component" dropdown to avoid repetition
+    // Helper for the "Add Component" dropdown
     template<typename T>
     void DisplayAddComponentEntry(const char* name, Entity entity)
     {
@@ -255,57 +276,48 @@ namespace Dog
         if (selectedEnt.HasComponent<TagComponent>())
         {
             auto& tag = selectedEnt.GetComponent<TagComponent>();
-            char buffer[256];
-            memset(buffer, 0, sizeof(buffer));
-            strcpy_s(buffer, sizeof(buffer), tag.Tag.c_str());
-
-            // A larger font for the name makes it feel like a title
-            ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]); // Assumes a larger font is at index 0
-            if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
-            {
-                tag.Tag = std::string(buffer);
-            }
-            ImGui::PopFont();
+            ImGui::InputText("##Tag", &tag.Tag);
         }
 
-        // --- Draw Each Component using the Helper ---
-        // This is now much cleaner and easier to read.
-        DrawComponentUI<TransformComponent>("Transform", selectedEnt, [](auto& component)
-            {
-                // Displaying rotation in degrees is much more user-friendly!
-                glm::vec3 rotationDegrees = glm::degrees(component.Rotation);
+        // --- Scrolling Component Region ---
+        // We create a child window to house the components. This allows the component list to
+        // scroll while the footer with the 'Add Component' and 'Add Entity' buttons remains fixed.
+        // The negative height tells ImGui to use all available space minus the specified amount.
+        const float footerHeight = ImGui::GetFrameHeightWithSpacing() * 2.2f;
+        ImGui::BeginChild("ComponentsRegion", ImVec2(0, -footerHeight), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-                ImGui::DragFloat3("Translation", glm::value_ptr(component.Translation), 0.1f);
-                if (ImGui::DragFloat3("Rotation", glm::value_ptr(rotationDegrees), 0.1f))
-                {
-                    component.Rotation = glm::radians(rotationDegrees);
-                }
-                ImGui::DragFloat3("Scale", glm::value_ptr(component.Scale), 0.1f);
-            });
+        DrawComponentUI<TransformComponent>("Transform", selectedEnt, [](auto& component)
+        {
+            // Displaying rotation in degrees
+            glm::vec3 rotationDegrees = glm::degrees(component.Rotation);
+
+            ImGui::DragFloat3("Translation", glm::value_ptr(component.Translation), 0.1f);
+            if (ImGui::DragFloat3("Rotation", glm::value_ptr(rotationDegrees), 0.1f))
+            {
+                component.Rotation = glm::radians(rotationDegrees);
+            }
+            ImGui::DragFloat3("Scale", glm::value_ptr(component.Scale), 0.1f);
+        });
 
         DrawComponentUI<ModelComponent>("Model", selectedEnt, [](auto& component)
-            {
-                ImGui::InputInt("Model Index", (int*)&component.ModelIndex);
-            });
+        {
+            ImGui::InputInt("Model Index", (int*)&component.ModelIndex);
+        });
 
         DrawComponentUI<AnimationComponent>("Animation", selectedEnt, [](auto& component)
-            {
-                ImGui::Checkbox("Is Playing", &component.IsPlaying);
-                ImGui::InputInt("Animation Index", (int*)&component.AnimationIndex);
-                ImGui::DragFloat("Animation Time", &component.AnimationTime, 0.05f, 0.0f, FLT_MAX);
-            });
+        {
+            ImGui::Checkbox("Is Playing", &component.IsPlaying);
+            ImGui::InputInt("Animation Index", (int*)&component.AnimationIndex);
+            ImGui::DragFloat("Animation Time", &component.AnimationTime, 0.05f, 0.0f, FLT_MAX);
+        });
 
-        ImGui::Spacing();
+        ImGui::EndChild(); // End of ComponentsRegion
+
+        // --- Fixed Footer Region ---
         ImGui::Separator();
-        ImGui::Spacing();
 
-        // --- Add Component Dropdown ---
-        // Center the button for better visual appeal
-        float buttonWidth = ImGui::GetContentRegionAvail().x * 0.8f;
-        float offset = (ImGui::GetContentRegionAvail().x - buttonWidth) * 0.5f;
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offset);
-
-        if (ImGui::Button("Add Component", ImVec2(buttonWidth, 0)))
+        // Button to add a new component to the selected entity
+        if (ImGui::Button("Add Component", ImVec2(-1, 0)))
         {
             ImGui::OpenPopup("AddComponentPopup");
         }
@@ -314,27 +326,18 @@ namespace Dog
         {
             DisplayAddComponentEntry<ModelComponent>("Model", selectedEnt);
             DisplayAddComponentEntry<AnimationComponent>("Animation", selectedEnt);
-            // Add more component types here as you create them!
-
+            // Add more component types here!
             ImGui::EndPopup();
         }
 
-        ImGui::End(); // End of Inspector window
-    }
-
-    // This function could be part of your SceneHierarchyPanel or a general editor UI function
-    void EditorSystem::RenderSceneControls()
-    {
-        ImGui::Begin("Scene Controls"); // Or whatever window you prefer
-
-        // --- Add Entity Button ---
-        if (ImGui::Button("Add Entity", ImVec2(-1, 0))) // -1 width makes it fill the space
+        // Button to add a new entity to the scene
+        if (ImGui::Button("Add Entity", ImVec2(-1, 0)))
         {
             Entity newEntity = ecs->AddEntity("New Entity");
-            // Optionally, select the newly created entity immediately
+            // Automatically select the new entity for immediate editing
             ecs->GetResource<EditorResource>()->selectedEntity = newEntity;
         }
 
-        ImGui::End();
+        ImGui::End(); // End of Inspector window
     }
 }

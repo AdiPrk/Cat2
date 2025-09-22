@@ -22,26 +22,26 @@ namespace Dog
         : mID(ID)
         , mLocalTransform()
     {
-        for (int positionIndex = 0; positionIndex < channel->mNumPositionKeys; ++positionIndex)
+        for (unsigned ind = 0; ind < channel->mNumPositionKeys; ++ind)
         {
-            aiVector3D aiPosition = channel->mPositionKeys[positionIndex].mValue;
-            float time = static_cast<float>(channel->mPositionKeys[positionIndex].mTime);
+            aiVector3D aiPosition = channel->mPositionKeys[ind].mValue;
+            float time = static_cast<float>(channel->mPositionKeys[ind].mTime);
 
             mPositions.emplace_back(aiVecToGlm(aiPosition), time);
         }
 
-        for (int rotationIndex = 0; rotationIndex < channel->mNumRotationKeys; ++rotationIndex)
+        for (unsigned ind = 0; ind < channel->mNumRotationKeys; ++ind)
         {
-            aiQuaternion aiOrientation = channel->mRotationKeys[rotationIndex].mValue;
-            float time = static_cast<float>(channel->mRotationKeys[rotationIndex].mTime);
+            aiQuaternion aiOrientation = channel->mRotationKeys[ind].mValue;
+            float time = static_cast<float>(channel->mRotationKeys[ind].mTime);
 
             mRotations.emplace_back(aiQuatToGlm(aiOrientation), time);
         }
 
-        for (int keyIndex = 0; keyIndex < channel->mNumScalingKeys; ++keyIndex)
+        for (unsigned ind = 0; ind < channel->mNumScalingKeys; ++ind)
         {
-            aiVector3D scale = channel->mScalingKeys[keyIndex].mValue;
-            float time = static_cast<float>(channel->mScalingKeys[keyIndex].mTime);
+            aiVector3D scale = channel->mScalingKeys[ind].mValue;
+            float time = static_cast<float>(channel->mScalingKeys[ind].mTime);
 
             mScales.emplace_back(aiVecToGlm(scale), time);
         }
@@ -60,7 +60,7 @@ namespace Dog
     };
 
     template<Keyframe KeyframeType>
-    constexpr size_t FindKeyframeIndex(float animationTime, std::span<const KeyframeType> keyframes)
+    constexpr int FindKeyframeIndex(float animationTime, std::span<const KeyframeType> keyframes)
     {
         if (keyframes.size() <= 1) 
         {
@@ -68,7 +68,7 @@ namespace Dog
         }
 
         const auto it = std::ranges::lower_bound(keyframes, animationTime, {}, &KeyframeType::time);
-        const auto index = static_cast<size_t>(it - keyframes.begin());
+        const int index = static_cast<int>(it - keyframes.begin());
 
         return (index > 0) ? (index - 1) : 0;
     }

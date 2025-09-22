@@ -68,21 +68,27 @@ namespace Dog
             }
         }
 
-        auto renderingResource = ecs->GetResource<RenderingResource>();
+        auto rr = ecs->GetResource<RenderingResource>();
 
         std::vector<Uniform*> unis{
-            renderingResource->cameraUniform.get(),
-            renderingResource->instanceUniform.get()
+            rr->cameraUniform.get(),
+            rr->instanceUniform.get()
         };
 
         mPipeline = std::make_unique<Pipeline>(
-            *renderingResource->device,
-            renderingResource->swapChain->GetImageFormat(),
-            renderingResource->swapChain->FindDepthFormat(),
+            *rr->device,
+            rr->swapChain->GetImageFormat(), rr->swapChain->FindDepthFormat(),
             unis,
             false,
-            "basic_model.vert",
-            "basic_model.frag"
+            "basic_model.vert", "basic_model.frag"
+        );
+
+        mWireframePipeline = std::make_unique<Pipeline>(
+            *rr->device,
+            rr->swapChain->GetImageFormat(), rr->swapChain->FindDepthFormat(),
+            unis,
+            true,
+            "basic_model.vert", "basic_model.frag"
         );
     }
     
@@ -140,24 +146,27 @@ namespace Dog
     void RenderSystem::Exit()
     {
         mPipeline.reset();
+        mWireframePipeline.reset();
     }
 
     void RenderSystem::RenderScene(VkCommandBuffer cmd)
     {
-        auto renderingResource = ecs->GetResource<RenderingResource>();
+        auto rr = ecs->GetResource<RenderingResource>();
 
-        mPipeline->Bind(cmd);
-        renderingResource->cameraUniform->Bind(cmd, mPipeline->GetLayout(), renderingResource->currentFrameIndex);
-        renderingResource->instanceUniform->Bind(cmd, mPipeline->GetLayout(), renderingResource->currentFrameIndex);
+        rr->renderWireframe ? mWireframePipeline->Bind(cmd) : mPipeline->Bind(cmd);
+        VkPipelineLayout pipelineLayout = rr->renderWireframe ? mWireframePipeline->GetLayout() : mPipeline->GetLayout();
+
+        rr->cameraUniform->Bind(cmd, pipelineLayout, rr->currentFrameIndex);
+        rr->instanceUniform->Bind(cmd, pipelineLayout, rr->currentFrameIndex);
 
         VkViewport viewport{};
-        viewport.width = static_cast<float>(renderingResource->swapChain->GetSwapChainExtent().width);
-        viewport.height = static_cast<float>(renderingResource->swapChain->GetSwapChainExtent().height);
+        viewport.width = static_cast<float>(rr->swapChain->GetSwapChainExtent().width);
+        viewport.height = static_cast<float>(rr->swapChain->GetSwapChainExtent().height);
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
         vkCmdSetViewport(cmd, 0, 1, &viewport);
 
-        VkRect2D scissor{ {0, 0}, renderingResource->swapChain->GetSwapChainExtent() };
+        VkRect2D scissor{ {0, 0}, rr->swapChain->GetSwapChainExtent() };
         vkCmdSetScissor(cmd, 0, 1, &scissor);
 
         // loop over entties with model and transform component
@@ -166,18 +175,18 @@ namespace Dog
         auto& registry = ecs->GetRegistry();
         auto entityView = registry.view<ModelComponent, TransformComponent>();
 
-        AnimationLibrary* al = renderingResource->animationLibrary.get();
+        AnimationLibrary* al = rr->animationLibrary.get();
         for (auto& entityHandle : entityView)
         {
             Entity entity(&registry, entityHandle);
             ModelComponent& mc = entity.GetComponent<ModelComponent>();
             TransformComponent& tc = entity.GetComponent<TransformComponent>();
             AnimationComponent* ac = entity.HasComponent<AnimationComponent>() ? &entity.GetComponent<AnimationComponent>() : nullptr;
-            Model* model = renderingResource->modelLibrary->GetModel(mc.ModelIndex);
+            Model* model = rr->modelLibrary->GetModel(mc.ModelIndex);
             if (!model) continue;
             
             uint32_t boneOffset = AnimationLibrary::INVALID_ANIMATION_INDEX;
-            if (ac && al->GetAnimation(ac->AnimationIndex) && al->GetAnimator(ac->AnimationIndex))
+            if (ac && ac->IsPlaying && al->GetAnimation(ac->AnimationIndex) && al->GetAnimator(ac->AnimationIndex))
             {
                 boneOffset = ac->BoneOffset;
             }
@@ -199,13 +208,13 @@ namespace Dog
             }
         }
         
-        renderingResource->instanceUniform->SetUniformData(instanceData, 1, renderingResource->currentFrameIndex);
+        rr->instanceUniform->SetUniformData(instanceData, 1, rr->currentFrameIndex);
 
         uint32_t baseInstance = 0;
         for (auto& entityHandle : entityView)
         {
             ModelComponent& mc = registry.get<ModelComponent>(entityHandle);
-            Model* model = renderingResource->modelLibrary->GetModel(mc.ModelIndex);
+            Model* model = rr->modelLibrary->GetModel(mc.ModelIndex);
             if (!model) continue;
 
             for (auto& mesh : model->mMeshes)

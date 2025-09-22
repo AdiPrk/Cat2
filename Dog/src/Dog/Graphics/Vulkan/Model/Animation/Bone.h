@@ -5,11 +5,10 @@ namespace Dog
     struct BoneInfo
     {
         int id;           // index into finalBoneMatrices
-        glm::mat4 offset; // offset from model to bone space
         VQS vqsOffset;
 
-        BoneInfo() : id(0), offset(1.0f) {}
-        BoneInfo(int ID, const glm::mat4& offsetMatrix, VQS vqs) : id(ID), offset(offsetMatrix), vqsOffset(vqs) {}
+        BoneInfo() : id(0), vqsOffset() {}
+        BoneInfo(int ID, VQS vqs) : id(ID), vqsOffset(vqs) {}
     };
 
     struct KeyPosition
@@ -55,24 +54,14 @@ namespace Dog
 
     const std::vector<KeyPosition>& GetPositionKeys() const { return mPositions; }
     const std::vector<KeyRotation>& GetRotationKeys() const { return mRotations; }
-    const std::vector<KeyScale>& GetScalingKeys()     const { return mScales;    }
+    const std::vector<KeyScale>& GetScalingKeys() const { return mScales; }
 
   private:
     friend class Animator;
 
-    /* Gets normalized value for Lerp & Slerp*/
     float GetScaleFactor(float lastTime, float nextTime, float animationTime) const;
-
-    /*figures out which position keys to interpolate b/w and performs the interpolation
-    and returns the translation matrix*/
     void InterpolatePosition(float animationTime);
-
-    /*figures out which rotations keys to interpolate b/w and performs the interpolation
-    and returns the rotation matrix*/
     void InterpolateRotation(float animationTime);
-
-    /*figures out which scaling keys to interpolate b/w and performs the interpolation
-    and returns the scale matrix*/
     void InterpolateScaling(float animationTime);
 
   private:

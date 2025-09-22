@@ -89,4 +89,26 @@ namespace Dog
         return it->second;
     }
 
+    void ECS::RemoveEntity(const std::string& name)
+    {
+        auto it = mEntityMap.find(name);
+        if (it == mEntityMap.end())
+        {
+            DOG_WARN("Entity with name '{0}' not found!", name);
+            return;
+        }
+        mRegistry.destroy(it->second);
+        mEntityMap.erase(it);
+    }
+
+    void ECS::RemoveEntity(Entity entity)
+    {
+        mRegistry.destroy(entity);
+    }
+
+    void ECS::RemoveEntity(entt::entity entity)
+    {
+        mRegistry.destroy(entity);
+    }
+
 }

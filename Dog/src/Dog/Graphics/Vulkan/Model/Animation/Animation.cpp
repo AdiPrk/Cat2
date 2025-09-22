@@ -5,7 +5,7 @@ namespace Dog
 {
     Animation::Animation()
         : mDuration(0.0f)
-        , mTicksPerSecond(30)
+        , mTicksPerSecond(30.f)
         , nodeCounter(0)
         , mRootNodeIndex(0)
     {
@@ -13,7 +13,7 @@ namespace Dog
 
     Animation::Animation(const aiScene* scene, Model* model)
         : mDuration(0.0f)
-        , mTicksPerSecond(30)
+        , mTicksPerSecond(30.f)
         , nodeCounter(0)
         , mRootNodeIndex(0)
     {
@@ -23,7 +23,7 @@ namespace Dog
         mDuration = static_cast<float>(animation->mDuration);
         if (animation->mTicksPerSecond != 0)
         {
-            mTicksPerSecond = static_cast<int>(animation->mTicksPerSecond);
+            mTicksPerSecond = static_cast<float>(animation->mTicksPerSecond);
         }
 
         // Scale model to unit size (only works properly on .glb for now)
@@ -31,32 +31,16 @@ namespace Dog
             mNodes.clear();
 
             AnimationNode node;
-            glm::mat4 rootTransformMat = aiMatToGlm(scene->mRootNode->mTransformation);
+            VQS rootVQS(aiMatToGlm(scene->mRootNode->mTransformation));
 
-            // 1. Decompose the root node's transform into an initial VQS
-            VQS rootVQS;
-            {
-                glm::vec3 s, t, sk;
-                glm::quat r;
-                glm::vec4 p;
-                glm::decompose(rootTransformMat, s, r, t, sk, p);
-                rootVQS.scale = s;
-                rootVQS.rotation = r;
-                rootVQS.translation = t;
-            }
-
-            // 2. Create VQS structs for the scale and center adjustments
             VQS scaleVQS;
             scaleVQS.scale = glm::vec3(model->GetModelScale());
 
             VQS centerVQS;
             centerVQS.translation = -model->GetModelCenter();
 
-            // 3. Compose the transforms together using your VQS compose function
-            // The order is the same: root * scale * center
-            VQS finalVQS = compose(compose(rootVQS, scaleVQS), centerVQS);
+            VQS finalVQS = rootVQS * scaleVQS * centerVQS;
 
-            // 4. Store the final result
             node.transformation = finalVQS;
             mNodes.push_back(node);
         }
@@ -98,21 +82,7 @@ namespace Dog
         {
             AnimationNode node;
             node.id = nodeId;
-
-            glm::mat4 transform = aiMatToGlm(src->mTransformation);
-
-            VQS vqs;
-            {
-                glm::vec3 s, t, sk;
-                glm::quat r;
-                glm::vec4 p;
-                glm::decompose(transform, s, r, t, sk, p);
-                vqs.scale = s;
-                vqs.rotation = r;
-                vqs.translation = t;
-            }
-
-            node.transformation = vqs;
+            node.transformation = aiMatToGlm(src->mTransformation);
             mNodes.push_back(node);
 
             mNodes[parentIndex].childIndices.push_back(currentIndex);

@@ -59,6 +59,9 @@ namespace Dog
 
         Entity AddEntity(const std::string& name);
         Entity GetEntity(const std::string& name);
+        void RemoveEntity(const std::string& name);
+        void RemoveEntity(Entity entity);
+        void RemoveEntity(entt::entity entity);
 
         entt::registry& GetRegistry() { return mRegistry; }
 
