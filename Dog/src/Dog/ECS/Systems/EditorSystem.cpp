@@ -84,7 +84,7 @@ namespace Dog
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		
+        RenderMainMenuBar();
 
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 		RenderSceneWindow();
@@ -93,6 +93,7 @@ namespace Dog
 
         ImGui::Begin("Debug");
         ImGui::Checkbox("Wireframe", &ecs->GetResource<RenderingResource>()->renderWireframe);
+        ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
         ImGui::End();
 
 		// Rendering

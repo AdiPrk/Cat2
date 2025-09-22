@@ -4,117 +4,8 @@
       "AnimationComponent": [
         {
           "AnimationIndex": 0,
-          "AnimationTime": 6521.8681640625,
+          "AnimationTime": 356.3832702636719,
           "BoneOffset": 0,
-          "IsPlaying": true
-        }
-      ],
-      "ModelComponent": [
-        {
-          "ModelIndex": 1
-        }
-      ],
-      "TagComponent": [
-        {
-          "Tag": "New Entity"
-        }
-      ],
-      "TransformComponent": [
-        {
-          "Rotation": [
-            3.1415927410125732,
-            0.0,
-            0.0
-          ],
-          "Scale": [
-            0.10000000149011612,
-            0.10000000149011612,
-            0.10000000149011612
-          ],
-          "Translation": [
-            0.25,
-            -2.549999952316284,
-            -0.8500000238418579
-          ]
-        }
-      ]
-    },
-    {
-      "AnimationComponent": [
-        {
-          "AnimationIndex": 0,
-          "AnimationTime": 290.1833190917969,
-          "BoneOffset": 33,
-          "IsPlaying": true
-        }
-      ],
-      "ModelComponent": [
-        {
-          "ModelIndex": 1
-        }
-      ],
-      "TagComponent": [
-        {
-          "Tag": "New Entity"
-        }
-      ],
-      "TransformComponent": [
-        {
-          "Rotation": [
-            3.1415927410125732,
-            0.0,
-            0.0
-          ],
-          "Scale": [
-            1.0,
-            1.0,
-            1.0
-          ],
-          "Translation": [
-            0.0,
-            -1.7999999523162842,
-            0.0
-          ]
-        }
-      ]
-    },
-    {
-      "ModelComponent": [
-        {
-          "ModelIndex": 1
-        }
-      ],
-      "TagComponent": [
-        {
-          "Tag": "Hii2"
-        }
-      ],
-      "TransformComponent": [
-        {
-          "Rotation": [
-            3.1415927410125732,
-            0.0,
-            0.0
-          ],
-          "Scale": [
-            1.0,
-            1.0,
-            1.0
-          ],
-          "Translation": [
-            0.5,
-            -2.0999999046325684,
-            -2.0
-          ]
-        }
-      ]
-    },
-    {
-      "AnimationComponent": [
-        {
-          "AnimationIndex": 0,
-          "AnimationTime": 10376.7412109375,
-          "BoneOffset": 66,
           "IsPlaying": true
         }
       ],
@@ -131,7 +22,7 @@
       "TransformComponent": [
         {
           "Rotation": [
-            3.1415927410125732,
+            1.5707963705062866,
             0.0,
             0.0
           ],
@@ -141,8 +32,8 @@
             1.0
           ],
           "Translation": [
-            0.699999988079071,
-            -1.7999999523162842,
+            0.0,
+            -1.7000000476837158,
             -0.10000000149011612
           ]
         }
@@ -154,9 +45,9 @@
           "FOV": 45.0,
           "Far": 1000.0,
           "Forward": [
-            -0.786921501159668,
+            0.8353808522224426,
             0.0,
-            0.6170530915260315
+            0.5496715903282166
           ],
           "Near": 0.10000000149011612,
           "Up": [
@@ -174,8 +65,8 @@
       "TransformComponent": [
         {
           "Rotation": [
-            -0.6185649037361145,
-            5.377381324768066,
+            1.3124992847442627,
+            0.988825261592865,
             0.0
           ],
           "Scale": [
@@ -184,9 +75,87 @@
             1.0
           ],
           "Translation": [
-            1.7268644571304321,
-            -2.15102219581604,
-            -1.5442399978637695
+            -0.9078513383865356,
+            -1.9775128364562988,
+            -0.622441291809082
+          ]
+        }
+      ]
+    },
+    {
+      "AnimationComponent": [
+        {
+          "AnimationIndex": 0,
+          "AnimationTime": 411.6130065917969,
+          "BoneOffset": 33,
+          "IsPlaying": true
+        }
+      ],
+      "ModelComponent": [
+        {
+          "ModelIndex": 1
+        }
+      ],
+      "TagComponent": [
+        {
+          "Tag": "New Entity"
+        }
+      ],
+      "TransformComponent": [
+        {
+          "Rotation": [
+            1.5707963705062866,
+            0.0,
+            0.0
+          ],
+          "Scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Translation": [
+            0.0,
+            -1.7999999523162842,
+            0.0
+          ]
+        }
+      ]
+    },
+    {
+      "AnimationComponent": [
+        {
+          "AnimationIndex": 0,
+          "AnimationTime": 464.953369140625,
+          "BoneOffset": 66,
+          "IsPlaying": true
+        }
+      ],
+      "ModelComponent": [
+        {
+          "ModelIndex": 1
+        }
+      ],
+      "TagComponent": [
+        {
+          "Tag": "New Entity"
+        }
+      ],
+      "TransformComponent": [
+        {
+          "Rotation": [
+            1.5707963705062866,
+            0.0,
+            0.0
+          ],
+          "Scale": [
+            1.0,
+            1.0,
+            0.20000000298023224
+          ],
+          "Translation": [
+            0.0,
+            -1.75,
+            0.0
           ]
         }
       ]
