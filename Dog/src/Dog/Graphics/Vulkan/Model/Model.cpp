@@ -31,13 +31,9 @@ namespace Dog
     {
         //Assimp::DefaultLogger::create("", Assimp::Logger::VERBOSE, aiDefaultLogStream_STDOUT);
 
-        Assimp::Importer importer;
-        mScene = importer.ReadFile(filepath, aiProcessPreset_TargetRealtime_MaxQuality);
-
-        //static Assimp::Importer importer;
-        //
-        //mScene = importer.ReadFile(filepath, aiProcessPreset_TargetRealtime_MaxQuality);
-        
+        static Assimp::Importer importer;
+        mScene = importer.ReadFile(filepath, 0);
+ 
         // Check if the scene was loaded successfully
         if (!mScene || mScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !mScene->mRootNode)
         {

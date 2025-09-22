@@ -6,6 +6,9 @@ namespace Dog
 {
     const uint32_t AnimationLibrary::INVALID_ANIMATION_INDEX = 10001;
 
+    
+
+
     AnimationLibrary::AnimationLibrary()
     {
     }
@@ -17,7 +20,7 @@ namespace Dog
     uint32_t AnimationLibrary::AddAnimation(const std::string& animPath, Model* model)
     {
         static Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(animPath, aiProcessPreset_TargetRealtime_MaxQuality);
+        const aiScene* scene = importer.ReadFile(animPath, 0);
 
         if (!scene || !scene->mAnimations[0] || !scene->mRootNode)
         {

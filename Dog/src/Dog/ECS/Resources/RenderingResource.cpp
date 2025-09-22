@@ -40,12 +40,16 @@ namespace Dog
         animationLibrary = std::make_unique<AnimationLibrary>();
         
         modelLibrary->AddModel("Assets/models/quad.obj");
-        modelLibrary->AddModel("Assets/models/travisFloppin.glb");
-        modelLibrary->AddModel("Assets/models/TaylorDancing.glb");
-        modelLibrary->AddModel("Assets/models/jack_samba.glb");
-        animationLibrary->AddAnimation("Assets/models/travisFloppin.glb", modelLibrary->GetModel("travisFloppin"));
-        animationLibrary->AddAnimation("Assets/models/TaylorDancing.glb", modelLibrary->GetModel("TaylorDancing"));
-        animationLibrary->AddAnimation("Assets/models/jack_samba.glb", modelLibrary->GetModel("jack_samba"));
+        //modelLibrary->AddModel("Assets/models/yena.fbx");
+        //animationLibrary->AddAnimation("Assets/models/yena.fbx", modelLibrary->GetModel("yena"));
+        modelLibrary->AddModel("Assets/models/TravisCapoeiraPack/travis.fbx");
+        animationLibrary->AddAnimation("Assets/models/TravisCapoeiraPack/troca 1.fbx", modelLibrary->GetModel("travis"));
+        //modelLibrary->AddModel("Assets/models/travisFloppin.glb");
+        //modelLibrary->AddModel("Assets/models/TaylorDancing.glb");
+        //modelLibrary->AddModel("Assets/models/jack_samba.glb");
+        //animationLibrary->AddAnimation("Assets/models/travisFloppin.glb", modelLibrary->GetModel("travisFloppin"));
+        //animationLibrary->AddAnimation("Assets/models/TaylorDancing.glb", modelLibrary->GetModel("TaylorDancing"));
+        //animationLibrary->AddAnimation("Assets/models/jack_samba.glb", modelLibrary->GetModel("jack_samba"));
         //modelLibrary->AddModel("Assets/models/okayu.pmx");
         //modelLibrary->AddModel("Assets/models/AlisaMikhailovna.fbx");
 

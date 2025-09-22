@@ -27,6 +27,8 @@ namespace Dog
         glm::vec3 GetModelCenter() const { return glm::vec3(mAnimationTransform.x, mAnimationTransform.y, mAnimationTransform.z); }
         float GetModelScale() const { return mAnimationTransform.w; }
 
+        const aiScene* mScene = nullptr;
+
     private:
         // Main load model function
         void LoadModel(const std::string& filePath);
@@ -63,8 +65,5 @@ namespace Dog
 
         bool mHasAnimations = false;
         glm::vec4 mAnimationTransform = glm::vec4(0.f); // xyz = center, w = inv scale
-
-        friend class AnimationLibrary;
-        const aiScene* mScene = nullptr;
     };
 }

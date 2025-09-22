@@ -4,6 +4,7 @@
 
 namespace Dog
 {
+
   Animator::Animator(Animation* animation)
   {
     mCurrentTime = 0.0;
