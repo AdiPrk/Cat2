@@ -2,6 +2,7 @@
 
 #include "Mesh.h"
 #include "Animation/Bone.h"
+#include "Animation/Skeleton.h"
 
 namespace Dog
 {
@@ -19,10 +20,9 @@ namespace Dog
 
         std::vector<Mesh> mMeshes;
 
-        std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() { return mBoneInfoMap; }
-        const std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() const { return mBoneInfoMap; }
-        int& GetBoneCount() { return mBoneCounter; }
-        bool HasAnimations() const { return mHasAnimations; }
+        std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() { return mSkeleton.GetBoneInfoMap(); }
+        const std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() const { return mSkeleton.GetBoneInfoMap(); }
+        int& GetBoneCount() { return mSkeleton.GetBoneCount(); }
 
         glm::vec3 GetModelCenter() const { return glm::vec3(mAnimationTransform.x, mAnimationTransform.y, mAnimationTransform.z); }
         float GetModelScale() const { return mAnimationTransform.w; }
@@ -60,10 +60,8 @@ namespace Dog
         glm::mat4 mNormalizationMatrix;
 
         // Animation data
-        std::unordered_map<std::string, BoneInfo> mBoneInfoMap;
-        int mBoneCounter = 0;
+        Skeleton mSkeleton;
 
-        bool mHasAnimations = false;
         glm::vec4 mAnimationTransform = glm::vec4(0.f); // xyz = center, w = inv scale
     };
 }

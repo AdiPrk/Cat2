@@ -42,8 +42,8 @@ namespace Dog
         modelLibrary->AddModel("Assets/models/quad.obj");
         //modelLibrary->AddModel("Assets/models/yena.fbx");
         //animationLibrary->AddAnimation("Assets/models/yena.fbx", modelLibrary->GetModel("yena"));
-        modelLibrary->AddModel("Assets/models/TravisCapoeiraPack/travis.fbx");
-        animationLibrary->AddAnimation("Assets/models/TravisCapoeiraPack/troca 1.fbx", modelLibrary->GetModel("travis"));
+        modelLibrary->AddModel("Assets/models/TravisLocomotion/travis.fbx");
+        animationLibrary->AddAnimation("Assets/models/TravisLocomotion/walking.fbx", modelLibrary->GetModel("travis"));
         //modelLibrary->AddModel("Assets/models/travisFloppin.glb");
         //modelLibrary->AddModel("Assets/models/TaylorDancing.glb");
         //modelLibrary->AddModel("Assets/models/jack_samba.glb");
@@ -295,13 +295,5 @@ namespace Dog
 
     void RenderingResource::LoadAnimations()
     {
-        /*for (int i = 0; i < modelLibrary->GetModelCount(); i++)
-        {
-            Model* model = modelLibrary->GetModel(i);
-            if (model->HasAnimations())
-            {
-                
-            }
-        }*/
     }
 }

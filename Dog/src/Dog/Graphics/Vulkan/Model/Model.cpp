@@ -41,12 +41,6 @@ namespace Dog
             return;
         }
 
-        // check how many animations are in this
-        if (mScene->HasAnimations())
-        {
-            mHasAnimations = true;
-        }
-
         mDirectory = filepath.substr(0, filepath.find_last_of('/'));
         mModelName = std::filesystem::path(filepath).stem().string();
 
@@ -201,15 +195,7 @@ namespace Dog
         {
             aiBone* bone = mesh->mBones[boneIndex];
             std::string boneName = bone->mName.C_Str();
-            int boneID = -1;
-
-            // Add bones to a map
-            auto [it, inserted] = mBoneInfoMap.try_emplace(
-                boneName, mBoneCounter, aiMatToGlm(bone->mOffsetMatrix)
-            );
-
-            if (inserted) boneID = mBoneCounter++;
-            else boneID = it->second.id;
+            int boneID = mSkeleton.GetOrCreateBoneID(boneName, aiMatToGlm(bone->mOffsetMatrix));
 
             // Update vertex weights
             for (unsigned int weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex)
