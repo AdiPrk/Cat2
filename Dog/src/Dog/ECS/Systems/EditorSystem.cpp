@@ -11,6 +11,10 @@
 #include "Graphics/Vulkan/Core/Device.h"
 #include "Graphics/Vulkan/Core/SwapChain.h"
 #include "Graphics/Vulkan/RenderGraph.h"
+#include "Graphics/Vulkan/Model/Animation/AnimationLibrary.h"
+#include "Graphics/Vulkan/Model/Animation/Animation.h"
+#include "Graphics/Vulkan/Model/ModelLibrary.h"
+#include "Graphics/Vulkan/Model/Model.h"
 
 #include "Graphics/Window/Window.h"
 
@@ -258,6 +262,52 @@ namespace Dog
         }
     }
 
+    static std::vector<std::string> GetFilesWithExtensions(const std::string& directoryPath, const std::vector<std::string>& extensions)
+    {
+        std::vector<std::string> fileNames;
+        try
+        {
+            // Check if the directory exists
+            if (!std::filesystem::exists(directoryPath) || !std::filesystem::is_directory(directoryPath))
+            {
+                // You could log an error here if you want
+                return fileNames;
+            }
+
+            // Iterate over each entry in the directory
+            for (const auto& entry : std::filesystem::directory_iterator(directoryPath))
+            {
+                if (entry.is_regular_file())
+                {
+                    // Get the file extension
+                    std::string extension = entry.path().extension().string();
+
+                    // Convert extension to lower case for case-insensitive comparison
+                    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+
+                    // Check if the file's extension is in our list of desired extensions
+                    for (const auto& desiredExt : extensions)
+                    {
+                        if (extension == desiredExt)
+                        {
+                            // Add the filename to our list
+                            fileNames.push_back(entry.path().filename().string());
+                            break; // Move to the next file
+                        }
+                    }
+                }
+            }
+        }
+        catch (const std::filesystem::filesystem_error& e)
+        {
+            // Handle potential exceptions, e.g., permission errors
+            // For now, we can just print to stderr
+            fprintf(stderr, "Filesystem error: %s\n", e.what());
+        }
+
+        return fileNames;
+    }
+
     // --- Main Inspector Window Function ---
     void EditorSystem::RenderInspectorWindow()
     {
@@ -303,12 +353,74 @@ namespace Dog
         DrawComponentUI<ModelComponent>("Model", selectedEnt, [](auto& component)
         {
             ImGui::InputInt("Model Index", (int*)&component.ModelIndex);
+            ImGui::ColorEdit4("Tint Color", glm::value_ptr(component.tintColor));
         });
 
-        DrawComponentUI<AnimationComponent>("Animation", selectedEnt, [](auto& component)
+        auto rr = ecs->GetResource<RenderingResource>();
+        auto& animationLibrary = rr->animationLibrary;
+
+        static int selectedAnimationIndex = -1;
+
+        DrawComponentUI<AnimationComponent>("Animation", selectedEnt, [&](auto& component)
         {
-            ImGui::Checkbox("Is Playing", &component.IsPlaying);
+                /*
+            const std::string animationsPath = "Assets/Models/TravisLocomotion/";
+            const std::vector<std::string> animationExtensions = { ".fbx", ".glb" };
+            auto animationFiles = GetFilesWithExtensions(animationsPath, animationExtensions);
+
+            // --- Animation Selection Dropdown ---
+            const char* selectedAnimationName = (selectedAnimationIndex >= 0 && selectedAnimationIndex < animationFiles.size())
+                ? animationFiles[selectedAnimationIndex].c_str()
+                : "None";
+
+            bool selectedThisFrame = false;
+            if (ImGui::BeginCombo("Animation", selectedAnimationName))
+            {
+                for (int i = 0; i < animationFiles.size(); ++i)
+                {
+                    const bool isSelected = (selectedAnimationIndex == i);
+                    if (ImGui::Selectable(animationFiles[i].c_str(), isSelected))
+                    {
+                        selectedAnimationIndex = i;
+                        selectedThisFrame = true;
+                    }
+                    if (isSelected)
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
+                }
+                ImGui::EndCombo();
+            }
+
+            selectedAnimationName = (selectedAnimationIndex >= 0 && selectedAnimationIndex < animationFiles.size())
+                ? animationFiles[selectedAnimationIndex].c_str()
+                : "None";
+
+            if (selectedThisFrame && selectedAnimationName != "None")
+            {
+                std::string newName = selectedAnimationName;
+                std::string cutName = std::filesystem::path(newName).stem().string();
+
+                uint32_t animationIndex = animationLibrary->GetAnimationIndex(cutName);
+                component.AnimationIndex = animationIndex;
+
+
+                if (animationIndex == AnimationLibrary::INVALID_ANIMATION_INDEX)
+                {
+                    // Load animation
+                    auto& mc = ecs->GetRegistry().get<ModelComponent>(selectedEnt);
+                    Model* model = rr->modelLibrary->GetModel(mc.ModelIndex);
+
+                    uint32_t newIndex = animationLibrary->AddAnimation(animationsPath + newName, model);
+                    component.AnimationIndex = newIndex;
+                }
+            }
+            */
+
             ImGui::InputInt("Animation Index", (int*)&component.AnimationIndex);
+
+
+            ImGui::Checkbox("Is Playing", &component.IsPlaying);
             ImGui::DragFloat("Animation Time", &component.AnimationTime, 0.05f, 0.0f, FLT_MAX);
         });
 

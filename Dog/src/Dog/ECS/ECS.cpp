@@ -12,6 +12,7 @@ namespace Dog
         , mEntityMap()
         , mRegistry()
     {
+        mResources.reserve(100);
     }
 
     ECS::~ECS()

@@ -10,7 +10,7 @@ layout(location = 5) in vec4 weights;
 layout(location = 0) out vec3 fragColor;
 layout(location = 1) out vec3 fragNormal;
 layout(location = 2) out vec2 fragTexCoord;
-layout(location = 3) flat out uint textureIndex;
+layout(location = 3) flat out uint instanceIndex;
 
 layout(set = 0, binding = 0) uniform Uniforms {
     mat4 projectionView;
@@ -20,6 +20,7 @@ layout(set = 0, binding = 0) uniform Uniforms {
 
 struct Instance {
   mat4 model;
+  vec4 tint;
   uint textureIndex;
   uint boneOffset;
 };
@@ -87,5 +88,5 @@ void main()
     fragColor = color;
     fragNormal = normalize(totalNormal);
     fragTexCoord = texCoord;
-    textureIndex = instanceData.instances[gl_InstanceIndex].textureIndex;
+    instanceIndex = gl_InstanceIndex;
 }

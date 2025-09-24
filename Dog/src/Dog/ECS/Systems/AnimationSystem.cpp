@@ -20,11 +20,11 @@ namespace Dog
         auto rr = ecs->GetResource<RenderingResource>();
         auto ar = ecs->GetResource<AnimationResource>();
         auto& al = rr->animationLibrary;
-        al->UpdateAnimations(dt);
+        //al->UpdateAnimations(dt);
 
         // loop over model components
         entt::registry& registry = ecs->GetRegistry();
-        auto view = registry.view<ModelComponent, AnimationComponent>();
+        auto view = registry.view<TransformComponent, ModelComponent, AnimationComponent>();
 
         auto& bonesMatrices = ar->bonesMatrices;
         bonesMatrices.clear();
@@ -32,6 +32,7 @@ namespace Dog
         uint32_t boneOffset = 0;
         for (auto entityHandle : view)
         {
+            TransformComponent& tc = view.get<TransformComponent>(entityHandle);
             ModelComponent& mc = view.get<ModelComponent>(entityHandle);
             AnimationComponent& ac = view.get<AnimationComponent>(entityHandle);
 
@@ -46,7 +47,8 @@ namespace Dog
             if (ac.IsPlaying) {
                 ac.AnimationTime += anim->GetTicksPerSecond() * dt;
                 ac.AnimationTime = fmod(ac.AnimationTime, anim->GetDuration());
-                animator->UpdateAnimationInstant(ac.AnimationTime);
+                glm::mat4 tr = tc.GetTransform();
+                animator->UpdateAnimationInstant(ac.AnimationTime, tr);
             }
 
             const auto& finalMatrices = animator->GetFinalBoneVQS();

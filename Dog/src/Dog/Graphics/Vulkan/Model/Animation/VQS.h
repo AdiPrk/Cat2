@@ -39,6 +39,7 @@ namespace Dog
             glm::vec3 scaledLocalTrans = this->scale * local.translation;
             glm::vec3 rotatedLocalTrans = this->rotation * scaledLocalTrans;
             result.translation = this->translation + rotatedLocalTrans;
+
             return result;
         }
     };

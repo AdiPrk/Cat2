@@ -11,6 +11,7 @@ namespace Dog
 
     struct alignas(16) InstanceUniforms {
         glm::mat4 model;
+        glm::vec4 tint;
         uint32_t textureIndex;
         uint32_t boneOffset = 10001;
 

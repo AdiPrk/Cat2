@@ -11,22 +11,29 @@
 
 #include "../Model.h"
 #include "Bone.h"
+#include "Skeleton.h"
 
 namespace Dog
 {
     // This struct is used when creating the animation data
     struct AnimationNode
     {
+        std::string debugName;
         VQS transformation;
         int id;
+        int parentId;
         std::vector<int> childIndices;
+        
+        bool hasAnimatedDescendant = false;   // true if this node or any descendant maps to a Bone
+        bool isIntermediate = false;          // true if debugName contains "$AssimpFbx$" (checked once)
+        bool skipTransform = false;           // runtime flag: if true, use identity instead of node.transformation
     };
 
     class Animation
     {
     public:
         Animation();
-        Animation(const aiScene* scene, Model* model);
+        Animation(const aiScene* animScene, Model* model);
         ~Animation() {}
 
         Bone* FindBone(int id);
@@ -47,6 +54,11 @@ namespace Dog
         void ReadMissingBones(const aiAnimation* animation, Model& model);
         void ReadHeirarchyData(int parentIndex, const aiNode* src);
 
+        // New private function to kick off the process
+        void PrecomputeAnimationData();
+
+        bool PropagateAnimatedState(int nodeIndex, std::vector<char>& visited);
+
         float mDuration;
         float mTicksPerSecond;
 
@@ -54,8 +66,8 @@ namespace Dog
         std::unordered_map<int, BoneInfo> mBoneInfoMap;
         std::unordered_map<std::string, int> mNameToIDMap;
 
+        Skeleton mSkeleton;
         std::vector<AnimationNode> mNodes;
-        int nodeCounter;
         int mRootNodeIndex;
     };
 

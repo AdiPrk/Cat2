@@ -49,12 +49,19 @@ namespace Dog
         // Gets a pointer to the resource of the specified type.
         template<typename T>
         T* GetResource() {
-            const auto typeId = std::type_index(typeid(T));
-            auto it = mResources.find(typeId);
+            static T* cachedResource = [this]
+            {
+                const auto typeId = std::type_index(typeid(T));
+                auto it = mResources.find(typeId);
 
-            if (it == mResources.end()) return nullptr;
+                if (it == mResources.end()) {
+                    return static_cast<T*>(nullptr);
+                }
 
-            return dynamic_cast<T*>(it->second.get());
+                return dynamic_cast<T*>(it->second.get());
+            }();
+
+            return cachedResource;
         }
 
         Entity AddEntity(const std::string& name);

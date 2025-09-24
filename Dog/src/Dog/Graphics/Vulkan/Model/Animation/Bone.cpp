@@ -18,40 +18,57 @@ namespace Dog
     {
     }
 
-    Bone::Bone(int ID, const aiNodeAnim* channel)
+    Bone::Bone(int ID, const aiNodeAnim* channel, const std::string& debugName)
         : mID(ID)
         , mLocalTransform()
+        , debugName(debugName)
     {
         for (unsigned ind = 0; ind < channel->mNumPositionKeys; ++ind)
         {
-            aiVector3D aiPosition = channel->mPositionKeys[ind].mValue;
-            float time = static_cast<float>(channel->mPositionKeys[ind].mTime);
-
-            mPositions.emplace_back(aiVecToGlm(aiPosition), time);
+            auto& key = channel->mPositionKeys[ind];
+            mPositions.emplace_back(aiVecToGlm(key.mValue), key.mTime);
         }
 
         for (unsigned ind = 0; ind < channel->mNumRotationKeys; ++ind)
         {
-            aiQuaternion aiOrientation = channel->mRotationKeys[ind].mValue;
-            float time = static_cast<float>(channel->mRotationKeys[ind].mTime);
-
-            mRotations.emplace_back(aiQuatToGlm(aiOrientation), time);
+            auto& key = channel->mRotationKeys[ind];
+            mRotations.emplace_back(aiQuatToGlm(key.mValue), key.mTime);
         }
 
         for (unsigned ind = 0; ind < channel->mNumScalingKeys; ++ind)
         {
-            aiVector3D scale = channel->mScalingKeys[ind].mValue;
-            float time = static_cast<float>(channel->mScalingKeys[ind].mTime);
+            auto& key = channel->mScalingKeys[ind];
+            mScales.emplace_back(aiVecToGlm(key.mValue), key.mTime);
+        }
+    }
 
-            mScales.emplace_back(aiVecToGlm(scale), time);
+    void Bone::SetKeyframeData(const aiNodeAnim* channel)
+    {
+        mPositions.clear();
+        mRotations.clear();
+        mScales.clear();
+        for (unsigned ind = 0; ind < channel->mNumPositionKeys; ++ind)
+        {
+            auto& key = channel->mPositionKeys[ind];
+            mPositions.emplace_back(aiVecToGlm(key.mValue), key.mTime);
+        }
+        for (unsigned ind = 0; ind < channel->mNumRotationKeys; ++ind)
+        {
+            auto& key = channel->mRotationKeys[ind];
+            mRotations.emplace_back(aiQuatToGlm(key.mValue), key.mTime);
+        }
+        for (unsigned ind = 0; ind < channel->mNumScalingKeys; ++ind)
+        {
+            auto& key = channel->mScalingKeys[ind];
+            mScales.emplace_back(aiVecToGlm(key.mValue), key.mTime);
         }
     }
 
     void Bone::Update(float animationTime)
     {
-        InterpolatePosition(animationTime);
-        InterpolateRotation(animationTime);
-        InterpolateScaling(animationTime);
+        if (!mPositions.empty()) InterpolatePosition(animationTime);
+        if (!mRotations.empty()) InterpolateRotation(animationTime);
+        if (!mScales.empty())    InterpolateScaling(animationTime);
     }
 
     template<typename T>
@@ -77,11 +94,7 @@ namespace Dog
     {
         float midWayLength = animationTime - lastTime;
         float framesDiff = nextTime - lastTime;
-        if (framesDiff == 0.0f)
-        {
-            DOG_WARN("Division by 0 in Bone::GetScaleFactor");
-            return 0.0f;
-        }
+        if (framesDiff == 0.0f) return 0.0f;
         return midWayLength / framesDiff;
     }
 
@@ -93,13 +106,12 @@ namespace Dog
             return;
         }
 
-        int p0Index = FindKeyframeIndex<KeyPosition>(animationTime, mPositions);
-        int p1Index = p0Index + 1;
-        if (p1Index >= mPositions.size())
-            p1Index = 0;
+        int p0 = FindKeyframeIndex<KeyPosition>(animationTime, mPositions);
+        int p1 = p0 + 1;
+        if (p1 >= mPositions.size()) p1 = 0;
 
-        float scaleFactor = GetScaleFactor(mPositions[p0Index].time, mPositions[p1Index].time, animationTime);
-        mLocalTransform.translation = glm::mix(mPositions[p0Index].position, mPositions[p1Index].position, scaleFactor);
+        float scaleFactor = GetScaleFactor(mPositions[p0].time, mPositions[p1].time, animationTime);
+        mLocalTransform.translation = glm::mix(mPositions[p0].position, mPositions[p1].position, scaleFactor);
     }
 
     void Bone::InterpolateRotation(float animationTime)
@@ -110,14 +122,13 @@ namespace Dog
             return;
         }
 
-        int p0Index = FindKeyframeIndex<KeyRotation>(animationTime, mRotations);
-        int p1Index = p0Index + 1;
-        if (p1Index >= mRotations.size())
-            p1Index = 0;
+        int p0 = FindKeyframeIndex<KeyRotation>(animationTime, mRotations);
+        int p1 = p0 + 1;
+        if (p1 >= mRotations.size()) p1 = 0;
 
-        float scaleFactor = GetScaleFactor(mRotations[p0Index].time, mRotations[p1Index].time, animationTime);
+        float scaleFactor = GetScaleFactor(mRotations[p0].time, mRotations[p1].time, animationTime);
 
-        mLocalTransform.rotation = glm::slerp(mRotations[p0Index].orientation, mRotations[p1Index].orientation, scaleFactor);
+        mLocalTransform.rotation = glm::slerp(mRotations[p0].orientation, mRotations[p1].orientation, scaleFactor);
         mLocalTransform.rotation = glm::normalize(mLocalTransform.rotation); // Normalize after slerp
     }
 
@@ -129,12 +140,11 @@ namespace Dog
             return;
         }
 
-        int p0Index = FindKeyframeIndex<KeyScale>(animationTime, mScales);
-        int p1Index = p0Index + 1;
-        if (p1Index >= mScales.size())
-            p1Index = 0;
+        int p0 = FindKeyframeIndex<KeyScale>(animationTime, mScales);
+        int p1 = p0 + 1;
+        if (p1 >= mScales.size()) p1 = 0;
 
-        float scaleFactor = GetScaleFactor(mScales[p0Index].time, mScales[p1Index].time, animationTime);
-        mLocalTransform.scale = glm::mix(mScales[p0Index].scale, mScales[p1Index].scale, scaleFactor);
+        float scaleFactor = GetScaleFactor(mScales[p0].time, mScales[p1].time, animationTime);
+        mLocalTransform.scale = glm::mix(mScales[p0].scale, mScales[p1].scale, scaleFactor);
     }
 }

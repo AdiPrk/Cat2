@@ -3,6 +3,9 @@
 
 #include "../Resources/renderingResource.h"
 #include "../Resources/EditorResource.h"
+#include "../Resources/DebugDrawResource.h"
+
+#include "InputSystem.h"
 
 #include "Graphics/Vulkan/Core/Device.h"
 #include "Graphics/Vulkan/Core/SwapChain.h"
@@ -38,33 +41,16 @@ namespace Dog
                 CameraComponent& cc = ent.AddComponent<CameraComponent>();
             }
         }
+        for (int i = 0; i < 1; ++i)
         {
-            ecs->AddEntity("Hii");
-
-            Entity ent = ecs->GetEntity("Hii");
+            Entity ent = ecs->AddEntity("Hii");
             if (ent)
             {
                 ModelComponent& mc = ent.AddComponent<ModelComponent>();
-                mc.ModelIndex = 0;
-
-                AnimationComponent& ac = ent.AddComponent<AnimationComponent>();
-                ac.AnimationIndex = 0;
+                mc.ModelIndex = 2;
 
                 TransformComponent& tc = ent.GetComponent<TransformComponent>();
-                tc.Translation = glm::vec3(-0.5f, -0.8f, -2.0f);
-            }
-        }
-        {
-            ecs->AddEntity("Hii2");
-
-            Entity ent = ecs->GetEntity("Hii2");
-            if (ent)
-            {
-                ModelComponent& mc = ent.AddComponent<ModelComponent>();
-                mc.ModelIndex = 0;
-
-                TransformComponent& tc = ent.GetComponent<TransformComponent>();
-                tc.Translation = glm::vec3(0.5f, -0.8f, -2.0f);
+                tc.Translation = glm::vec3(i * 0.1f, 1, -2.0f);
             }
         }
 
@@ -94,6 +80,7 @@ namespace Dog
     
     void RenderSystem::FrameStart()
     {
+        DebugDrawResource::Clear();
     }
     
     void RenderSystem::Update(float dt)
@@ -186,7 +173,7 @@ namespace Dog
             if (!model) continue;
             
             uint32_t boneOffset = AnimationLibrary::INVALID_ANIMATION_INDEX;
-            if (ac && ac->IsPlaying && al->GetAnimation(ac->AnimationIndex) && al->GetAnimator(ac->AnimationIndex))
+            if (ac && al->GetAnimation(ac->AnimationIndex) && al->GetAnimator(ac->AnimationIndex))
             {
                 boneOffset = ac->BoneOffset;
             }
@@ -196,32 +183,106 @@ namespace Dog
                 InstanceUniforms& data = instanceData.emplace_back();
                 if (boneOffset == AnimationLibrary::INVALID_ANIMATION_INDEX)
                 {
-                    data.model = model->mNormalizationMatrix * tc.GetTransform();
+                    data.model = tc.GetTransform() * model->mNormalizationMatrix;
                 }
                 else
                 {
                     data.model = tc.GetTransform();
                 }
-                    
+
+                data.tint = mc.tintColor;
                 data.textureIndex = mesh.diffuseTextureIndex;
                 data.boneOffset = boneOffset;
             }
         }
+
+        //RenderSkeleton();
+
+        auto instDatas = DebugDrawResource::GetInstanceData();
+
+        if (InputSystem::isKeyDown(Key::G))
+        {
+            instanceData.clear();
+        }
+
+        instanceData.insert(instanceData.begin(), instDatas.begin(), instDatas.end());
         
         rr->instanceUniform->SetUniformData(instanceData, 1, rr->currentFrameIndex);
 
         uint32_t baseInstance = 0;
-        for (auto& entityHandle : entityView)
+
+        for (auto& data : instDatas)
         {
-            ModelComponent& mc = registry.get<ModelComponent>(entityHandle);
-            Model* model = rr->modelLibrary->GetModel(mc.ModelIndex);
-            if (!model) continue;
+            Model* model = rr->modelLibrary->GetModel(1);
 
             for (auto& mesh : model->mMeshes)
             {
                 mesh.Bind(cmd);
                 mesh.Draw(cmd, baseInstance++);
             }
+        }
+
+        if (!InputSystem::isKeyDown(Key::G))
+        {
+            for (auto& entityHandle : entityView)
+            {
+                ModelComponent& mc = registry.get<ModelComponent>(entityHandle);
+                Model* model = rr->modelLibrary->GetModel(mc.ModelIndex);
+                if (!model) continue;
+
+                for (auto& mesh : model->mMeshes)
+                {
+                    mesh.Bind(cmd);
+                    mesh.Draw(cmd, baseInstance++);
+                }
+            }
+        }
+
+        
+    }
+
+    void RenderSystem::RenderSkeleton()
+    {
+        // loop over entities with models
+        auto& registry = ecs->GetRegistry();
+        auto entityView = registry.view<ModelComponent, TransformComponent>();
+
+        for (auto& entityHandle : entityView)
+        {
+            Entity entity(&registry, entityHandle);
+            ModelComponent& mc = entity.GetComponent<ModelComponent>();
+            TransformComponent& tc = entity.GetComponent<TransformComponent>();
+            //AnimationComponent* ac = entity.HasComponent<AnimationComponent>() ? &entity.GetComponent<AnimationComponent>() : nullptr;
+            Model* model = ecs->GetResource<RenderingResource>()->modelLibrary->GetModel(mc.ModelIndex);
+            if (!model) continue;
+
+            glm::mat4 normalizationMatrix = model->mNormalizationMatrix;
+            //if (!ac) normalizationMatrix = glm::mat4(1.f);
+
+            const aiScene* scene = model->mScene;
+            RecursiveNodeDraw(tc.GetTransform() * normalizationMatrix, scene->mRootNode);
+        }
+    }
+
+    void RenderSystem::RecursiveNodeDraw(const glm::mat4& parentWorldTransform, const aiNode* node)
+    {
+        glm::mat4 localTr = aiMatToGlm(node->mTransformation);
+        glm::mat4 worldTr = parentWorldTransform * localTr;
+
+        glm::vec3 startPos = glm::vec3(parentWorldTransform[3]);
+        glm::vec3 endPos = glm::vec3(worldTr[3]);
+
+        if (node->mParent && node->mParent->mParent != nullptr)
+        {
+            DebugDrawResource::DrawLine(startPos, endPos, glm::vec4(0.f, 1.f, 0.f, 1.f));
+            DebugDrawResource::DrawCube(endPos, glm::vec3(0.04f), glm::vec4(1.f, 0.f, 0.f, 0.5f));
+        }
+
+
+        // Recurse :3
+        for (unsigned int i = 0; i < node->mNumChildren; i++)
+        {
+            RecursiveNodeDraw(worldTr, node->mChildren[i]);
         }
     }
 }

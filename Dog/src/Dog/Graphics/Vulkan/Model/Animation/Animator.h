@@ -13,26 +13,26 @@
 
 namespace Dog
 {
-  class Animator
-  {
-  public:
-    Animator(Animation* animation);
+    class Animator
+    {
+    public:
+        Animator(Animation* animation);
 
-    void UpdateAnimation(float dt);
-    void UpdateAnimationInstant(float time);
-    void PlayAnimation(Animation* pAnimation);
-    void CalculateBoneTransform(int nodeIndex, const VQS& parentTransform);
+        void UpdateAnimation(float dt);
+        void UpdateAnimationInstant(float time, glm::mat4& tr);
+        void PlayAnimation(Animation* pAnimation);
+        void CalculateBoneTransform(int nodeIndex, const VQS& parentTransform, const glm::mat4& tr);
 
-    const std::vector<VQS>& GetFinalBoneVQS() const { return mFinalBoneVQS; }
-    bool IsPlaying() const { return mIsPlaying; }
+        const std::vector<VQS>& GetFinalBoneVQS() const { return mFinalBoneVQS; }
+        bool IsPlaying() const { return mIsPlaying; }
 
-  private:
-    std::vector<VQS> mFinalBoneVQS;
+    private:
+        std::vector<VQS> mFinalBoneVQS;
 
-    Animation* mCurrentAnimation;
-    float mCurrentTime;
+        Animation* mCurrentAnimation;
+        float mCurrentTime;
 
-    bool mIsPlaying = true;
-  };
+        bool mIsPlaying = true;
+    };
 
-} // namespace Rendering
+} // namespace Dog

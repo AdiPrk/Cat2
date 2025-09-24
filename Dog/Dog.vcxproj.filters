@@ -48,6 +48,7 @@
     <ClCompile Include="src\Dog\Utils\SerializationOperators.cpp" />
     <ClCompile Include="src\Dog\Utils\Utils.cpp" />
     <ClCompile Include="src\PCH\pch.cpp" />
+    <ClCompile Include="src\Dog\ECS\Resources\DebugDrawResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\nlohmann\json.hpp" />
@@ -118,8 +119,10 @@
     <ClInclude Include="src\Dog\Utils\Utils.h" />
     <ClInclude Include="src\PCH\pch.h" />
     <ClInclude Include="src\Dog\Graphics\Vulkan\Model\Animation\Skeleton.h" />
+    <ClInclude Include="src\Dog\ECS\Resources\DebugDrawResource.h" />
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />

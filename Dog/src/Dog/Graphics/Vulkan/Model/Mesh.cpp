@@ -156,6 +156,10 @@ namespace Dog
                 weights[i] = weight;
                 return;
             }
+            if (i == MAX_BONE_INFLUENCE - 1) 
+            {
+                __debugbreak();
+            }
         }
     }
 

@@ -44,7 +44,9 @@ namespace Dog
     // Reads bone keyframe data from the aiNodeAnim
     Bone();
     Bone(int ID);
-    Bone(int ID, const aiNodeAnim* channel);
+    Bone(int ID, const aiNodeAnim* channel, const std::string& debugName = "");
+
+    void SetKeyframeData(const aiNodeAnim* channel);
 
     void Update(float animationTime);
 
@@ -68,6 +70,7 @@ namespace Dog
     std::vector<KeyPosition> mPositions;
     std::vector<KeyRotation> mRotations;
     std::vector<KeyScale> mScales;
+    std::string debugName;
 
     VQS mLocalTransform;
     int mID;

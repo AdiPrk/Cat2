@@ -31,7 +31,7 @@ namespace Dog
             return it->second.id;
         }
 
-        // Accessors (keeps old Model API working if forwarded)
+        // Accessors
         std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() { return boneInfoMap; }
         const std::unordered_map<std::string, BoneInfo>& GetBoneInfoMap() const { return boneInfoMap; }
         int& GetBoneCount() { return boneCount; }

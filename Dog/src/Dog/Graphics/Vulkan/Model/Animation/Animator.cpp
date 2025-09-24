@@ -2,6 +2,11 @@
 #include "Animator.h"
 #include "Animation.h"
 
+#include "ECS/Systems/InputSystem.h"
+#include "ECS/Resources/DebugDrawResource.h"
+#include "ECS/Entities/Components.h"
+
+
 namespace Dog
 {
 
@@ -31,18 +36,18 @@ namespace Dog
       mCurrentTime = fmod(mCurrentTime, mCurrentAnimation->GetDuration());
 
       VQS identity;
-      CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), identity);
+      CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), identity, glm::mat4(1));
     }
   }
 
-  void Animator::UpdateAnimationInstant(float time)
+  void Animator::UpdateAnimationInstant(float time, glm::mat4& tr)
   {
       if (mCurrentAnimation)
       {
           mCurrentTime = time;
 
           VQS identity;
-          CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), identity);
+          CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), identity, tr);
       }
   }
 
@@ -52,36 +57,53 @@ namespace Dog
     mCurrentTime = 0.0f;
   }
 
-  void Animator::CalculateBoneTransform(int nodeIndex, const VQS& parentTransform)
+  void Animator::CalculateBoneTransform(int nodeIndex, const VQS& parentTransform, const glm::mat4& tr)
   {
-    const AnimationNode& node = mCurrentAnimation->GetNode(nodeIndex);
-    int nodeId = node.id;
-    VQS nodeTransform;
+      const AnimationNode& node = mCurrentAnimation->GetNode(nodeIndex);
+      int nodeId = node.id;
+      VQS nodeTransform;
 
-    if (Bone* Bone = mCurrentAnimation->FindBone(nodeId))
-    {
-      Bone->Update(mCurrentTime);
-      nodeTransform = Bone->GetLocalTransform();
-    }
-    else
-    {
-      nodeTransform = node.transformation;
-    }
+      Bone* bone = mCurrentAnimation->FindBone(nodeId);
 
-    VQS globalTransformation = parentTransform * nodeTransform;
+      if (bone)
+      {
+          // Directly animated bone: use keyframed transform.
+          bone->Update(mCurrentTime);
+          nodeTransform = bone->GetLocalTransform();
 
-    const auto& boneInfoMap = mCurrentAnimation->GetBoneIDMap();
-    auto boneIt = boneInfoMap.find(nodeId);
-    if (boneIt != boneInfoMap.end())
-    {
-        const BoneInfo& info = boneIt->second;
-        mFinalBoneVQS[info.id] = globalTransformation * info.vqsOffset;
-    }
+          // Make animation in place by removing translation from root motion bone
+          // Only works for mixamo animations for now
+          if (bone->debugName == "mixamorig:Hips")
+          {
+              nodeTransform.translation = glm::vec3(0.0f);
+          }
+      }
+      else if (node.skipTransform) nodeTransform = VQS();
+      else nodeTransform = node.transformation;
+     
+      VQS globalTransformation = parentTransform * nodeTransform;
 
-    for (int childIndex : node.childIndices)
-    {
-      CalculateBoneTransform(childIndex, globalTransformation);
-    }
+      // draw debug stuffs
+      if (!InputSystem::isKeyDown(Key::H) && node.parentId > 0) {
+          glm::vec3 start = glm::vec3(tr * glm::vec4(parentTransform.translation, 1.f));
+          glm::vec3 end = glm::vec3(tr * glm::vec4(globalTransformation.translation, 1.f));
+
+          DebugDrawResource::DrawLine(start, end, glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
+          DebugDrawResource::DrawCube(end, glm::vec3(0.01f), glm::vec4(0.0f, 1.0f, 1.0f, 0.4f));
+      }
+
+      const auto& boneInfoMap = mCurrentAnimation->GetBoneIDMap();
+      auto boneIt = boneInfoMap.find(nodeId);
+      if (boneIt != boneInfoMap.end())
+      {
+          const BoneInfo& info = boneIt->second;
+          mFinalBoneVQS[info.id] = globalTransformation * info.vqsOffset;
+      }
+
+      for (int childIndex : node.childIndices)
+      {
+          CalculateBoneTransform(childIndex, globalTransformation, tr);
+      }
   }
 
 } // namespace Rendering

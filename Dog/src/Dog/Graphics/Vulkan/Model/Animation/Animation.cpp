@@ -13,41 +13,45 @@ VQS finalVQS = rootVQS * scaleVQS * centerVQS;
 
 namespace Dog
 {
+    // Add this helper function to your Animation.cpp file
+    void PrintNodeHierarchy(const aiNode* node, int depth = 0) {
+        if (!node) return;
+        for (int i = 0; i < depth; ++i) {
+            printf("  ");
+        }
+        printf("- %s\n", node->mName.C_Str());
+
+        for (unsigned int i = 0; i < node->mNumChildren; ++i) {
+            PrintNodeHierarchy(node->mChildren[i], depth + 1);
+        }
+    }
+
     Animation::Animation()
         : mDuration(0.0f)
         , mTicksPerSecond(30.f)
-        , nodeCounter(0)
         , mRootNodeIndex(0)
         , mNodes()
     {
     }
 
-    Animation::Animation(const aiScene* scene, Model* model)
+    Animation::Animation(const aiScene* animScene, Model* model)
         : mDuration(0.0f)
         , mTicksPerSecond(30.f)
-        , nodeCounter(0)
         , mRootNodeIndex(0)
         , mNodes()
     {
-        const aiScene* modelScene = model->mScene; // <- model's scene, accessible if we need
-        // scene <- the animation file's scene
-
         // Load the first animation
-        aiAnimation* animation = scene->mAnimations[0];
+        aiAnimation* animation = animScene->mAnimations[0];
 
         mDuration = static_cast<float>(animation->mDuration);
         if (animation->mTicksPerSecond != 0)
         {
             mTicksPerSecond = static_cast<float>(animation->mTicksPerSecond);
-        } 
+        }
 
-        AnimationNode node;
-        VQS rootVQS(aiMatToGlm(scene->mRootNode->mTransformation));
-        node.transformation = rootVQS;
-        mNodes.push_back(node);
-
-        ReadHeirarchyData(-1, scene->mRootNode);
+        ReadHeirarchyData(-1, model->mScene->mRootNode);
         ReadMissingBones(animation, *model);       
+        PrecomputeAnimationData();
 
         // clear data that we don't need anymore
         mNameToIDMap.clear();
@@ -64,11 +68,12 @@ namespace Dog
     {
         std::string nodeName = src->mName.data;
 
+        // Get or create a unique ID for this node based on its name.
         int nodeId;
         auto it = mNameToIDMap.find(nodeName);
         if (it == mNameToIDMap.end())
         {
-            nodeId = nodeCounter++;
+            nodeId = static_cast<int>(mNameToIDMap.size());
             mNameToIDMap[nodeName] = nodeId;
         }
         else
@@ -76,31 +81,81 @@ namespace Dog
             nodeId = it->second;
         }
 
+        // The index for the current node will be the current size of the vector.
         int currentIndex = static_cast<int>(mNodes.size());
 
+        // Create the new node.
+        AnimationNode node;
+        node.id = nodeId;
+        node.parentId = parentIndex; // Correctly sets -1 for the root.
+        node.debugName = nodeName;
+        node.transformation = aiMatToGlm(src->mTransformation);
+        mNodes.push_back(node);
+
+        // If this is not the root node, add this node's index to its parent's list of children.
         if (parentIndex != -1)
         {
-            AnimationNode node;
-            node.id = nodeId;
-            node.transformation = aiMatToGlm(src->mTransformation);
-            mNodes.push_back(node);
-
             mNodes[parentIndex].childIndices.push_back(currentIndex);
         }
-        else
-        {
-            currentIndex = 0;
-            mNodes[currentIndex].id = nodeId;
-        }
 
-        // Recursively read children
+        // Recursively process all children.
         for (unsigned int i = 0; i < src->mNumChildren; i++)
         {
+            // Pass the current node's index as the parent index for its children.
             ReadHeirarchyData(currentIndex, src->mChildren[i]);
         }
     }
 
-    // 
+    // Animation.h (add declaration in private section)
+    bool PropagateAnimatedState(int nodeIndex, std::vector<char>& visited);
+
+    // Animation.cpp
+    void Animation::PrecomputeAnimationData()
+    {
+        if (mNodes.size() == 0) return;
+
+        // 1) Initialize flags and do the one-time name check.
+        for (auto& node : mNodes) {
+            node.isIntermediate = (node.debugName.find("$AssimpFbx$") != std::string::npos);
+            node.hasAnimatedDescendant = false;
+            node.skipTransform = false;
+        }
+
+        // 2) Propagate animated state for every disconnected root/subtree.
+        std::vector<char> visited(mNodes.size(), 0);
+        for (int i = 0; i < static_cast<int>(mNodes.size()); ++i) {
+            if (!visited[i]) {
+                PropagateAnimatedState(i, visited);
+            }
+        }
+
+        // 3) Final runtime flag used by the hot path (no string checks at runtime).
+        for (auto& node : mNodes) {
+            node.skipTransform = node.isIntermediate && node.hasAnimatedDescendant;
+        }
+    }
+
+    bool Animation::PropagateAnimatedState(int nodeIndex, std::vector<char>& visited)
+    {
+        // defensive
+        if (nodeIndex < 0 || nodeIndex >= static_cast<int>(mNodes.size())) return false;
+        if (visited[nodeIndex]) return mNodes[nodeIndex].hasAnimatedDescendant;
+
+        visited[nodeIndex] = 1;
+
+        // Start with whether this node itself corresponds to an animated bone.
+        bool has = (mBoneMap.find(mNodes[nodeIndex].id) != mBoneMap.end());
+
+        // Recurse into children; if any child subtree contains an animated bone, propagate up.
+        for (int child : mNodes[nodeIndex].childIndices) {
+            if (PropagateAnimatedState(child, visited)) has = true;
+        }
+
+        mNodes[nodeIndex].hasAnimatedDescendant = has;
+        return has;
+    }
+
+
     void Animation::ReadMissingBones(const aiAnimation* animation, Model& model)
     {
         std::unordered_map<std::string, BoneInfo>& boneInfoMap = model.GetBoneInfoMap();
@@ -111,14 +166,19 @@ namespace Dog
             aiNodeAnim* channel = animation->mChannels[i];
             const std::string& boneName = channel->mNodeName.data;
 
-            int nodeId = mNameToIDMap[boneName];
+            if (mNameToIDMap.find(boneName) == mNameToIDMap.end())
+            {
+                DOG_WARN("Animation::ReadMissingBones: Node name '{}' not found in hierarchy, but requested for keyframes", boneName);
+            }
 
+            int nodeId = mNameToIDMap[boneName];
+            
             if (boneInfoMap.find(boneName) == boneInfoMap.end())
             {
                 boneInfoMap[boneName].id = boneCount++;
             }
-
-            mBoneMap.try_emplace(nodeId, boneInfoMap[boneName].id, channel);
+            
+            mBoneMap.try_emplace(nodeId, boneInfoMap[boneName].id, channel, boneName);
         }
 
         // Map from node IDs to BoneInfo
@@ -131,6 +191,4 @@ namespace Dog
         }
     }
 
-
-
-} // namespace Rendering
+} // namespace Dog

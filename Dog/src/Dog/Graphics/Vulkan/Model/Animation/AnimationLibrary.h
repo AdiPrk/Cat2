@@ -13,8 +13,10 @@ namespace Dog
 		~AnimationLibrary();
 
 		uint32_t AddAnimation(const std::string& animPath, Model* model);
+		Animation* GetAnimation(const std::string& name);
         Animation* GetAnimation(uint32_t index);
         Animator* GetAnimator(uint32_t index);
+		uint32_t GetAnimationIndex(const std::string& name);
 		const std::vector<VQS>& GetAnimationVQS();
 		void UpdateAnimations(float dt);
 		void UpdateAnimation(uint32_t index, float dt);

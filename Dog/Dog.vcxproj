@@ -89,7 +89,7 @@
       <AdditionalDependencies>ImGuiDebug.lib;Common.lib;enet64.lib;ws2_32.lib;winmm.lib;vulkan-1.lib;glfw3d.lib;spdlogd.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
-      <AdditionalOptions>/ignore:4099 /VERBOSE:LIB</AdditionalOptions>
+      <AdditionalOptions>/ignore:4099</AdditionalOptions>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -206,6 +206,7 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
     <ClCompile Include="src\Dog\ECS\Entities\Components.cpp" />
     <ClCompile Include="src\Dog\ECS\Entities\Entity.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\AnimationResource.cpp" />
+    <ClCompile Include="src\Dog\ECS\Resources\DebugDrawResource.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\EditorResource.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\InputResource.cpp" />
     <ClCompile Include="src\Dog\ECS\Resources\RenderingResource.cpp" />
@@ -282,6 +283,7 @@ xcopy "$(ProjectDir)Dependencies\assimp\zlib1.dll" "$(OutDir)" /Y
     <ClInclude Include="src\Dog\ECS\Entities\Components.h" />
     <ClInclude Include="src\Dog\ECS\Entities\Entity.h" />
     <ClInclude Include="src\Dog\ECS\Resources\AnimationResource.h" />
+    <ClInclude Include="src\Dog\ECS\Resources\DebugDrawResource.h" />
     <ClInclude Include="src\Dog\ECS\Resources\EditorResource.h" />
     <ClInclude Include="src\Dog\ECS\Resources\InputResource.h" />
     <ClInclude Include="src\Dog\ECS\Resources\IResource.h" />

@@ -54,7 +54,7 @@ namespace Dog
 
         // Path to textures
         std::string diffuseTexturePath = "";
-        uint32_t diffuseTextureIndex = -1;
+        uint32_t diffuseTextureIndex = 10001;
         
     private:
         static int GetTotalMeshCount() { return uniqueMeshIndex; }

@@ -31,14 +31,22 @@ namespace Dog
     {
         //Assimp::DefaultLogger::create("", Assimp::Logger::VERBOSE, aiDefaultLogStream_STDOUT);
 
-        static Assimp::Importer importer;
-        mScene = importer.ReadFile(filepath, 0);
+        mScene = importer.ReadFile(filepath, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_GlobalScale | aiProcess_OptimizeGraph);
  
         // Check if the scene was loaded successfully
         if (!mScene || mScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !mScene->mRootNode)
         {
             DOG_CRITICAL("Assimp Error: {}", importer.GetErrorString());
             return;
+        }
+
+        if (mScene->mMetaData)
+        {
+            double unitScale = 1.0;
+            if (mScene->mMetaData->Get("UnitScaleFactor", unitScale))
+            {
+                printf("Unit scale factor: %f\n", unitScale);
+            }
         }
 
         mDirectory = filepath.substr(0, filepath.find_last_of('/'));
@@ -50,23 +58,29 @@ namespace Dog
         NormalizeModel();
     }
 
-    void Model::ProcessNode(aiNode* node)
+    void Model::ProcessNode(aiNode* node, const glm::mat4& parentTransform)
     {
+        // Convert the node's transformation matrix
+        glm::mat4 nodeTransform = aiMatToGlm(node->mTransformation);
+
+        // Combine this node's transformation with the parent transformation
+        glm::mat4 globalTransform = parentTransform * nodeTransform;
+
         // Process each mesh in the current node
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
             aiMesh* aMesh = mScene->mMeshes[node->mMeshes[i]];
-            ProcessMesh(aMesh);
+            ProcessMesh(aMesh, globalTransform);
         }
 
         // Recursively process each child node
         for (unsigned int i = 0; i < node->mNumChildren; i++)
         {
-            ProcessNode(node->mChildren[i]);
+            ProcessNode(node->mChildren[i], globalTransform);
         }
     }
 
-    Mesh& Model::ProcessMesh(aiMesh* mesh)
+    Mesh& Model::ProcessMesh(aiMesh* mesh, const glm::mat4& transform)
     {
         Mesh& newMesh = mMeshes.emplace_back();
         
@@ -78,6 +92,8 @@ namespace Dog
         {
             Vertex vertex{};
 
+            //glm::vec4 pos = { mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z, 1.f };
+            //vertex.position = glm::vec3(transform * pos);
             vertex.position = { mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z };
 
             // Update min and max vectors for AABB
@@ -87,6 +103,9 @@ namespace Dog
             // Normals
             if (mesh->HasNormals())
             {
+                //glm::mat4 normalMatrix = glm::transpose(glm::inverse(transform));
+                //glm::vec4 norm = { mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z, 0.f };
+                //vertex.normal = glm::normalize(glm::vec3(normalMatrix * norm));
                 vertex.normal = { mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z };
             }
 
@@ -195,6 +214,7 @@ namespace Dog
         {
             aiBone* bone = mesh->mBones[boneIndex];
             std::string boneName = bone->mName.C_Str();
+
             int boneID = mSkeleton.GetOrCreateBoneID(boneName, aiMatToGlm(bone->mOffsetMatrix));
 
             // Update vertex weights

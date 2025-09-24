@@ -27,7 +27,9 @@ namespace Dog
         glm::vec3 GetModelCenter() const { return glm::vec3(mAnimationTransform.x, mAnimationTransform.y, mAnimationTransform.z); }
         float GetModelScale() const { return mAnimationTransform.w; }
 
+        Assimp::Importer importer;
         const aiScene* mScene = nullptr;
+        Skeleton mSkeleton;
 
     private:
         // Main load model function
@@ -36,8 +38,8 @@ namespace Dog
         // Load and process model using assimp
         void LoadMeshes(const std::string& filepath);
         
-        void ProcessNode(aiNode* node);
-        Mesh& ProcessMesh(aiMesh* mesh);
+        void ProcessNode(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.f));
+        Mesh& ProcessMesh(aiMesh* mesh, const glm::mat4& transform);
         
         void ProcessMaterials(aiMesh* mesh, Mesh& newMesh);
         void ProcessBaseColor(const aiScene* scene, aiMaterial* material, Mesh& newMesh);
@@ -60,7 +62,6 @@ namespace Dog
         glm::mat4 mNormalizationMatrix;
 
         // Animation data
-        Skeleton mSkeleton;
 
         glm::vec4 mAnimationTransform = glm::vec4(0.f); // xyz = center, w = inv scale
     };

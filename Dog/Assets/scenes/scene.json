@@ -1,53 +1,14 @@
 {
   "Entities": [
     {
-      "AnimationComponent": [
-        {
-          "AnimationIndex": 0,
-          "AnimationTime": 22.164031982421875,
-          "BoneOffset": 0,
-          "IsPlaying": true
-        }
-      ],
-      "ModelComponent": [
-        {
-          "ModelIndex": 1
-        }
-      ],
-      "TagComponent": [
-        {
-          "Tag": "New Entity"
-        }
-      ],
-      "TransformComponent": [
-        {
-          "Rotation": [
-            3.1415927410125732,
-            0.0,
-            0.0
-          ],
-          "Scale": [
-            0.10000000149011612,
-            0.10000000149011612,
-            0.10000000149011612
-          ],
-          "Translation": [
-            0.0,
-            -0.8999999761581421,
-            0.0
-          ]
-        }
-      ]
-    },
-    {
       "CameraComponent": [
         {
           "FOV": 45.0,
           "Far": 1000.0,
           "Forward": [
-            0.18058109283447266,
+            -0.9976975917816162,
             0.0,
-            0.9835600852966309
+            -0.06781946122646332
           ],
           "Near": 0.10000000149011612,
           "Up": [
@@ -65,8 +26,8 @@
       "TransformComponent": [
         {
           "Rotation": [
-            1.5,
-            0.18157722055912018,
+            0.0,
+            4.644517421722412,
             0.0
           ],
           "Scale": [
@@ -75,9 +36,54 @@
             1.0
           ],
           "Translation": [
-            -4.385316371917725,
-            -7.735457897186279,
-            -25.44057273864746
+            1.3247042894363403,
+            0.03102562204003334,
+            -0.010186539962887764
+          ]
+        }
+      ]
+    },
+    {
+      "AnimationComponent": [
+        {
+          "AnimationIndex": 3,
+          "AnimationTime": 27.647294998168945,
+          "BoneOffset": 0,
+          "IsPlaying": true
+        }
+      ],
+      "ModelComponent": [
+        {
+          "ModelIndex": 5,
+          "tintColor": [
+            1.0,
+            1.0,
+            1.0,
+            0.6078431606292725
+          ]
+        }
+      ],
+      "TagComponent": [
+        {
+          "Tag": "Hii"
+        }
+      ],
+      "TransformComponent": [
+        {
+          "Rotation": [
+            3.1415927410125732,
+            0.0,
+            0.0
+          ],
+          "Scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Translation": [
+            0.0,
+            0.0,
+            0.0
           ]
         }
       ]

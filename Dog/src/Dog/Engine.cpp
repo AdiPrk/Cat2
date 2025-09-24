@@ -14,6 +14,7 @@
 #include "ECS/Resources/EditorResource.h"
 #include "ECS/Resources/SerializationResource.h"
 #include "ECS/Resources/AnimationResource.h"
+#include "ECS/Resources/DebugDrawResource.h"
 
 #include "Graphics/Vulkan/Core/Device.h"
 #include "Graphics/Window/FrameRate.h"
@@ -47,6 +48,7 @@ namespace Dog
         mEcs.CreateResource<EditorResource>(*rr->device, *rr->swapChain, *wr->window);
         mEcs.CreateResource<SerializationResource>();
         mEcs.CreateResource<AnimationResource>();
+        mEcs.CreateResource<DebugDrawResource>();
         // ---------------------------------
 
         // Initialize ECS

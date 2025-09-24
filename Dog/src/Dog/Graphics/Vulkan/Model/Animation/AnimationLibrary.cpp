@@ -19,8 +19,13 @@ namespace Dog
 
     uint32_t AnimationLibrary::AddAnimation(const std::string& animPath, Model* model)
     {
+        if (mAnimationMap.find(animPath) != mAnimationMap.end())
+        {
+            return GetAnimationIndex(animPath);
+        }
+
         static Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(animPath, 0);
+        const aiScene* scene = importer.ReadFile(animPath, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_GlobalScale | aiProcess_OptimizeGraph);
 
         if (!scene || !scene->mAnimations[0] || !scene->mRootNode)
         {
@@ -37,6 +42,16 @@ namespace Dog
         mAnimationMap[mAnimName] = animationID;
 
         return animationID;
+    }
+
+    Animation* AnimationLibrary::GetAnimation(const std::string& name)
+    {
+        if (mAnimationMap.find(name) == mAnimationMap.end())
+        {
+            return nullptr;
+        }
+        uint32_t index = mAnimationMap[name];
+        return GetAnimation(index);
     }
 
     Animation* AnimationLibrary::GetAnimation(uint32_t index)
@@ -58,6 +73,15 @@ namespace Dog
             return nullptr;
         }
         return mAnimators[index].get();
+    }
+
+    uint32_t AnimationLibrary::GetAnimationIndex(const std::string& name)
+    {
+        if (mAnimationMap.find(name) == mAnimationMap.end())
+        {
+            return INVALID_ANIMATION_INDEX;
+        }
+        return mAnimationMap[name];
     }
 
     const std::vector<VQS>& AnimationLibrary::GetAnimationVQS()
