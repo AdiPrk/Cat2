@@ -36,18 +36,18 @@ namespace Dog
       mCurrentTime = fmod(mCurrentTime, mCurrentAnimation->GetDuration());
 
       VQS identity;
-      CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), identity, glm::mat4(1));
+      CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), identity, false, glm::mat4(1));
     }
   }
 
-  void Animator::UpdateAnimationInstant(float time, glm::mat4& tr)
+  void Animator::UpdateAnimationInstant(float time, bool inPlace, glm::mat4& tr)
   {
       if (mCurrentAnimation)
       {
           mCurrentTime = time;
 
           VQS identity;
-          CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), identity, tr);
+          CalculateBoneTransform(mCurrentAnimation->GetRootNodeIndex(), identity, inPlace, tr);
       }
   }
 
@@ -57,7 +57,7 @@ namespace Dog
     mCurrentTime = 0.0f;
   }
 
-  void Animator::CalculateBoneTransform(int nodeIndex, const VQS& parentTransform, const glm::mat4& tr)
+  void Animator::CalculateBoneTransform(int nodeIndex, const VQS& parentTransform, bool inPlace, const glm::mat4& tr)
   {
       const AnimationNode& node = mCurrentAnimation->GetNode(nodeIndex);
       int nodeId = node.id;
@@ -73,7 +73,7 @@ namespace Dog
 
           // Make animation in place by removing translation from root motion bone
           // Only works for mixamo animations for now
-          if (bone->debugName == "mixamorig:Hips")
+          if (inPlace && bone->debugName == "mixamorig:Hips")
           {
               nodeTransform.translation = glm::vec3(0.0f);
           }
@@ -84,7 +84,7 @@ namespace Dog
       VQS globalTransformation = parentTransform * nodeTransform;
 
       // draw debug stuffs
-      if (!InputSystem::isKeyDown(Key::H) && node.parentId > 0) {
+      if (!InputSystem::isKeyDown(Key::H) && node.parentId > 0 && (bone && bone->debugName != "mixamorig:Hips")) {
           glm::vec3 start = glm::vec3(tr * glm::vec4(parentTransform.translation, 1.f));
           glm::vec3 end = glm::vec3(tr * glm::vec4(globalTransformation.translation, 1.f));
 
@@ -102,7 +102,7 @@ namespace Dog
 
       for (int childIndex : node.childIndices)
       {
-          CalculateBoneTransform(childIndex, globalTransformation, tr);
+          CalculateBoneTransform(childIndex, globalTransformation, inPlace, tr);
       }
   }
 

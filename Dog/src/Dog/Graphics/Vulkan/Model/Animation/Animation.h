@@ -55,9 +55,7 @@ namespace Dog
         void ReadHeirarchyData(int parentIndex, const aiNode* src);
 
         // New private function to kick off the process
-        void PrecomputeAnimationData();
-
-        bool PropagateAnimatedState(int nodeIndex, std::vector<char>& visited);
+        void PrecomputeAnimationDataSimple();
 
         float mDuration;
         float mTicksPerSecond;

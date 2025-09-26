@@ -30,11 +30,11 @@ namespace Dog
 
         // Systems -------------------------
         mEcs.AddSystem<InputSystem>();
-        mEcs.AddSystem<CameraSystem>();
         mEcs.AddSystem<PresentSystem>();
         mEcs.AddSystem<AnimationSystem>();
         mEcs.AddSystem<RenderSystem>();
         mEcs.AddSystem<EditorSystem>();
+        mEcs.AddSystem<CameraSystem>();
         // ---------------------------------
 
         // Resources -----------------------

@@ -42,14 +42,14 @@ namespace Dog
 
         if (mScene->mMetaData)
         {
-            double unitScale = 1.0;
-            if (mScene->mMetaData->Get("UnitScaleFactor", unitScale))
+            double unitScale = 10.0;
+            if (mScene->mMetaData->Get("UnitScaleFactor", unitScale) == AI_SUCCESS)
             {
                 printf("Unit scale factor: %f\n", unitScale);
             }
         }
 
-        mDirectory = filepath.substr(0, filepath.find_last_of('/'));
+        mDirectory = filepath.substr(0, filepath.find_last_of('/')) + "/";
         mModelName = std::filesystem::path(filepath).stem().string();
 
         ProcessNode(mScene->mRootNode);
@@ -192,7 +192,7 @@ namespace Dog
             std::filesystem::path path(texturePath.C_Str());
             std::string filename = path.filename().string();
 
-            newMesh.diffuseTexturePath = mDirectory + "/ModelTextures/" + mModelName + "/" + filename;
+            newMesh.diffuseTexturePath = mDirectory + "ModelTextures/" + mModelName + "/" + filename;
         }
         else if (embeddedTexture->mHeight == 0)
         {

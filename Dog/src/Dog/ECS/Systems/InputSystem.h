@@ -24,6 +24,10 @@ namespace Dog
 		static bool isKeyReleased(const Key& key);
 		static bool isMouseDown(const Mouse& button);
 
+		// Mouse delta
+		static float GetMouseDeltaX();
+		static float GetMouseDeltaY();
+
 		// screen mouse positions
 		static glm::vec2 getMouseScreenPosition() { return { mouseScreenX, mouseScreenY }; }
 		static float getMouseScreenX() { return mouseScreenX; }
@@ -51,6 +55,8 @@ namespace Dog
 
 		static void SetKeyInputLocked(bool locked);
 		static void SetMouseInputLocked(bool locked);
+        static bool IsKeyInputLocked() { return keyInputLocked; }
+        static bool IsMouseInputLocked() { return mouseInputLocked; }
 
 		struct KeyStates
 		{
@@ -86,6 +92,8 @@ namespace Dog
 		static float mouseScreenY;
 		static float lastMouseWorldX;
 		static float lastMouseWorldY;
+		static float lastMouseSceneX;
+		static float lastMouseSceneY;
 		static float mouseWorldX;
 		static float mouseWorldY;
 		static float mouseSceneX;

@@ -13,10 +13,11 @@ namespace Dog
 		~AnimationLibrary();
 
 		uint32_t AddAnimation(const std::string& animPath, Model* model);
-		Animation* GetAnimation(const std::string& name);
+		Animation* GetAnimation(const std::string& modelName, const std::string& animName);
         Animation* GetAnimation(uint32_t index);
         Animator* GetAnimator(uint32_t index);
-		uint32_t GetAnimationIndex(const std::string& name);
+		uint32_t GetAnimationIndex(const std::string& modelName, const std::string& animName);
+		const std::string& GetAnimationName(uint32_t index) const;
 		const std::vector<VQS>& GetAnimationVQS();
 		void UpdateAnimations(float dt);
 		void UpdateAnimation(uint32_t index, float dt);
@@ -26,12 +27,15 @@ namespace Dog
 		const static uint32_t INVALID_ANIMATION_INDEX;
 
 	private:
+		std::string GetKey(const std::string& modelName, const std::string& animName);
+
 		friend class Model;
 
         std::vector<std::unique_ptr<Animation>> mAnimation;
         std::vector<std::unique_ptr<Animator>> mAnimators;
 
-        std::unordered_map<std::string, uint32_t> mAnimationMap;
+		// ModelName|AnimationName, Animation Index
+		std::unordered_map<std::string, uint32_t> mAnimationMap; // Name to index
         std::vector<VQS> mAnimationVQS;
 	};
 }

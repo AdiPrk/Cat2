@@ -90,6 +90,21 @@ namespace Dog
         return it->second;
     }
 
+    Entity ECS::CloneEntity(const Entity& entity)
+    {
+        auto clone = mRegistry.create();
+        entt::entity handle = entity;
+
+        // Iterate over all component storage pools
+        for (auto [id, storage] : mRegistry.storage()) {
+            if (storage.contains(handle)) {
+                storage.push(clone, storage.value(handle));
+            }
+        }
+
+        return Entity(&mRegistry, clone);
+    }
+
     void ECS::RemoveEntity(const std::string& name)
     {
         auto it = mEntityMap.find(name);

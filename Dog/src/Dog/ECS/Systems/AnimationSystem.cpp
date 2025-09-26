@@ -48,7 +48,7 @@ namespace Dog
                 ac.AnimationTime += anim->GetTicksPerSecond() * dt;
                 ac.AnimationTime = fmod(ac.AnimationTime, anim->GetDuration());
                 glm::mat4 tr = tc.GetTransform();
-                animator->UpdateAnimationInstant(ac.AnimationTime, tr);
+                animator->UpdateAnimationInstant(ac.AnimationTime, ac.inPlace, tr);
             }
 
             const auto& finalMatrices = animator->GetFinalBoneVQS();

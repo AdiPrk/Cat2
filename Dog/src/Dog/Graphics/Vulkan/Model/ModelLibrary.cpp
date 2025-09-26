@@ -47,7 +47,6 @@ namespace Dog
 
         if (index >= mModels.size())
         {
-            DOG_WARN("Model ID {0} is out of range!", index);
             return nullptr;
         }
 
@@ -80,6 +79,9 @@ namespace Dog
     {
         for (auto& model : mModels)
         {
+            if (model->mAddedTexture) continue;
+            model->mAddedTexture = true;
+
             for (auto& mesh : model->mMeshes)
             {
                 if (mesh.diffuseTexturePath.empty())
@@ -88,6 +90,8 @@ namespace Dog
 
                     uint32_t ind = mTextureLibrary.AddTexture(mesh.mTextureData.get(), mesh.mTextureSize, "EmbeddedTexture_" + std::to_string(mesh.mMeshID));
                     mesh.diffuseTextureIndex = ind;
+                    mesh.mTextureData.reset();
+                    mesh.mTextureSize = 0;
                 }
                 else 
                 {

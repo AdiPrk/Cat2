@@ -36,4 +36,16 @@ namespace glm
         j.at(3).get_to(v.w);
     }
 
+    // Serializer for glm::vec4
+    inline void to_json(nlohmann::json& j, const glm::quat& v) {
+        j = { v.x, v.y, v.z, v.w };
+    }
+
+    inline void from_json(const nlohmann::json& j, glm::quat& v) {
+        j.at(0).get_to(v.x);
+        j.at(1).get_to(v.y);
+        j.at(2).get_to(v.z);
+        j.at(3).get_to(v.w);
+    }
+
 }

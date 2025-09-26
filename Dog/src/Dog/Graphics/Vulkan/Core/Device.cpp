@@ -176,6 +176,10 @@ namespace Dog {
             queueCreateInfos.push_back(queueCreateInfo);
         }
 
+        VkPhysicalDeviceRobustness2FeaturesKHR robustness2Features{};
+        robustness2Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_KHR;
+        robustness2Features.nullDescriptor = VK_TRUE;
+
         VkPhysicalDeviceFeatures deviceFeatures = {};
         deviceFeatures.samplerAnisotropy = VK_TRUE;   //Set the feature samplerAnisotropy to true to sigify that we want for this device
         deviceFeatures.multiDrawIndirect = VK_TRUE;   //Set the feature multiDrawIndirect to true to sigify that we want for this device
@@ -226,6 +230,7 @@ namespace Dog {
         rtPipelineFeature.pNext = &accelFeature;
         createInfo.pNext = &rtPipelineFeature;*/
         //storage16BitFeatures.pNext = &dynamicRenderingFeatures;
+        storage16BitFeatures.pNext = &robustness2Features;
         vulkan13Features.pNext = &storage16BitFeatures;
         vulkan12Features.pNext = &vulkan13Features;
         createInfo.pNext = &vulkan12Features;

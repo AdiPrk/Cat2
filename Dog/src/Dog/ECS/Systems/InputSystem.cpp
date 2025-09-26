@@ -27,6 +27,8 @@ namespace Dog {
 	float InputSystem::mouseWorldY = 0;
 	float InputSystem::lastMouseWorldX = 0;
 	float InputSystem::lastMouseWorldY = 0;
+	float InputSystem::lastMouseSceneX = 0;
+	float InputSystem::lastMouseSceneY = 0;
 	float InputSystem::mouseSceneX = 0;
 	float InputSystem::mouseSceneY = 0;
 	GLFWcursor* InputSystem::standardCursor = nullptr;
@@ -43,6 +45,13 @@ namespace Dog {
 
 		InputSystem::standardCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
 		glfwSetCursor(InputSystem::pwindow, InputSystem::standardCursor);
+
+		double xpos, ypos;
+		glfwGetCursorPos(pwindow, &xpos, &ypos);
+		InputSystem::mouseScreenX = static_cast<float>(xpos);
+		InputSystem::mouseScreenY = static_cast<float>(ypos);
+		InputSystem::lastMouseScreenX = InputSystem::mouseScreenX;
+		InputSystem::lastMouseScreenY = InputSystem::mouseScreenY;
 	}
 
 	struct ViewportInfo {
@@ -54,8 +63,23 @@ namespace Dog {
 
 	void InputSystem::FrameStart()
 	{
+		// Update last scroll values
 		InputSystem::lastScrollX = InputSystem::scrollX;
 		InputSystem::lastScrollY = InputSystem::scrollY;
+
+		// Update last mouse coordinates before polling for new ones
+		InputSystem::lastMouseScreenX = InputSystem::mouseScreenX;
+		InputSystem::lastMouseScreenY = InputSystem::mouseScreenY;
+		InputSystem::lastMouseWorldX = InputSystem::mouseWorldX;
+		InputSystem::lastMouseWorldY = InputSystem::mouseWorldY;
+		InputSystem::lastMouseSceneX = InputSystem::mouseSceneX;
+		InputSystem::lastMouseSceneY = InputSystem::mouseSceneY;
+
+		// Get current mouse screen coordinates from GLFW
+		double xpos, ypos;
+		glfwGetCursorPos(pwindow, &xpos, &ypos);
+		InputSystem::mouseScreenX = static_cast<float>(xpos);
+		InputSystem::mouseScreenY = static_cast<float>(ypos);
 
 		for (int i = 0; i < static_cast<int>(Key::LAST); i++)
 		{
@@ -87,6 +111,16 @@ namespace Dog {
 	bool InputSystem::isMouseDown(const Mouse& button)
 	{
 		return mouseStates[static_cast<int>(button)].mouseDown;
+	}
+
+	float InputSystem::GetMouseDeltaX()
+	{
+		return mouseScreenX - lastMouseScreenX;
+	}
+
+	float InputSystem::GetMouseDeltaY()
+	{
+		return mouseScreenY - lastMouseScreenY;
 	}
 
 	void InputSystem::SetKeyInputLocked(bool locked)

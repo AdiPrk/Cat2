@@ -173,6 +173,9 @@ namespace Dog
 
     void SerializationResource::DeserializeOld(const std::string& filepath)
     {
+        std::vector<int> asdf;
+        asdf.insert(asdf.begin(), { 1,2,3,4,5 });
+
         ecs->GetRegistry().clear();
 
         std::ifstream file(filepath);
@@ -181,7 +184,7 @@ namespace Dog
             DOG_ERROR("Failed to open scene file for deserialization: {0}", filepath);
             return;
         }
-
+        
         nlohmann::json j;
         try
         {
@@ -189,6 +192,8 @@ namespace Dog
         }
         catch (nlohmann::json::parse_error& e)
         {
+            printf("err: %s\n", e.what());
+
             DOG_ERROR("Failed to parse scene file {0}: {1}", filepath, e.what());
             return;
         }

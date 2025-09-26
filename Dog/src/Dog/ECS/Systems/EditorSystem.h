@@ -23,5 +23,8 @@ namespace Dog
         void RenderSceneWindow();
         void RenderEntitiesWindow();
         void RenderInspectorWindow();
+
+        bool mMouseDown = false;
+        bool mLockMouse = false;
     };
 }

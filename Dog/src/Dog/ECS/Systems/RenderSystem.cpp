@@ -16,6 +16,9 @@
 #include "Graphics/Vulkan/Uniform/Uniform.h"
 #include "Graphics/Vulkan/RenderGraph.h"
 #include "Graphics/Vulkan/Model/Animation/AnimationLibrary.h"
+#include "Graphics/Vulkan/Texture/TextureLibrary.h"
+#include "Graphics/Vulkan/Texture/Texture.h"
+#include "Graphics/Vulkan/Uniform/Descriptors.h"
 
 #include "../ECS.h"
 #include "ECS/Entities/Entity.h"
@@ -80,6 +83,35 @@ namespace Dog
     
     void RenderSystem::FrameStart()
     {
+        auto rr = ecs->GetResource<RenderingResource>();
+        if (rr->updateTextures)
+        {
+            rr->updateTextures = false;
+
+            auto& ml = rr->modelLibrary;
+            ml->LoadTextures();
+
+            auto& tl = rr->textureLibrary;
+
+            size_t textureCount = tl->GetTextureCount();
+            std::vector<VkDescriptorImageInfo> imageInfos(TextureLibrary::MAX_TEXTURE_COUNT);
+
+            VkSampler defaultSampler = tl->GetSampler();
+
+            bool hasTex = textureCount > 0;
+            for (size_t j = 0; j < textureCount; ++j) {
+                imageInfos[j].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                imageInfos[j].sampler = defaultSampler;
+                imageInfos[j].imageView = hasTex ? tl->GetTextureByIndex(static_cast<uint32_t>(std::min(j, textureCount - 1))).GetImageView() : 0;
+            }
+
+            for (int frameIndex = 0; frameIndex < SwapChain::MAX_FRAMES_IN_FLIGHT; ++frameIndex) {
+                DescriptorWriter writer(*rr->instanceUniform->GetDescriptorLayout(), *rr->instanceUniform->GetDescriptorPool());
+                writer.WriteImage(0, imageInfos.data(), static_cast<uint32_t>(imageInfos.size()));
+                writer.Overwrite(rr->instanceUniform->GetDescriptorSets()[frameIndex]);
+            }
+        }
+
         DebugDrawResource::Clear();
     }
     
@@ -99,10 +131,17 @@ namespace Dog
             {
                 TransformComponent& tc = cameraEntity.GetComponent<TransformComponent>();
                 CameraComponent& cc = cameraEntity.GetComponent<CameraComponent>();
-                glm::vec3 forward = cc.Forward;
-                glm::vec3 up = cc.Up;
-                glm::vec3 position = tc.Translation;
-                camData.view = glm::lookAt(position, position + forward, up);
+                
+                // Get the position directly
+                glm::vec3 cameraPos = tc.Translation;
+
+                // Calculate direction vectors from the rotation quaternion
+                glm::vec3 forwardDir = glm::normalize(cc.Forward);
+                glm::vec3 upDir = glm::normalize(cc.Up);
+
+                // Calculate the target and call lookAt
+                glm::vec3 cameraTarget = cameraPos + forwardDir;
+                camData.view = glm::lookAt(cameraPos, cameraTarget, upDir);
             }
             else
             {
@@ -196,7 +235,7 @@ namespace Dog
             }
         }
 
-        //RenderSkeleton();
+        RenderSkeleton();
 
         auto instDatas = DebugDrawResource::GetInstanceData();
 
@@ -230,11 +269,15 @@ namespace Dog
                 Model* model = rr->modelLibrary->GetModel(mc.ModelIndex);
                 if (!model) continue;
 
+                uint32_t numVerts = 0;
                 for (auto& mesh : model->mMeshes)
                 {
                     mesh.Bind(cmd);
                     mesh.Draw(cmd, baseInstance++);
+                    numVerts += mesh.mVertexCount;
                 }
+
+                //printf("Num verts for %s is %i\n", model->GetName(), numVerts);
             }
         }
 
@@ -274,8 +317,8 @@ namespace Dog
 
         if (node->mParent && node->mParent->mParent != nullptr)
         {
-            DebugDrawResource::DrawLine(startPos, endPos, glm::vec4(0.f, 1.f, 0.f, 1.f));
-            DebugDrawResource::DrawCube(endPos, glm::vec3(0.04f), glm::vec4(1.f, 0.f, 0.f, 0.5f));
+            DebugDrawResource::DrawLine(startPos, endPos, glm::vec4(1.f, 0.f, 1.f, 1.f));
+            DebugDrawResource::DrawCube(endPos, glm::vec3(0.01f), glm::vec4(0.f, 1.f, 1.f, 0.4f));
         }
 
 

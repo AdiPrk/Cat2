@@ -19,9 +19,17 @@ namespace Dog
 
     uint32_t AnimationLibrary::AddAnimation(const std::string& animPath, Model* model)
     {
-        if (mAnimationMap.find(animPath) != mAnimationMap.end())
+        if (!model)
         {
-            return GetAnimationIndex(animPath);
+            DOG_WARN("Model is null, cannot add animation from path: {0}", animPath);
+            return INVALID_ANIMATION_INDEX;
+        }
+
+        std::string animName = std::filesystem::path(animPath).stem().string();
+        std::string key = GetKey(model->GetName(), animName);
+        if (mAnimationMap.find(key) != mAnimationMap.end())
+        {
+            return GetAnimationIndex(model->GetName(), animName);
         }
 
         static Assimp::Importer importer;
@@ -29,7 +37,6 @@ namespace Dog
 
         if (!scene || !scene->mAnimations[0] || !scene->mRootNode)
         {
-            DOG_CRITICAL("Failed to load animation at path: {0}", animPath);
             return INVALID_ANIMATION_INDEX;
         }
 
@@ -38,19 +45,19 @@ namespace Dog
         mAnimation.emplace_back(std::make_unique<Animation>(scene, model));
         mAnimators.emplace_back(std::make_unique<Animator>(mAnimation.back().get()));
 
-        std::string mAnimName = std::filesystem::path(animPath).stem().string();
-        mAnimationMap[mAnimName] = animationID;
+        mAnimationMap[key] = animationID;
 
         return animationID;
     }
 
-    Animation* AnimationLibrary::GetAnimation(const std::string& name)
+    Animation* AnimationLibrary::GetAnimation(const std::string& modelName, const std::string& animName)
     {
-        if (mAnimationMap.find(name) == mAnimationMap.end())
+        std::string key = GetKey(modelName, animName);
+        if (mAnimationMap.find(key) == mAnimationMap.end())
         {
             return nullptr;
         }
-        uint32_t index = mAnimationMap[name];
+        uint32_t index = mAnimationMap[key];
         return GetAnimation(index);
     }
 
@@ -58,7 +65,6 @@ namespace Dog
     {
         if (index >= mAnimation.size())
         {
-            DOG_WARN("Animation ID {0} is out of range!", index);
             return nullptr;
         }
 
@@ -75,13 +81,36 @@ namespace Dog
         return mAnimators[index].get();
     }
 
-    uint32_t AnimationLibrary::GetAnimationIndex(const std::string& name)
+    uint32_t AnimationLibrary::GetAnimationIndex(const std::string& modelName, const std::string& animName)
     {
-        if (mAnimationMap.find(name) == mAnimationMap.end())
+        std::string key = GetKey(modelName, animName);
+        if (mAnimationMap.find(key) == mAnimationMap.end())
         {
             return INVALID_ANIMATION_INDEX;
         }
-        return mAnimationMap[name];
+        return mAnimationMap[key];
+    }
+
+    const std::string& AnimationLibrary::GetAnimationName(uint32_t index) const
+    {
+        if (index >= mAnimation.size())
+        {
+            static std::string empty = "";
+            return empty;
+        }
+
+        // Reverse lookup in the map (inefficient but infrequent operation)
+        for (const auto& pair : mAnimationMap)
+        {
+            if (pair.second == index)
+            {
+                return pair.first;
+            }
+        }
+
+        // Should not reach here
+        static std::string empty = "";
+        return empty; 
     }
 
     const std::vector<VQS>& AnimationLibrary::GetAnimationVQS()
@@ -111,10 +140,13 @@ namespace Dog
     {
         if (index >= mAnimators.size())
         {
-            DOG_CRITICAL("Animator ID {0} is out of range!", index);
             return;
         }
 
         mAnimators[index]->UpdateAnimation(dt);
+    }
+    std::string AnimationLibrary::GetKey(const std::string& modelName, const std::string& animName)
+    {
+        return modelName + "|" + animName;
     }
 }

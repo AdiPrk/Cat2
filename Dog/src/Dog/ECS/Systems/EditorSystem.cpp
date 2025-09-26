@@ -7,6 +7,7 @@
 #include "../Resources/WindowResource.h"
 #include "../Resources/EditorResource.h"
 #include "../Resources/SerializationResource.h"
+#include "../Systems/InputSystem.h"
 
 #include "Graphics/Vulkan/Core/Device.h"
 #include "Graphics/Vulkan/Core/SwapChain.h"
@@ -17,6 +18,8 @@
 #include "Graphics/Vulkan/Model/Model.h"
 
 #include "Graphics/Window/Window.h"
+
+#include "imgui_internal.h"
 
 namespace Dog
 {
@@ -83,6 +86,8 @@ namespace Dog
 
 	void EditorSystem::RenderImGui(VkCommandBuffer cmd)
 	{
+        auto er = ecs->GetResource<EditorResource>();
+
 		// Start the Dear ImGui frame
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -99,6 +104,39 @@ namespace Dog
         ImGui::Checkbox("Wireframe", &ecs->GetResource<RenderingResource>()->renderWireframe);
         ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
         ImGui::End();
+
+        // Handle mouse lock for ImGui windows (excluding "Viewport")
+        {
+            ImGuiIO& io = ImGui::GetIO();
+
+            // If left mouse button just pressed
+            if (InputSystem::isMouseDown(Mouse::LEFT))
+            {
+                ImGuiWindow* hoveredWindow = ImGui::GetCurrentContext()->HoveredWindow;
+                if (hoveredWindow && strcmp(hoveredWindow->Name, "Viewport") != 0)
+                {
+                    mLockMouse = true;
+                }
+            }
+
+            // If left mouse released -> unlock
+            if (!InputSystem::isMouseDown(Mouse::LEFT))
+            {
+                mLockMouse = false;
+            }
+
+            InputSystem::SetMouseInputLocked(mLockMouse);
+        }
+
+        if (er->selectedEntity)
+        {
+            // if ctrl + d
+            if (ImGui::GetIO().KeyCtrl && InputSystem::isKeyTriggered(Key::D))
+            {
+                Entity newEntity = ecs->CloneEntity(er->selectedEntity);
+                er->selectedEntity = newEntity;
+            }
+        }
 
 		// Rendering
 		ImGui::Render();
@@ -350,8 +388,58 @@ namespace Dog
             ImGui::DragFloat3("Scale", glm::value_ptr(component.Scale), 0.1f);
         });
 
-        DrawComponentUI<ModelComponent>("Model", selectedEnt, [](auto& component)
+        DrawComponentUI<CameraComponent>("CameraComponent", selectedEnt, [](auto& component)
         {
+            // Displaying rotation in degrees
+            ImGui::DragFloat("FOV", &component.FOV, 0.1f, 1.0f, 120.0f);
+            ImGui::DragFloat("Near", &component.Near, 0.01f, 0.01f, 100.0f);
+            ImGui::DragFloat("Far", &component.Far, 1.0f, 10.0f, 10000.0f);
+            ImGui::DragFloat("Move Speed", &component.MoveSpeed, 0.1f, 0.1f, 100.0f);
+            ImGui::DragFloat("Mouse Sensitivity", &component.MouseSensitivity, 0.01f, 0.01f, 10.0f);
+            ImGui::DragFloat("Yaw", &component.Yaw, 0.1f, -360.0f, 360.0f);
+            ImGui::DragFloat("Pitch", &component.Pitch, 0.1f, -89.0f, 89.0f);
+        });
+
+        DrawComponentUI<ModelComponent>("Model", selectedEnt, [&](ModelComponent& component)
+        {
+            const std::vector<std::string> modelExtensions = { ".fbx", ".glb" };
+            const std::vector<std::string>& modelFiles = GetFilesWithExtensions("assets/models/", modelExtensions);
+
+            auto rr = ecs->GetResource<RenderingResource>();
+            auto& mc = rr->modelLibrary;
+
+            Model* currentModel = mc->GetModel(component.ModelIndex);
+            std::string currName = currentModel ? currentModel->GetName() : "None";
+
+            if (ImGui::BeginCombo("Model", currName.c_str()))
+            {
+                for (int i = 0; i < modelFiles.size(); ++i)
+                {
+                    const bool isSelected = (component.ModelIndex == i);
+                    if (ImGui::Selectable(modelFiles[i].c_str(), isSelected))
+                    {
+                        std::string cutName = modelFiles[i];
+                        cutName = cutName.substr(0, cutName.find_last_of('.')); // remove extension
+
+                        uint32_t modelIndex = mc->GetModelIndex(cutName);
+                        if (modelIndex == ModelLibrary::INVALID_MODEL_INDEX)
+                        {
+                            modelIndex = mc->AddModel("assets/models/" + modelFiles[i]);
+                            rr->UpdateTextures();
+                        }
+                        
+                        component.ModelIndex = modelIndex;
+                    }
+                    if (isSelected)
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
+
+                }
+                
+                ImGui::EndCombo();
+            }
+
             ImGui::InputInt("Model Index", (int*)&component.ModelIndex);
             ImGui::ColorEdit4("Tint Color", glm::value_ptr(component.tintColor));
         });
@@ -361,20 +449,34 @@ namespace Dog
 
         static int selectedAnimationIndex = -1;
 
-        DrawComponentUI<AnimationComponent>("Animation", selectedEnt, [&](auto& component)
+        DrawComponentUI<AnimationComponent>("Animation", selectedEnt, [&](AnimationComponent& component)
         {
-                /*
-            const std::string animationsPath = "Assets/Models/TravisLocomotion/";
+            Entity ent(&ecs->GetRegistry(), selectedEnt);
+            bool hasModel = ent.HasComponent<ModelComponent>();
+
+            if (!hasModel)
+            {
+                ImGui::Text("No model assigned to entity for animations!");
+                return;
+            }
+
+            const auto& mc = ent.GetComponent<ModelComponent>();
+            Model* model = rr->modelLibrary->GetModel(mc.ModelIndex);
+            if (!model) return;
+
+            const std::string animationsPath = model->GetDir();
             const std::vector<std::string> animationExtensions = { ".fbx", ".glb" };
             auto animationFiles = GetFilesWithExtensions(animationsPath, animationExtensions);
 
             // --- Animation Selection Dropdown ---
-            const char* selectedAnimationName = (selectedAnimationIndex >= 0 && selectedAnimationIndex < animationFiles.size())
-                ? animationFiles[selectedAnimationIndex].c_str()
-                : "None";
+            const auto& animName = animationLibrary->GetAnimationName(component.AnimationIndex);
+            std::string cutName = animName;
+            if (animName.find('|') != std::string::npos)
+            {
+                cutName = animName.substr(animName.find('|') + 1);
+            }
 
-            bool selectedThisFrame = false;
-            if (ImGui::BeginCombo("Animation", selectedAnimationName))
+            if (ImGui::BeginCombo("Animation", cutName.c_str()))
             {
                 for (int i = 0; i < animationFiles.size(); ++i)
                 {
@@ -382,7 +484,17 @@ namespace Dog
                     if (ImGui::Selectable(animationFiles[i].c_str(), isSelected))
                     {
                         selectedAnimationIndex = i;
-                        selectedThisFrame = true;
+
+                        // remove the first part up to the "|" from animName
+                        uint32_t animationIndex = animationLibrary->GetAnimationIndex(model->GetName(), animationFiles[i]);
+                        component.AnimationIndex = animationIndex;
+
+                        if (animationIndex == AnimationLibrary::INVALID_ANIMATION_INDEX)
+                        {
+                            std::string newName = animationFiles[i];
+                            uint32_t newIndex = animationLibrary->AddAnimation(animationsPath + newName, model);
+                            component.AnimationIndex = newIndex;
+                        }
                     }
                     if (isSelected)
                     {
@@ -390,36 +502,10 @@ namespace Dog
                     }
                 }
                 ImGui::EndCombo();
-            }
-
-            selectedAnimationName = (selectedAnimationIndex >= 0 && selectedAnimationIndex < animationFiles.size())
-                ? animationFiles[selectedAnimationIndex].c_str()
-                : "None";
-
-            if (selectedThisFrame && selectedAnimationName != "None")
-            {
-                std::string newName = selectedAnimationName;
-                std::string cutName = std::filesystem::path(newName).stem().string();
-
-                uint32_t animationIndex = animationLibrary->GetAnimationIndex(cutName);
-                component.AnimationIndex = animationIndex;
-
-
-                if (animationIndex == AnimationLibrary::INVALID_ANIMATION_INDEX)
-                {
-                    // Load animation
-                    auto& mc = ecs->GetRegistry().get<ModelComponent>(selectedEnt);
-                    Model* model = rr->modelLibrary->GetModel(mc.ModelIndex);
-
-                    uint32_t newIndex = animationLibrary->AddAnimation(animationsPath + newName, model);
-                    component.AnimationIndex = newIndex;
-                }
-            }
-            */
+            }            
 
             ImGui::InputInt("Animation Index", (int*)&component.AnimationIndex);
-
-
+            ImGui::Checkbox("In Place", &component.inPlace);
             ImGui::Checkbox("Is Playing", &component.IsPlaying);
             ImGui::DragFloat("Animation Time", &component.AnimationTime, 0.05f, 0.0f, FLT_MAX);
         });

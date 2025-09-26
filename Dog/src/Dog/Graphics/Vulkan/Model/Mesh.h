@@ -53,6 +53,7 @@ namespace Dog
         uint32_t mMeshID = 0;
 
         // Path to textures
+        bool loadedTextures = false;
         std::string diffuseTexturePath = "";
         uint32_t diffuseTextureIndex = 10001;
         

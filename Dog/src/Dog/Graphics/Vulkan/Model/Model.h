@@ -27,6 +27,9 @@ namespace Dog
         glm::vec3 GetModelCenter() const { return glm::vec3(mAnimationTransform.x, mAnimationTransform.y, mAnimationTransform.z); }
         float GetModelScale() const { return mAnimationTransform.w; }
 
+        const std::string& GetName() const { return mModelName; }
+        const std::string& GetDir() const { return mDirectory; }
+
         Assimp::Importer importer;
         const aiScene* mScene = nullptr;
         Skeleton mSkeleton;
@@ -54,6 +57,7 @@ namespace Dog
         glm::vec3 mAABBmin;
         glm::vec3 mAABBmax;
 
+        friend class ModelLibrary;
         bool mAddedTexture = false;
         std::string mModelName;
         std::string mDirectory; // For texture loading
@@ -62,7 +66,6 @@ namespace Dog
         glm::mat4 mNormalizationMatrix;
 
         // Animation data
-
         glm::vec4 mAnimationTransform = glm::vec4(0.f); // xyz = center, w = inv scale
     };
 }

@@ -51,7 +51,7 @@ namespace Dog
 
         ReadHeirarchyData(-1, model->mScene->mRootNode);
         ReadMissingBones(animation, *model);       
-        PrecomputeAnimationData();
+        PrecomputeAnimationDataSimple();
 
         // clear data that we don't need anymore
         mNameToIDMap.clear();
@@ -106,55 +106,12 @@ namespace Dog
         }
     }
 
-    // Animation.h (add declaration in private section)
-    bool PropagateAnimatedState(int nodeIndex, std::vector<char>& visited);
-
-    // Animation.cpp
-    void Animation::PrecomputeAnimationData()
+    void Animation::PrecomputeAnimationDataSimple()
     {
-        if (mNodes.size() == 0) return;
-
-        // 1) Initialize flags and do the one-time name check.
         for (auto& node : mNodes) {
-            node.isIntermediate = (node.debugName.find("$AssimpFbx$") != std::string::npos);
-            node.hasAnimatedDescendant = false;
-            node.skipTransform = false;
-        }
-
-        // 2) Propagate animated state for every disconnected root/subtree.
-        std::vector<char> visited(mNodes.size(), 0);
-        for (int i = 0; i < static_cast<int>(mNodes.size()); ++i) {
-            if (!visited[i]) {
-                PropagateAnimatedState(i, visited);
-            }
-        }
-
-        // 3) Final runtime flag used by the hot path (no string checks at runtime).
-        for (auto& node : mNodes) {
-            node.skipTransform = node.isIntermediate && node.hasAnimatedDescendant;
+            node.transformation = (node.debugName.find("$AssimpFbx$") != std::string::npos);
         }
     }
-
-    bool Animation::PropagateAnimatedState(int nodeIndex, std::vector<char>& visited)
-    {
-        // defensive
-        if (nodeIndex < 0 || nodeIndex >= static_cast<int>(mNodes.size())) return false;
-        if (visited[nodeIndex]) return mNodes[nodeIndex].hasAnimatedDescendant;
-
-        visited[nodeIndex] = 1;
-
-        // Start with whether this node itself corresponds to an animated bone.
-        bool has = (mBoneMap.find(mNodes[nodeIndex].id) != mBoneMap.end());
-
-        // Recurse into children; if any child subtree contains an animated bone, propagate up.
-        for (int child : mNodes[nodeIndex].childIndices) {
-            if (PropagateAnimatedState(child, visited)) has = true;
-        }
-
-        mNodes[nodeIndex].hasAnimatedDescendant = has;
-        return has;
-    }
-
 
     void Animation::ReadMissingBones(const aiAnimation* animation, Model& model)
     {
