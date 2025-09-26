@@ -32,31 +32,6 @@ namespace Dog
 
     void RenderSystem::Init()
     {
-        {
-            ecs->AddEntity("Camera");
-
-            Entity ent = ecs->GetEntity("Camera");
-            if (ent)
-            {
-                TransformComponent& tc = ent.GetComponent<TransformComponent>();
-                tc.Translation = glm::vec3(-0.5f, -0.8f, -2.0f);
-
-                CameraComponent& cc = ent.AddComponent<CameraComponent>();
-            }
-        }
-        for (int i = 0; i < 1; ++i)
-        {
-            Entity ent = ecs->AddEntity("Hii");
-            if (ent)
-            {
-                ModelComponent& mc = ent.AddComponent<ModelComponent>();
-                mc.ModelIndex = 2;
-
-                TransformComponent& tc = ent.GetComponent<TransformComponent>();
-                tc.Translation = glm::vec3(i * 0.1f, 1, -2.0f);
-            }
-        }
-
         auto rr = ecs->GetResource<RenderingResource>();
 
         std::vector<Uniform*> unis{
@@ -84,11 +59,9 @@ namespace Dog
     void RenderSystem::FrameStart()
     {
         auto rr = ecs->GetResource<RenderingResource>();
-        if (rr->updateTextures)
+        auto& ml = rr->modelLibrary;
+        if (ml->NeedsTextureUpdate())
         {
-            rr->updateTextures = false;
-
-            auto& ml = rr->modelLibrary;
             ml->LoadTextures();
 
             auto& tl = rr->textureLibrary;
@@ -99,7 +72,7 @@ namespace Dog
             VkSampler defaultSampler = tl->GetSampler();
 
             bool hasTex = textureCount > 0;
-            for (size_t j = 0; j < textureCount; ++j) {
+            for (size_t j = 0; j < TextureLibrary::MAX_TEXTURE_COUNT; ++j) {
                 imageInfos[j].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
                 imageInfos[j].sampler = defaultSampler;
                 imageInfos[j].imageView = hasTex ? tl->GetTextureByIndex(static_cast<uint32_t>(std::min(j, textureCount - 1))).GetImageView() : 0;
@@ -208,7 +181,7 @@ namespace Dog
             ModelComponent& mc = entity.GetComponent<ModelComponent>();
             TransformComponent& tc = entity.GetComponent<TransformComponent>();
             AnimationComponent* ac = entity.HasComponent<AnimationComponent>() ? &entity.GetComponent<AnimationComponent>() : nullptr;
-            Model* model = rr->modelLibrary->GetModel(mc.ModelIndex);
+            Model* model = rr->modelLibrary->GetModel(mc.ModelPath);
             if (!model) continue;
             
             uint32_t boneOffset = AnimationLibrary::INVALID_ANIMATION_INDEX;
@@ -235,7 +208,7 @@ namespace Dog
             }
         }
 
-        RenderSkeleton();
+        // RenderSkeleton();
 
         auto instDatas = DebugDrawResource::GetInstanceData();
 
@@ -266,7 +239,7 @@ namespace Dog
             for (auto& entityHandle : entityView)
             {
                 ModelComponent& mc = registry.get<ModelComponent>(entityHandle);
-                Model* model = rr->modelLibrary->GetModel(mc.ModelIndex);
+                Model* model = rr->modelLibrary->GetModel(mc.ModelPath);
                 if (!model) continue;
 
                 uint32_t numVerts = 0;
@@ -296,7 +269,7 @@ namespace Dog
             ModelComponent& mc = entity.GetComponent<ModelComponent>();
             TransformComponent& tc = entity.GetComponent<TransformComponent>();
             //AnimationComponent* ac = entity.HasComponent<AnimationComponent>() ? &entity.GetComponent<AnimationComponent>() : nullptr;
-            Model* model = ecs->GetResource<RenderingResource>()->modelLibrary->GetModel(mc.ModelIndex);
+            Model* model = ecs->GetResource<RenderingResource>()->modelLibrary->GetModel(mc.ModelPath);
             if (!model) continue;
 
             glm::mat4 normalizationMatrix = model->mNormalizationMatrix;

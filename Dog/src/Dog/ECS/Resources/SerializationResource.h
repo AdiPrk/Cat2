@@ -16,6 +16,5 @@ namespace Dog
 
         void Serialize(const std::string& filepath);
         void Deserialize(const std::string& filepath);
-        void DeserializeOld(const std::string& filepath);
     };
 }

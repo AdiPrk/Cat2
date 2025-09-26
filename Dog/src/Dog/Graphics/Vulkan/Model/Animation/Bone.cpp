@@ -85,8 +85,7 @@ namespace Dog
         }
 
         int p0 = FindKeyframeIndex<KeyPosition>(animationTime, mPositions);
-        int p1 = p0 + 1;
-        if (p1 >= mPositions.size()) p1 = 0;
+        int p1 = (p0 + 1) % mPositions.size();
 
         float scaleFactor = GetScaleFactor(mPositions[p0].time, mPositions[p1].time, animationTime);
         mLocalTransform.translation = glm::mix(mPositions[p0].position, mPositions[p1].position, scaleFactor);
@@ -101,8 +100,7 @@ namespace Dog
         }
 
         int p0 = FindKeyframeIndex<KeyRotation>(animationTime, mRotations);
-        int p1 = p0 + 1;
-        if (p1 >= mRotations.size()) p1 = 0;
+        int p1 = (p0 + 1) % mRotations.size();
 
         float scaleFactor = GetScaleFactor(mRotations[p0].time, mRotations[p1].time, animationTime);
 
@@ -119,8 +117,7 @@ namespace Dog
         }
 
         int p0 = FindKeyframeIndex<KeyScale>(animationTime, mScales);
-        int p1 = p0 + 1;
-        if (p1 >= mScales.size()) p1 = 0;
+        int p1 = (p0 + 1) % mScales.size();
 
         float scaleFactor = GetScaleFactor(mScales[p0].time, mScales[p1].time, animationTime);
         mLocalTransform.scale = glm::mix(mScales[p0].scale, mScales[p1].scale, scaleFactor);

@@ -31,7 +31,7 @@ namespace Dog
         uint32_t GetModelCount() const { return static_cast<uint32_t>(mModels.size()); }
 		
 		void LoadTextures();
-
+		bool NeedsTextureUpdate();
         const static uint32_t INVALID_MODEL_INDEX;
 
 	private:
@@ -42,6 +42,8 @@ namespace Dog
 
 		Device& mDevice;
         TextureLibrary& mTextureLibrary;
+
+        uint32_t mLastModelLoaded = INVALID_MODEL_INDEX;
 	};
 
 } // namespace Rendering

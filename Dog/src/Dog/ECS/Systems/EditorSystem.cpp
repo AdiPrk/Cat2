@@ -329,7 +329,7 @@ namespace Dog
                         if (extension == desiredExt)
                         {
                             // Add the filename to our list
-                            fileNames.push_back(entry.path().filename().string());
+                            fileNames.push_back(entry.path().string());
                             break; // Move to the next file
                         }
                     }
@@ -408,27 +408,23 @@ namespace Dog
             auto rr = ecs->GetResource<RenderingResource>();
             auto& mc = rr->modelLibrary;
 
-            Model* currentModel = mc->GetModel(component.ModelIndex);
-            std::string currName = currentModel ? currentModel->GetName() : "None";
+            Model* currentModel = mc->GetModel(component.ModelPath);
+            std::string currPath = currentModel ? currentModel->GetName() : "None";
 
-            if (ImGui::BeginCombo("Model", currName.c_str()))
+            if (ImGui::BeginCombo("Model", currPath.c_str()))
             {
                 for (int i = 0; i < modelFiles.size(); ++i)
                 {
-                    const bool isSelected = (component.ModelIndex == i);
-                    if (ImGui::Selectable(modelFiles[i].c_str(), isSelected))
+                    const std::string& modelPath = modelFiles[i];
+                    const bool isSelected = currPath == modelPath;
+                    if (ImGui::Selectable(modelPath.c_str(), isSelected))
                     {
-                        std::string cutName = modelFiles[i];
-                        cutName = cutName.substr(0, cutName.find_last_of('.')); // remove extension
-
-                        uint32_t modelIndex = mc->GetModelIndex(cutName);
-                        if (modelIndex == ModelLibrary::INVALID_MODEL_INDEX)
+                        if (!mc->GetModel(modelPath))
                         {
-                            modelIndex = mc->AddModel("assets/models/" + modelFiles[i]);
-                            rr->UpdateTextures();
+                            uint32_t modelIndex = mc->AddModel(modelPath);
                         }
                         
-                        component.ModelIndex = modelIndex;
+                        component.ModelPath = modelPath;
                     }
                     if (isSelected)
                     {
@@ -440,7 +436,6 @@ namespace Dog
                 ImGui::EndCombo();
             }
 
-            ImGui::InputInt("Model Index", (int*)&component.ModelIndex);
             ImGui::ColorEdit4("Tint Color", glm::value_ptr(component.tintColor));
         });
 
@@ -461,8 +456,12 @@ namespace Dog
             }
 
             const auto& mc = ent.GetComponent<ModelComponent>();
-            Model* model = rr->modelLibrary->GetModel(mc.ModelIndex);
-            if (!model) return;
+            Model* model = rr->modelLibrary->GetModel(mc.ModelPath);
+            if (!model)
+            {
+                ImGui::Text("Invalid model for animations!");
+                return;
+            }
 
             const std::string animationsPath = model->GetDir();
             const std::vector<std::string> animationExtensions = { ".fbx", ".glb" };

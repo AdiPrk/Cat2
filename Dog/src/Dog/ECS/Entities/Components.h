@@ -27,7 +27,7 @@ namespace Dog {
 
 	struct ModelComponent
 	{
-		uint32_t ModelIndex = 0;
+		std::string ModelPath = "";
         glm::vec4 tintColor = glm::vec4(1.0f);
 	};
 

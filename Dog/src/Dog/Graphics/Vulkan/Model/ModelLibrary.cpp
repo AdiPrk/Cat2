@@ -32,8 +32,9 @@ namespace Dog
         uint32_t modelID = static_cast<uint32_t>(mModels.size());
         mModels.push_back(std::move(model));
 
-        std::string mModelName = std::filesystem::path(filePath).stem().string();
-        mModelMap[mModelName] = modelID;
+        // std::string mModelName = std::filesystem::path(filePath).stem().string();
+        mModelMap[filePath] = modelID;
+        mLastModelLoaded = modelID;
         
         return modelID;
     }
@@ -58,8 +59,9 @@ namespace Dog
         auto it = mModelMap.find(modelPath);
         if (it == mModelMap.end())
         {
-            DOG_CRITICAL("Model path {0} not found in library!", modelPath);
-            return nullptr;
+            // Try adding the model first
+            uint32_t newModelIndex = AddModel(modelPath);
+            return GetModel(newModelIndex);
         }
         return GetModel(it->second);
     }
@@ -100,5 +102,14 @@ namespace Dog
                 }
             }
         }
+    }
+    bool ModelLibrary::NeedsTextureUpdate()
+    {
+        if (mLastModelLoaded == INVALID_MODEL_INDEX) return false;
+
+        Model* model = GetModel(mLastModelLoaded);
+        if (!model) return false;
+
+        return !model->mAddedTexture;
     }
 }

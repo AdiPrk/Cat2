@@ -56,8 +56,6 @@ namespace Dog
 
         bool renderWireframe = false;
 
-        void UpdateTextures() { updateTextures = true; }
-
     private:
         Window& window;
 
@@ -78,9 +76,6 @@ namespace Dog
         void RecreateDepthBuffer();
         void RecreateAllSceneTextures();
         // --------------------------------
-
-        friend class RenderSystem;
-        bool updateTextures = false;
         
         VkFormat ToLinearFormat(VkFormat format);
 

@@ -138,7 +138,6 @@
     <CustomBuild Include="Assets\Shaders\*.*" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\scenes\sillytravis.json" />
     <None Include="src\Dog\Graphics\Vulkan\Uniform\Uniform.inl" />
   </ItemGroup>
 </Project>

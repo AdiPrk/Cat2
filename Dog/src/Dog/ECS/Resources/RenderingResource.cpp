@@ -45,7 +45,7 @@ namespace Dog
         //animationLibrary->AddAnimation("Assets/models/yena.fbx", modelLibrary->GetModel("yena"));
         //modelLibrary->AddModel("Assets/models/FuwawaAbyssgard.pmx");
         modelLibrary->AddModel("Assets/models/TaylorDancing.glb");
-        animationLibrary->AddAnimation("Assets/models/TaylorDancing.glb", modelLibrary->GetModel("TaylorDancing"));
+        animationLibrary->AddAnimation("Assets/models/TaylorDancing.glb", modelLibrary->GetModel("Assets/models/TaylorDancing.glb"));
         //modelLibrary->AddModel("Assets/models/jack_samba.glb");
         //animationLibrary->AddAnimation("Assets/models/jack_samba.glb", modelLibrary->GetModel("jack_samba"));
         //modelLibrary->AddModel("Assets/models/travisFloppin.glb");

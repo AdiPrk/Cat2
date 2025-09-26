@@ -40,15 +40,6 @@ namespace Dog
             return;
         }
 
-        if (mScene->mMetaData)
-        {
-            double unitScale = 10.0;
-            if (mScene->mMetaData->Get("UnitScaleFactor", unitScale) == AI_SUCCESS)
-            {
-                printf("Unit scale factor: %f\n", unitScale);
-            }
-        }
-
         mDirectory = filepath.substr(0, filepath.find_last_of('/')) + "/";
         mModelName = std::filesystem::path(filepath).stem().string();
 
