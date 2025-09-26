@@ -134,6 +134,8 @@
     <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />
     <CustomBuild Include="Assets\Shaders\*.*" />
+    <CustomBuild Include="Assets\Shaders\*.*" />
+    <CustomBuild Include="Assets\Shaders\*.*" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\scenes\sillytravis.json" />

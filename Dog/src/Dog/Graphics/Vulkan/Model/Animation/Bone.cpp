@@ -26,41 +26,19 @@ namespace Dog
         for (unsigned ind = 0; ind < channel->mNumPositionKeys; ++ind)
         {
             auto& key = channel->mPositionKeys[ind];
-            mPositions.emplace_back(aiVecToGlm(key.mValue), key.mTime);
+            mPositions.emplace_back(aiVecToGlm(key.mValue), static_cast<float>(key.mTime));
         }
 
         for (unsigned ind = 0; ind < channel->mNumRotationKeys; ++ind)
         {
             auto& key = channel->mRotationKeys[ind];
-            mRotations.emplace_back(aiQuatToGlm(key.mValue), key.mTime);
+            mRotations.emplace_back(aiQuatToGlm(key.mValue), static_cast<float>(key.mTime));
         }
 
         for (unsigned ind = 0; ind < channel->mNumScalingKeys; ++ind)
         {
             auto& key = channel->mScalingKeys[ind];
-            mScales.emplace_back(aiVecToGlm(key.mValue), key.mTime);
-        }
-    }
-
-    void Bone::SetKeyframeData(const aiNodeAnim* channel)
-    {
-        mPositions.clear();
-        mRotations.clear();
-        mScales.clear();
-        for (unsigned ind = 0; ind < channel->mNumPositionKeys; ++ind)
-        {
-            auto& key = channel->mPositionKeys[ind];
-            mPositions.emplace_back(aiVecToGlm(key.mValue), key.mTime);
-        }
-        for (unsigned ind = 0; ind < channel->mNumRotationKeys; ++ind)
-        {
-            auto& key = channel->mRotationKeys[ind];
-            mRotations.emplace_back(aiQuatToGlm(key.mValue), key.mTime);
-        }
-        for (unsigned ind = 0; ind < channel->mNumScalingKeys; ++ind)
-        {
-            auto& key = channel->mScalingKeys[ind];
-            mScales.emplace_back(aiVecToGlm(key.mValue), key.mTime);
+            mScales.emplace_back(aiVecToGlm(key.mValue), static_cast<float>(key.mTime));
         }
     }
 

@@ -33,12 +33,12 @@ namespace Dog
     {
         uniform.GetDescriptorSets().resize(SwapChain::MAX_FRAMES_IN_FLIGHT);
 
-        std::vector<VkDescriptorImageInfo> imageInfos(TextureLibrary::MAX_TEXTURE_COUNT);
 
         VkSampler defaultSampler = renderData.textureLibrary->GetSampler();
         size_t textureCount = renderData.textureLibrary->GetTextureCount();
 
-        for (size_t j = 0; j < textureCount; ++j) {
+        std::vector<VkDescriptorImageInfo> imageInfos(TextureLibrary::MAX_TEXTURE_COUNT);
+        for (size_t j = 0; j < TextureLibrary::MAX_TEXTURE_COUNT; ++j) {
             imageInfos[j].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             imageInfos[j].sampler = defaultSampler;
 

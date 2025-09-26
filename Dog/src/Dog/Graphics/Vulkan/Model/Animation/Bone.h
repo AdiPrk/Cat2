@@ -46,8 +46,6 @@ namespace Dog
     Bone(int ID);
     Bone(int ID, const aiNodeAnim* channel, const std::string& debugName = "");
 
-    void SetKeyframeData(const aiNodeAnim* channel);
-
     void Update(float animationTime);
 
     inline const VQS& GetLocalTransform() const noexcept { return mLocalTransform; }
