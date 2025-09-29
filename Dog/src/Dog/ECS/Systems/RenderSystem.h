@@ -9,7 +9,7 @@ namespace Dog
     class RenderSystem : public ISystem
     {
     public:
-        RenderSystem() : ISystem("RenderSystem") {};
+        RenderSystem();
         ~RenderSystem();
 
         void Init();

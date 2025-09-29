@@ -72,7 +72,7 @@
 
 // My files
 #include "Utils/Logger.h"
-#include "Utils/AssimpGlmHelper.h"
+#include "Graphics/Vulkan/Model/AssimpGlmHelper.h"
 #include "Graphics/Vulkan/Model/Animation/VQS.h"
 
 // Shared files

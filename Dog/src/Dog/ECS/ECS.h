@@ -34,7 +34,7 @@ namespace Dog
         }
 
         template<typename T, typename... Args>
-        void CreateResource(Args&&... args) {
+        void AddResource(Args&&... args) {
             static_assert(std::is_base_of<IResource, T>::value, "Resource type must inherit from Dog::IResource");
 
             const auto typeId = std::type_index(typeid(T));
@@ -70,6 +70,7 @@ namespace Dog
         void RemoveEntity(const std::string& name);
         void RemoveEntity(Entity entity);
         void RemoveEntity(entt::entity entity);
+        
 
         entt::registry& GetRegistry() { return mRegistry; }
 

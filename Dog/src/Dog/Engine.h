@@ -34,7 +34,7 @@ namespace Dog
 		 * brief: Run the engine with the specified scene.
 		 *********************************************************************/
 		int Run(const std::string& sceneName);
-		void Exit();
+		int Exit();
 
 	private:
 		// Engine Specs

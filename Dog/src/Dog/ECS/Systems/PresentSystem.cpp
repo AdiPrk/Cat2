@@ -141,10 +141,10 @@ namespace Dog
         // --- Presentation ---
         VkResult result = rr->swapChain->PresentImage(&rr->currentImageIndex, *rr->syncObjects);
 
-        bool winResized = ecs->GetResource<WindowResource>()->window->wasWindowResized();
+        bool winResized = ecs->GetResource<WindowResource>()->window->WasWindowResized();
         if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || winResized)
         {
-            ecs->GetResource<WindowResource>()->window->resetWindowResizedFlag();
+            ecs->GetResource<WindowResource>()->window->ResetWindowResizedFlag();
             rr->RecreateSwapChain();
             rr->RecreateAllSceneTextures();
             rr->syncObjects->ClearImageFences();
@@ -159,5 +159,6 @@ namespace Dog
 
 	void PresentSystem::Exit()
 	{
+        vkDeviceWaitIdle(ecs->GetResource<RenderingResource>()->device->GetDevice());
 	}
 }

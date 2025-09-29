@@ -3,36 +3,36 @@
 
 namespace Dog {
 
-    Window::Window(int w, int h, std::string name) : width{ w }, height{ h }, windowName{ name } {
-        initWindow();
+    Window::Window(int w, int h, std::string name) : mWidth{ w }, mHeight{ h }, mWindowName{ name } {
+        InitWindow();
     }
 
     Window::~Window() {
-        glfwDestroyWindow(window);
+        glfwDestroyWindow(mWindow);
         glfwTerminate();
     }
 
-    void Window::initWindow() {
+    void Window::InitWindow() {
         glfwInit();
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-        window = glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
-        glfwSetWindowUserPointer(window, this);
-        glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+        mWindow = glfwCreateWindow(mWidth, mHeight, mWindowName.c_str(), nullptr, nullptr);
+        glfwSetWindowUserPointer(mWindow, this);
+        glfwSetFramebufferSizeCallback(mWindow, FramebufferResizeCallback);
     }
 
-    void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface) {
-        if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS) {
+    void Window::CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface) {
+        if (glfwCreateWindowSurface(instance, mWindow, nullptr, surface) != VK_SUCCESS) {
             throw std::runtime_error("failed to craete window surface");
         }
     }
 
-    void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
+    void Window::FramebufferResizeCallback(GLFWwindow* window, int width, int height) {
         auto win = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        win->framebufferResized = true;
-        win->width = width;
-        win->height = height;
+        win->mFramebufferResized = true;
+        win->mWidth = width;
+        win->mHeight = height;
     }
 
 } // namespace Dog

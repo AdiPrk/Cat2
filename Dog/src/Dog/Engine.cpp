@@ -16,9 +16,7 @@
 #include "ECS/Resources/AnimationResource.h"
 #include "ECS/Resources/DebugDrawResource.h"
 
-#include "Graphics/Vulkan/Core/Device.h"
 #include "Graphics/Window/FrameRate.h"
-#include "Graphics/Vulkan/Pipeline/Pipeline.h"
 
 namespace Dog 
 {
@@ -38,17 +36,17 @@ namespace Dog
         // ---------------------------------
 
         // Resources -----------------------
-        mEcs.CreateResource<WindowResource>(specs.width, specs.height, specs.name);
+        mEcs.AddResource<WindowResource>(specs.width, specs.height, specs.name);
 
         auto wr = mEcs.GetResource<WindowResource>();
-        mEcs.CreateResource<InputResource>(wr->window->getGLFWwindow());
-        mEcs.CreateResource<RenderingResource>(*wr->window);
+        mEcs.AddResource<InputResource>(wr->window->getGLFWwindow());
+        mEcs.AddResource<RenderingResource>(*wr->window);
 
         auto rr = mEcs.GetResource<RenderingResource>();
-        mEcs.CreateResource<EditorResource>(*rr->device, *rr->swapChain, *wr->window);
-        mEcs.CreateResource<SerializationResource>();
-        mEcs.CreateResource<AnimationResource>();
-        mEcs.CreateResource<DebugDrawResource>();
+        mEcs.AddResource<EditorResource>(*rr->device, *rr->swapChain, *wr->window);
+        mEcs.AddResource<SerializationResource>();
+        mEcs.AddResource<AnimationResource>();
+        mEcs.AddResource<DebugDrawResource>();
         // ---------------------------------
 
         // Initialize ECS
@@ -59,13 +57,13 @@ namespace Dog
     {
     }
 
+    // Main Loop!
     int Engine::Run(const std::string& sceneName) 
     {
         mEcs.GetResource<SerializationResource>()->Deserialize("Assets/scenes/" + sceneName + ".json");
 
         FrameRateController frameRateController(mSpecs.fps);
-
-        while (!mEcs.GetResource<WindowResource>()->window->shouldClose() && mRunning) 
+        while (!mEcs.GetResource<WindowResource>()->window->ShouldClose() && mRunning) 
         {
             float dt = frameRateController.WaitForNextFrame();
 
@@ -74,15 +72,15 @@ namespace Dog
             mEcs.FrameEnd();
         }
 
-        vkDeviceWaitIdle(mEcs.GetResource<RenderingResource>()->device->GetDevice());
+        return Exit();
+    }
+
+    int Engine::Exit()
+    {
+        mRunning = false;
         mEcs.Exit();
 
         return EXIT_SUCCESS;
-    }
-
-    void Engine::Exit()
-    {
-        mRunning = false;
     }
 
 } // namespace Dog

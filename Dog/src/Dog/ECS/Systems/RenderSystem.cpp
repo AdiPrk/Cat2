@@ -26,9 +26,8 @@
 
 namespace Dog
 {
-    RenderSystem::~RenderSystem()
-    {
-    }
+    RenderSystem::RenderSystem() : ISystem("RenderSystem") {}
+    RenderSystem::~RenderSystem() {}
 
     void RenderSystem::Init()
     {

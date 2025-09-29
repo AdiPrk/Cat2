@@ -1,0 +1,10 @@
+{
+  "DeadZone": 0,
+
+  "Controls": {
+    "Forward": 'W',
+    "Backward": 'S',
+    "TurnLeft": 'A',
+    "TurnRight": 'D'
+  }
+}

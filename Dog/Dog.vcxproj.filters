@@ -43,7 +43,7 @@
     <ClCompile Include="src\Dog\Graphics\Vulkan\Uniform\UniformSettings.cpp" />
     <ClCompile Include="src\Dog\Graphics\Window\FrameRate.cpp" />
     <ClCompile Include="src\Dog\Graphics\Window\Window.cpp" />
-    <ClCompile Include="src\Dog\Utils\AssimpGlmHelper.cpp" />
+    <ClCompile Include="src\Dog\Graphics\Vulkan\Model\AssimpGlmHelper.cpp" />
     <ClCompile Include="src\Dog\Utils\Logger.cpp" />
     <ClCompile Include="src\Dog\Utils\SerializationOperators.cpp" />
     <ClCompile Include="src\Dog\Utils\Utils.cpp" />
@@ -112,7 +112,7 @@
     <ClInclude Include="src\Dog\Graphics\Vulkan\Uniform\UniformSettings.h" />
     <ClInclude Include="src\Dog\Graphics\Window\FrameRate.h" />
     <ClInclude Include="src\Dog\Graphics\Window\Window.h" />
-    <ClInclude Include="src\Dog\Utils\AssimpGlmHelper.h" />
+    <ClInclude Include="src\Dog\Graphics\Vulkan\Model\AssimpGlmHelper.h" />
     <ClInclude Include="src\Dog\Utils\InputMap.h" />
     <ClInclude Include="src\Dog\Utils\Logger.h" />
     <ClInclude Include="src\Dog\Utils\SerializationOperators.h" />

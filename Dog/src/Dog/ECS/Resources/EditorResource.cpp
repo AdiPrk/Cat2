@@ -59,7 +59,7 @@ namespace Dog
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;      // Enable docking
 		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable multi-viewport / platform windows
 
-		ImGui_ImplGlfw_InitForVulkan(window.getGLFWwindow(), true);
+		ImGui_ImplGlfw_InitForVulkan(window.GetGLFWwindow(), true);
 		ImGui_ImplVulkan_InitInfo init_info = {};
 		init_info.Instance = device.GetInstance();
 		init_info.PhysicalDevice = device.GetPhysicalDevice();
