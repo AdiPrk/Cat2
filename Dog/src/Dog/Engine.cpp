@@ -39,7 +39,7 @@ namespace Dog
         mEcs.AddResource<WindowResource>(specs.width, specs.height, specs.name);
 
         auto wr = mEcs.GetResource<WindowResource>();
-        mEcs.AddResource<InputResource>(wr->window->getGLFWwindow());
+        mEcs.AddResource<InputResource>(wr->window->GetGLFWwindow());
         mEcs.AddResource<RenderingResource>(*wr->window);
 
         auto rr = mEcs.GetResource<RenderingResource>();
